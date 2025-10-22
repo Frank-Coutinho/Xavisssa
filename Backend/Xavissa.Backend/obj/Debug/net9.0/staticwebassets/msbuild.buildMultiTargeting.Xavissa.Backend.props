@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Xavissa.Backend.props" />
+</Project>

@@ -1,0 +1,6 @@
+@Xavissa.Backend_HostAddress = http://localhost:5087
+
+GET {{Xavissa.Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

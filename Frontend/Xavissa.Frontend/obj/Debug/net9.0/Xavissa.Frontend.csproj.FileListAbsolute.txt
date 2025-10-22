@@ -1,0 +1,7 @@
+D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Xavissa.Frontend.csproj.AssemblyReference.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Avalonia\Resources.Inputs.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Avalonia\resources
+D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Xavissa.Frontend.GeneratedMSBuildEditorConfig.editorconfig
+D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Xavissa.Frontend.AssemblyInfoInputs.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Xavissa.Frontend.AssemblyInfo.cs
+D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Xavissa.Frontend.csproj.CoreCompileInputs.cache

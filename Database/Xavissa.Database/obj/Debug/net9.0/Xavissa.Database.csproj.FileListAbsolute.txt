@@ -1,0 +1,14 @@
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\bin\Debug\net9.0\Xavissa.Database.deps.json
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\bin\Debug\net9.0\Xavissa.Database.runtimeconfig.json
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\bin\Debug\net9.0\Xavissa.Database.dll
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\bin\Debug\net9.0\Xavissa.Database.pdb
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.csproj.AssemblyReference.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.GeneratedMSBuildEditorConfig.editorconfig
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.AssemblyInfoInputs.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.AssemblyInfo.cs
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.csproj.CoreCompileInputs.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.dll
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\refint\Xavissa.Database.dll
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.pdb
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.genruntimeconfig.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\ref\Xavissa.Database.dll

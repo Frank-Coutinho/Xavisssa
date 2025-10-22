@@ -1,0 +1,11 @@
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\bin\Debug\net9.0\Xavissa.Shared.deps.json
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\bin\Debug\net9.0\Xavissa.Shared.dll
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\bin\Debug\net9.0\Xavissa.Shared.pdb
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\obj\Debug\net9.0\Xavissa.Shared.GeneratedMSBuildEditorConfig.editorconfig
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\obj\Debug\net9.0\Xavissa.Shared.AssemblyInfoInputs.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\obj\Debug\net9.0\Xavissa.Shared.AssemblyInfo.cs
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\obj\Debug\net9.0\Xavissa.Shared.csproj.CoreCompileInputs.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\obj\Debug\net9.0\Xavissa.Shared.dll
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\obj\Debug\net9.0\refint\Xavissa.Shared.dll
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\obj\Debug\net9.0\Xavissa.Shared.pdb
+D:\Work Spot\PROJECTS\Business\Xavissa\Shared\Xavissa.Shared\obj\Debug\net9.0\ref\Xavissa.Shared.dll
