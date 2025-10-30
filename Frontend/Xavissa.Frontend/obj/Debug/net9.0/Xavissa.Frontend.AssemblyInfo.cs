@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Xavissa.Frontend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e29b78265d192e8532a9e220c308251ee64051d5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+12b6986af978a4824b518d22df9d3cbe6f78f4ef")]
 [assembly: System.Reflection.AssemblyProductAttribute("Xavissa.Frontend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Xavissa.Frontend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

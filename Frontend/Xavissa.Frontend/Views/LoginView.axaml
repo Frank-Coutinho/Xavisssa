@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="https://github.com/avaloniaui"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Xavissa.Frontend.Views.LoginView">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*" Padding="40" Spacing="10">
+        <TextBlock Grid.ColumnSpan="2"
+                   Text="Login"
+                   FontSize="22"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"/>
+
+        <TextBlock Text="Username:" Grid.Row="1" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Width="200"
+                 Text="{Binding Username, Mode=TwoWay}"/>
+
+        <TextBlock Text="Password:" Grid.Row="2" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Width="200"
+                 PasswordChar="•"
+                 Text="{Binding Password, Mode=TwoWay}"/>
+
+        <Button Grid.Row="3" Grid.ColumnSpan="2" Margin="0,20,0,0"
+                Content="Login"
+                Command="{Binding LoginCommand}"
+                HorizontalAlignment="Center"
+                Width="120"/>
+    </Grid>
+</UserControl>

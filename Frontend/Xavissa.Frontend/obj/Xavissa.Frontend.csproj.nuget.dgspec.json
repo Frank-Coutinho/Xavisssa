@@ -46,7 +46,7 @@
           "dependencies": {
             "Avalonia": {
               "target": "Package",
-              "version": "[11.3.6, )"
+              "version": "[11.3.8, )"
             },
             "Avalonia.Desktop": {
               "target": "Package",
@@ -59,6 +59,10 @@
             "Avalonia.Fonts.Inter": {
               "target": "Package",
               "version": "[11.3.6, )"
+            },
+            "Avalonia.ReactiveUI": {
+              "target": "Package",
+              "version": "[11.3.8, )"
             },
             "Avalonia.Themes.Fluent": {
               "target": "Package",
@@ -89,10 +93,6 @@
             "Polly": {
               "target": "Package",
               "version": "[8.6.4, )"
-            },
-            "ReactiveUI": {
-              "target": "Package",
-              "version": "[21.0.1, )"
             }
           },
           "imports": [

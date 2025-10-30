@@ -1,11 +1,14 @@
 using Avalonia.Controls;
+using Xavissa.Frontend.ViewModels;
 
-namespace Xavissa.Frontend;
-
-public partial class MainWindow : Window
+namespace Xavissa.Frontend
 {
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
+        public MainWindow()
+        {
+            InitializeComponent();
+            DataContext = new LoginViewModel();
+        }
     }
 }

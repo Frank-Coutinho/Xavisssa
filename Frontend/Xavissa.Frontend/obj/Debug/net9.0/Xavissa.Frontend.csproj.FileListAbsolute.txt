@@ -5,3 +5,4 @@ D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.
 D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Xavissa.Frontend.AssemblyInfoInputs.cache
 D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Xavissa.Frontend.AssemblyInfo.cs
 D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Xavissa.Frontend.csproj.CoreCompileInputs.cache
+D:\Work Spot\PROJECTS\Business\Xavissa\Frontend\Xavissa.Frontend\obj\Debug\net9.0\Xavissa.Frontend.sourcelink.json

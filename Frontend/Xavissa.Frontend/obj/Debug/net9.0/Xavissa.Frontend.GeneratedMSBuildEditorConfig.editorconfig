@@ -39,3 +39,6 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/Views/LoginView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
