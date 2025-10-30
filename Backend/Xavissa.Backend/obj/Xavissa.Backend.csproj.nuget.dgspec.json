@@ -102,9 +102,17 @@
               "target": "Package",
               "version": "[9.0.6, )"
             },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[8.14.0, )"
+            },
+            "ZXing.Net": {
+              "target": "Package",
+              "version": "[0.16.11, )"
             }
           },
           "imports": [

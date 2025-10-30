@@ -1,0 +1,520 @@
+2025-10-30 02:26:32.842 +02:00 [INF] Application is shutting down...
+2025-10-30 02:26:45.365 +02:00 [INF] User profile is available. Using 'C:\Users\COUTINHO\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-30 02:26:45.552 +02:00 [INF] Now listening on: http://localhost:5087
+2025-10-30 02:26:45.556 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-30 02:26:45.557 +02:00 [INF] Hosting environment: Development
+2025-10-30 02:26:45.558 +02:00 [INF] Content root path: D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend
+2025-10-30 02:27:03.124 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5087/swagger/index.html - null null
+2025-10-30 02:27:03.228 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5087/swagger/index.html - 200 null text/html;charset=utf-8 105.4184ms
+2025-10-30 02:27:03.457 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5087/swagger/v1/swagger.json - null null
+2025-10-30 02:27:03.613 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5087/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 156.1302ms
+2025-10-30 02:38:53.449 +02:00 [INF] Application is shutting down...
+2025-10-30 02:40:08.305 +02:00 [INF] Executed DbCommand (217ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:40:10.253 +02:00 [INF] Executed DbCommand (218ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-10-30 02:40:10.264 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-30 02:40:10.459 +02:00 [INF] Executed DbCommand (193ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-10-30 02:40:10.657 +02:00 [INF] Executed DbCommand (195ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:40:10.671 +02:00 [INF] Applying migration '20251030003931_ConvertPaymentMethodToEnum'.
+2025-10-30 02:40:10.913 +02:00 [ERR] Failed executing DbCommand (205ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "Sales" ALTER COLUMN "PaymentMethod" TYPE integer;
+2025-10-30 02:41:46.358 +02:00 [INF] Executed DbCommand (201ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:41:48.309 +02:00 [INF] Executed DbCommand (197ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-10-30 02:41:48.319 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-30 02:41:48.519 +02:00 [INF] Executed DbCommand (198ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-10-30 02:41:48.711 +02:00 [INF] Executed DbCommand (189ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:41:48.725 +02:00 [INF] Applying migration '20251030003931_ConvertPaymentMethodToEnum'.
+2025-10-30 02:41:48.956 +02:00 [ERR] Failed executing DbCommand (193ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "Sales" ALTER COLUMN "PaymentMethod" TYPE integer;
+2025-10-30 02:42:48.239 +02:00 [INF] Executed DbCommand (200ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:42:50.178 +02:00 [INF] Executed DbCommand (193ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-10-30 02:42:50.188 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-30 02:42:50.381 +02:00 [INF] Executed DbCommand (191ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-10-30 02:42:50.576 +02:00 [INF] Executed DbCommand (192ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:42:50.591 +02:00 [INF] Applying migration '20251030003931_ConvertPaymentMethodToEnum'.
+2025-10-30 02:42:50.818 +02:00 [ERR] Failed executing DbCommand (191ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "Sales" ALTER COLUMN "PaymentMethod" TYPE integer;
+2025-10-30 02:45:29.797 +02:00 [INF] Executed DbCommand (201ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:45:31.719 +02:00 [INF] Executed DbCommand (203ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-10-30 02:45:31.730 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-30 02:45:31.920 +02:00 [INF] Executed DbCommand (189ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-10-30 02:45:32.115 +02:00 [INF] Executed DbCommand (192ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:45:32.128 +02:00 [INF] Applying migration '20251030003931_ConvertPaymentMethodToEnum'.
+2025-10-30 02:45:32.365 +02:00 [ERR] Failed executing DbCommand (197ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "Sales" ALTER COLUMN "PaymentMethod" TYPE integer;
+2025-10-30 02:46:17.027 +02:00 [INF] Executed DbCommand (203ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:46:18.961 +02:00 [INF] Executed DbCommand (198ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-10-30 02:46:18.973 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-30 02:46:19.166 +02:00 [INF] Executed DbCommand (190ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-10-30 02:46:19.358 +02:00 [INF] Executed DbCommand (189ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 02:46:19.373 +02:00 [INF] Applying migration '20251030003931_ConvertPaymentMethodToEnum'.
+2025-10-30 02:46:19.605 +02:00 [ERR] Failed executing DbCommand (197ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "Sales" ALTER COLUMN "PaymentMethod" TYPE integer;
+2025-10-30 02:52:45.027 +02:00 [INF] User profile is available. Using 'C:\Users\COUTINHO\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-30 02:52:45.309 +02:00 [INF] Now listening on: http://localhost:5087
+2025-10-30 02:52:45.313 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-30 02:52:45.313 +02:00 [INF] Hosting environment: Development
+2025-10-30 02:52:45.314 +02:00 [INF] Content root path: D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend
+2025-10-30 02:52:49.037 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Sales - application/json 161
+2025-10-30 02:52:50.259 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-30 02:52:50.262 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:52:50.281 +02:00 [INF] Route matched with {action = "Create", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Xavissa.Database.Models.Sale]] Create(Xavissa.Backend.DTOs.SaleCreateDto) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 02:52:50.412 +02:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-10-30 02:52:50.456 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend) in 169.282ms
+2025-10-30 02:52:50.470 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:52:50.475 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Sales - 400 null application/problem+json; charset=utf-8 1439.6369ms
+2025-10-30 02:53:40.034 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Sales - application/json 137
+2025-10-30 02:53:40.040 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:53:40.043 +02:00 [INF] Route matched with {action = "Create", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Xavissa.Database.Models.Sale]] Create(Xavissa.Backend.DTOs.SaleCreateDto) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 02:53:40.063 +02:00 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-10-30 02:53:40.065 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend) in 19.1898ms
+2025-10-30 02:53:40.067 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:53:40.068 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Sales - 400 null text/plain; charset=utf-8 34.5179ms
+2025-10-30 02:54:04.543 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5087/api/Users/me - null null
+2025-10-30 02:54:04.644 +02:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/28/2025 11:23:51 AM', Current time (UTC): '10/30/2025 12:54:04 AM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2025-10-30 02:54:04.971 +02:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/28/2025 11:23:51 AM', Current time (UTC): '10/30/2025 12:54:04 AM'.
+2025-10-30 02:54:04.975 +02:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2025-10-30 02:54:04.981 +02:00 [INF] AuthenticationScheme: Bearer was challenged.
+2025-10-30 02:54:04.983 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5087/api/Users/me - 401 0 null 439.6514ms
+2025-10-30 02:54:17.958 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Auth/login - application/json 49
+2025-10-30 02:54:17.962 +02:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenExpiredException: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/28/2025 11:23:51 AM', Current time (UTC): '10/30/2025 12:54:17 AM'.
+   at Microsoft.IdentityModel.Tokens.ValidatorUtilities.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.Tokens.Validators.ValidateLifetime(Nullable`1 notBefore, Nullable`1 expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenPayloadAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2025-10-30 02:54:17.968 +02:00 [INF] Bearer was not authenticated. Failure message: IDX10223: Lifetime validation failed. The token is expired. ValidTo (UTC): '10/28/2025 11:23:51 AM', Current time (UTC): '10/30/2025 12:54:17 AM'.
+2025-10-30 02:54:17.972 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 02:54:17.979 +02:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Xavissa.Backend.Controllers.LoginRequest) on controller Xavissa.Backend.Controllers.AuthController (Xavissa.Backend).
+2025-10-30 02:54:20.731 +02:00 [INF] Executed DbCommand (235ms) [Parameters=[@__username_0='?'], CommandType='"Text"', CommandTimeout='120']
+SELECT u."Id", u."Code", u."Email", u."PasswordHash", u."Role", u."Username"
+FROM "Users" AS u
+WHERE u."Username" = @__username_0
+LIMIT 1
+2025-10-30 02:54:20.821 +02:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-10-30 02:54:20.824 +02:00 [INF] Executed action Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend) in 2842.7317ms
+2025-10-30 02:54:20.826 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 02:54:20.833 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Auth/login - 200 null application/json; charset=utf-8 2874.9129ms
+2025-10-30 02:55:06.646 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Sales - application/json 137
+2025-10-30 02:55:06.659 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:55:06.660 +02:00 [INF] Route matched with {action = "Create", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Xavissa.Database.Models.Sale]] Create(Xavissa.Backend.DTOs.SaleCreateDto) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 02:55:06.967 +02:00 [INF] Executed DbCommand (252ms) [Parameters=[@__productIds_0='?' (DbType = Object)], CommandType='"Text"', CommandTimeout='120']
+SELECT p."Id", p."Barcode", p."Category", p."Code", p."Description", p."IsActive", p."LastModified", p."Name", p."Price", p."StockQuantity"
+FROM "Products" AS p
+WHERE p."Id" = ANY (@__productIds_0)
+2025-10-30 02:55:07.356 +02:00 [INF] Executed DbCommand (199ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?', @p2='?' (DbType = Decimal), @p3='?' (DbType = Boolean), @p4='?' (DbType = DateTime), @p5='?', @p6='?', @p7='?', @p8='?' (DbType = DateTime), @p9='?' (DbType = Decimal), @p10='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "Sales" ("AmountPaid", "Code", "Discount", "IsRefunded", "LastModified", "PaymentMethod", "ReceiptNumber", "RefundReason", "SaleDate", "TotalAmount", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10)
+RETURNING "Id";
+2025-10-30 02:55:07.570 +02:00 [INF] Executed DbCommand (195ms) [Parameters=[@p11='?' (DbType = DateTime), @p12='?' (DbType = Int32), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32), @p15='?' (DbType = Int32), @p16='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "SaleItems" ("LastModified", "ProductCategory", "ProductId", "Quantity", "SaleId", "UnitPrice")
+VALUES (@p11, @p12, @p13, @p14, @p15, @p16)
+RETURNING "Id";
+2025-10-30 02:55:07.778 +02:00 [INF] Executing CreatedAtActionResult, writing value of type 'Xavissa.Database.Models.Sale'.
+2025-10-30 02:55:07.825 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend) in 1162.4319ms
+2025-10-30 02:55:07.827 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:55:07.828 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Sales - 201 null application/json; charset=utf-8 1182.3205ms
+2025-10-30 02:56:35.796 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Sales - application/json 158
+2025-10-30 02:56:35.800 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:56:35.801 +02:00 [INF] Route matched with {action = "Create", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Xavissa.Database.Models.Sale]] Create(Xavissa.Backend.DTOs.SaleCreateDto) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 02:56:36.059 +02:00 [INF] Executed DbCommand (191ms) [Parameters=[@__productIds_0='?' (DbType = Object)], CommandType='"Text"', CommandTimeout='120']
+SELECT p."Id", p."Barcode", p."Category", p."Code", p."Description", p."IsActive", p."LastModified", p."Name", p."Price", p."StockQuantity"
+FROM "Products" AS p
+WHERE p."Id" = ANY (@__productIds_0)
+2025-10-30 02:56:36.254 +02:00 [INF] Executed DbCommand (190ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?', @p2='?' (DbType = Decimal), @p3='?' (DbType = Boolean), @p4='?' (DbType = DateTime), @p5='?', @p6='?', @p7='?', @p8='?' (DbType = DateTime), @p9='?' (DbType = Decimal), @p10='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "Sales" ("AmountPaid", "Code", "Discount", "IsRefunded", "LastModified", "PaymentMethod", "ReceiptNumber", "RefundReason", "SaleDate", "TotalAmount", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10)
+RETURNING "Id";
+2025-10-30 02:56:36.447 +02:00 [INF] Executed DbCommand (189ms) [Parameters=[@p11='?' (DbType = DateTime), @p12='?' (DbType = Int32), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32), @p15='?' (DbType = Int32), @p16='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "SaleItems" ("LastModified", "ProductCategory", "ProductId", "Quantity", "SaleId", "UnitPrice")
+VALUES (@p11, @p12, @p13, @p14, @p15, @p16)
+RETURNING "Id";
+2025-10-30 02:56:36.641 +02:00 [INF] Executing CreatedAtActionResult, writing value of type 'Xavissa.Database.Models.Sale'.
+2025-10-30 02:56:36.643 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend) in 839.4338ms
+2025-10-30 02:56:36.645 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:56:36.646 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Sales - 201 null application/json; charset=utf-8 850.3306ms
+2025-10-30 02:57:00.004 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Sales - application/json 158
+2025-10-30 02:57:00.007 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:57:00.008 +02:00 [INF] Route matched with {action = "Create", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Xavissa.Database.Models.Sale]] Create(Xavissa.Backend.DTOs.SaleCreateDto) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 02:57:00.201 +02:00 [INF] Executed DbCommand (189ms) [Parameters=[@__productIds_0='?' (DbType = Object)], CommandType='"Text"', CommandTimeout='120']
+SELECT p."Id", p."Barcode", p."Category", p."Code", p."Description", p."IsActive", p."LastModified", p."Name", p."Price", p."StockQuantity"
+FROM "Products" AS p
+WHERE p."Id" = ANY (@__productIds_0)
+2025-10-30 02:57:00.397 +02:00 [INF] Executed DbCommand (192ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?', @p2='?' (DbType = Decimal), @p3='?' (DbType = Boolean), @p4='?' (DbType = DateTime), @p5='?', @p6='?', @p7='?', @p8='?' (DbType = DateTime), @p9='?' (DbType = Decimal), @p10='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "Sales" ("AmountPaid", "Code", "Discount", "IsRefunded", "LastModified", "PaymentMethod", "ReceiptNumber", "RefundReason", "SaleDate", "TotalAmount", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10)
+RETURNING "Id";
+2025-10-30 02:57:00.590 +02:00 [INF] Executed DbCommand (189ms) [Parameters=[@p11='?' (DbType = DateTime), @p12='?' (DbType = Int32), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32), @p15='?' (DbType = Int32), @p16='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "SaleItems" ("LastModified", "ProductCategory", "ProductId", "Quantity", "SaleId", "UnitPrice")
+VALUES (@p11, @p12, @p13, @p14, @p15, @p16)
+RETURNING "Id";
+2025-10-30 02:57:00.786 +02:00 [INF] Executing CreatedAtActionResult, writing value of type 'Xavissa.Database.Models.Sale'.
+2025-10-30 02:57:00.788 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend) in 777.126ms
+2025-10-30 02:57:00.789 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:57:00.791 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Sales - 201 null application/json; charset=utf-8 786.8444ms
+2025-10-30 02:57:43.957 +02:00 [INF] Application is shutting down...
+2025-10-30 02:57:48.155 +02:00 [INF] User profile is available. Using 'C:\Users\COUTINHO\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-30 02:57:48.327 +02:00 [INF] Now listening on: http://localhost:5087
+2025-10-30 02:57:48.331 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-30 02:57:48.332 +02:00 [INF] Hosting environment: Development
+2025-10-30 02:57:48.333 +02:00 [INF] Content root path: D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend
+2025-10-30 02:58:00.422 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Sales - application/json 157
+2025-10-30 02:58:00.532 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-30 02:58:00.535 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:58:00.551 +02:00 [INF] Route matched with {action = "Create", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Xavissa.Database.Models.Sale]] Create(Xavissa.Backend.DTOs.SaleCreateDto) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 02:58:00.679 +02:00 [INF] Executing BadRequestObjectResult, writing value of type 'Microsoft.AspNetCore.Mvc.ValidationProblemDetails'.
+2025-10-30 02:58:00.720 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend) in 164.4117ms
+2025-10-30 02:58:00.735 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 02:58:00.739 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Sales - 400 null application/problem+json; charset=utf-8 318.402ms
+2025-10-30 02:58:12.834 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5087/swagger/index.html - null null
+2025-10-30 02:58:12.889 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5087/swagger/index.html - 200 null text/html;charset=utf-8 55.44ms
+2025-10-30 02:58:13.087 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5087/swagger/v1/swagger.json - null null
+2025-10-30 02:58:13.207 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5087/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 119.2767ms
+2025-10-30 02:58:32.677 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Auth/login - application/json 49
+2025-10-30 02:58:32.682 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 02:58:32.691 +02:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Xavissa.Backend.Controllers.LoginRequest) on controller Xavissa.Backend.Controllers.AuthController (Xavissa.Backend).
+2025-10-30 02:58:35.465 +02:00 [INF] Executed DbCommand (230ms) [Parameters=[@__username_0='?'], CommandType='"Text"', CommandTimeout='120']
+SELECT u."Id", u."Code", u."Email", u."PasswordHash", u."Role", u."Username"
+FROM "Users" AS u
+WHERE u."Username" = @__username_0
+LIMIT 1
+2025-10-30 02:58:35.542 +02:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-10-30 02:58:35.545 +02:00 [INF] Executed action Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend) in 2851.0015ms
+2025-10-30 02:58:35.548 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 02:58:35.555 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Auth/login - 200 null application/json; charset=utf-8 2878.1466ms
+2025-10-30 03:00:02.348 +02:00 [INF] Application is shutting down...
+2025-10-30 03:00:06.719 +02:00 [INF] User profile is available. Using 'C:\Users\COUTINHO\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-30 03:00:06.886 +02:00 [INF] Now listening on: http://localhost:5087
+2025-10-30 03:00:06.890 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-30 03:00:06.891 +02:00 [INF] Hosting environment: Development
+2025-10-30 03:00:06.891 +02:00 [INF] Content root path: D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend
+2025-10-30 03:00:08.117 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5087/swagger/index.html - null null
+2025-10-30 03:00:08.215 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5087/swagger/index.html - 200 null text/html;charset=utf-8 99.2784ms
+2025-10-30 03:00:08.422 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5087/swagger/v1/swagger.json - null null
+2025-10-30 03:00:08.565 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5087/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 143.6966ms
+2025-10-30 03:00:19.049 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Auth/login - application/json 49
+2025-10-30 03:00:19.088 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-30 03:00:19.091 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 03:00:19.107 +02:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Xavissa.Backend.Controllers.LoginRequest) on controller Xavissa.Backend.Controllers.AuthController (Xavissa.Backend).
+2025-10-30 03:00:22.096 +02:00 [INF] Executed DbCommand (239ms) [Parameters=[@__username_0='?'], CommandType='"Text"', CommandTimeout='120']
+SELECT u."Id", u."Code", u."Email", u."PasswordHash", u."Role", u."Username"
+FROM "Users" AS u
+WHERE u."Username" = @__username_0
+LIMIT 1
+2025-10-30 03:00:22.189 +02:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-10-30 03:00:22.198 +02:00 [INF] Executed action Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend) in 3085.9356ms
+2025-10-30 03:00:22.200 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 03:00:22.208 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Auth/login - 200 null application/json; charset=utf-8 3158.5335ms
+2025-10-30 03:01:02.462 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Sales - application/json 164
+2025-10-30 03:01:02.501 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 03:01:02.506 +02:00 [INF] Route matched with {action = "Create", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Xavissa.Database.Models.Sale]] Create(Xavissa.Backend.DTOs.SaleCreateDto) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 03:01:02.829 +02:00 [INF] Executed DbCommand (252ms) [Parameters=[@__productIds_0='?' (DbType = Object)], CommandType='"Text"', CommandTimeout='120']
+SELECT p."Id", p."Barcode", p."Category", p."Code", p."Description", p."IsActive", p."LastModified", p."Name", p."Price", p."StockQuantity"
+FROM "Products" AS p
+WHERE p."Id" = ANY (@__productIds_0)
+2025-10-30 03:01:03.236 +02:00 [INF] Executed DbCommand (212ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?', @p2='?' (DbType = Decimal), @p3='?' (DbType = Boolean), @p4='?' (DbType = DateTime), @p5='?', @p6='?', @p7='?', @p8='?' (DbType = DateTime), @p9='?' (DbType = Decimal), @p10='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "Sales" ("AmountPaid", "Code", "Discount", "IsRefunded", "LastModified", "PaymentMethod", "ReceiptNumber", "RefundReason", "SaleDate", "TotalAmount", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10)
+RETURNING "Id";
+2025-10-30 03:01:03.453 +02:00 [INF] Executed DbCommand (197ms) [Parameters=[@p11='?' (DbType = DateTime), @p12='?' (DbType = Int32), @p13='?' (DbType = Int32), @p14='?' (DbType = Int32), @p15='?' (DbType = Int32), @p16='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "SaleItems" ("LastModified", "ProductCategory", "ProductId", "Quantity", "SaleId", "UnitPrice")
+VALUES (@p11, @p12, @p13, @p14, @p15, @p16)
+RETURNING "Id";
+2025-10-30 03:01:03.664 +02:00 [INF] Executing CreatedAtActionResult, writing value of type 'Xavissa.Database.Models.Sale'.
+2025-10-30 03:01:03.699 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend) in 1189.379ms
+2025-10-30 03:01:03.701 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 03:01:03.703 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Sales - 201 null application/json; charset=utf-8 1240.8907ms
+2025-10-30 03:02:50.236 +02:00 [INF] Application is shutting down...
+2025-10-30 03:03:56.057 +02:00 [INF] Executed DbCommand (204ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 03:03:57.982 +02:00 [INF] Executed DbCommand (198ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-10-30 03:03:57.991 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-30 03:03:58.183 +02:00 [INF] Executed DbCommand (190ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-10-30 03:03:58.379 +02:00 [INF] Executed DbCommand (193ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 03:04:19.679 +02:00 [INF] Executed DbCommand (200ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 03:04:21.586 +02:00 [INF] Executed DbCommand (193ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-10-30 03:04:21.596 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-30 03:04:21.787 +02:00 [INF] Executed DbCommand (190ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-10-30 03:04:21.980 +02:00 [INF] Executed DbCommand (190ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 03:04:21.994 +02:00 [INF] Applying migration '20251030003931_ConvertPaymentMethodToEnum'.
+2025-10-30 03:04:22.224 +02:00 [ERR] Failed executing DbCommand (194ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "Sales" ALTER COLUMN "PaymentMethod" TYPE integer;
+2025-10-30 03:21:10.850 +02:00 [INF] Executed DbCommand (209ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 03:21:12.829 +02:00 [INF] Executed DbCommand (208ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-10-30 03:21:12.838 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-30 03:21:13.029 +02:00 [INF] Executed DbCommand (188ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-10-30 03:21:13.220 +02:00 [INF] Executed DbCommand (188ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 03:21:13.228 +02:00 [INF] Applying migration '20251030003931_ConvertPaymentMethodToEnum'.
+2025-10-30 03:21:13.450 +02:00 [ERR] Failed executing DbCommand (205ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "Sales" ALTER COLUMN "PaymentMethod" TYPE integer;
+2025-10-30 03:32:19.209 +02:00 [INF] User profile is available. Using 'C:\Users\COUTINHO\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-30 03:32:19.395 +02:00 [INF] Now listening on: http://localhost:5087
+2025-10-30 03:32:19.399 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-30 03:32:19.399 +02:00 [INF] Hosting environment: Development
+2025-10-30 03:32:19.400 +02:00 [INF] Content root path: D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend
+2025-10-30 03:32:26.076 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Sales - application/json 164
+2025-10-30 03:32:26.185 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-30 03:32:26.189 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 03:32:26.205 +02:00 [INF] Route matched with {action = "Create", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Xavissa.Database.Models.Sale]] Create(Xavissa.Backend.DTOs.SaleCreateDto) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 03:32:29.143 +02:00 [INF] Executed DbCommand (273ms) [Parameters=[@__productIds_0='?' (DbType = Object)], CommandType='"Text"', CommandTimeout='120']
+SELECT p."Id", p."Barcode", p."Category", p."Code", p."Description", p."IsActive", p."LastModified", p."Name", p."Price", p."StockQuantity"
+FROM "Products" AS p
+WHERE p."Id" = ANY (@__productIds_0)
+2025-10-30 03:32:29.226 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend) in 3015.7524ms
+2025-10-30 03:32:29.232 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 03:32:29.236 +02:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Insufficient stock for product 'Camisa'. Available: 10, Requested: 20
+   at Xavissa.Backend.Services.SalesService.CreateSaleAsync(List`1 itemsDto, Int32 userId, String paymentMethod, Decimal discount, Decimal amountPaid) in D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend\Services\SalesService.cs:line 46
+   at Xavissa.Backend.Controllers.SalesController.Create(SaleCreateDto dto) in D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend\Controllers\SalesController.cs:line 176
+   at lambda_method7(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+2025-10-30 03:32:29.275 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Sales - 500 null text/plain; charset=utf-8 3200.5493ms
+2025-10-30 03:32:36.161 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/Sales - application/json 164
+2025-10-30 03:32:36.167 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 03:32:36.169 +02:00 [INF] Route matched with {action = "Create", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Xavissa.Database.Models.Sale]] Create(Xavissa.Backend.DTOs.SaleCreateDto) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 03:32:36.378 +02:00 [INF] Executed DbCommand (189ms) [Parameters=[@__productIds_0='?' (DbType = Object)], CommandType='"Text"', CommandTimeout='120']
+SELECT p."Id", p."Barcode", p."Category", p."Code", p."Description", p."IsActive", p."LastModified", p."Name", p."Price", p."StockQuantity"
+FROM "Products" AS p
+WHERE p."Id" = ANY (@__productIds_0)
+2025-10-30 03:32:36.770 +02:00 [INF] Executed DbCommand (212ms) [Parameters=[@p1='?' (DbType = Int32), @p0='?' (DbType = Int32), @p2='?' (DbType = Decimal), @p3='?', @p4='?' (DbType = Decimal), @p5='?' (DbType = Boolean), @p6='?' (DbType = DateTime), @p7='?', @p8='?', @p9='?', @p10='?' (DbType = DateTime), @p11='?' (DbType = Decimal), @p12='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+UPDATE "Products" SET "StockQuantity" = @p0
+WHERE "Id" = @p1;
+INSERT INTO "Sales" ("AmountPaid", "Code", "Discount", "IsRefunded", "LastModified", "PaymentMethod", "ReceiptNumber", "RefundReason", "SaleDate", "TotalAmount", "UserId")
+VALUES (@p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12)
+RETURNING "Id";
+2025-10-30 03:32:36.983 +02:00 [INF] Executed DbCommand (193ms) [Parameters=[@p13='?' (DbType = DateTime), @p14='?' (DbType = Int32), @p15='?' (DbType = Int32), @p16='?' (DbType = Int32), @p17='?' (DbType = Int32), @p18='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "SaleItems" ("LastModified", "ProductCategory", "ProductId", "Quantity", "SaleId", "UnitPrice")
+VALUES (@p13, @p14, @p15, @p16, @p17, @p18)
+RETURNING "Id";
+2025-10-30 03:32:37.193 +02:00 [INF] Executing CreatedAtActionResult, writing value of type 'Xavissa.Database.Models.Sale'.
+2025-10-30 03:32:37.247 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend) in 1075.6114ms
+2025-10-30 03:32:37.249 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Create (Xavissa.Backend)'
+2025-10-30 03:32:37.251 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/Sales - 201 null application/json; charset=utf-8 1090.4ms
+2025-10-30 03:35:51.690 +02:00 [INF] Request starting HTTP/1.1 DELETE http://localhost:5087/api/Sales/13 - null null
+2025-10-30 03:35:51.698 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Delete (Xavissa.Backend)'
+2025-10-30 03:35:51.706 +02:00 [INF] Route matched with {action = "Delete", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult] Delete(Int32) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 03:35:52.050 +02:00 [INF] Executed DbCommand (258ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+SELECT s."Id", s."AmountPaid", s."Code", s."Discount", s."IsRefunded", s."LastModified", s."PaymentMethod", s."ReceiptNumber", s."RefundReason", s."SaleDate", s."TotalAmount", s."UserId"
+FROM "Sales" AS s
+WHERE s."Id" = @__p_0
+LIMIT 1
+2025-10-30 03:35:52.271 +02:00 [INF] Executed DbCommand (211ms) [Parameters=[@p0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+DELETE FROM "Sales"
+WHERE "Id" = @p0;
+2025-10-30 03:35:52.279 +02:00 [INF] Executing StatusCodeResult, setting HTTP status code 200
+2025-10-30 03:35:52.280 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Delete (Xavissa.Backend) in 571.8664ms
+2025-10-30 03:35:52.282 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Delete (Xavissa.Backend)'
+2025-10-30 03:35:52.284 +02:00 [INF] Request finished HTTP/1.1 DELETE http://localhost:5087/api/Sales/13 - 200 0 null 593.8298ms
+2025-10-30 03:40:04.869 +02:00 [INF] Application is shutting down...
+2025-10-30 03:47:24.273 +02:00 [INF] Executed DbCommand (205ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 03:47:26.220 +02:00 [INF] Executed DbCommand (214ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-10-30 03:47:26.230 +02:00 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-10-30 03:47:26.421 +02:00 [INF] Executed DbCommand (188ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-10-30 03:47:26.622 +02:00 [INF] Executed DbCommand (198ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-10-30 03:47:26.636 +02:00 [INF] Applying migration '20251029150047_ConvertCategoryToInt'.
+2025-10-30 03:47:26.847 +02:00 [INF] Executed DbCommand (192ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20251029150047_ConvertCategoryToInt', '9.0.10');
+2025-10-30 03:47:26.850 +02:00 [INF] Applying migration '20251030014659_AddDeletSaleNdDeleteSaleItem'.
+2025-10-30 03:47:27.102 +02:00 [INF] Executed DbCommand (217ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "DeletedSales" DROP CONSTRAINT "FK_DeletedSales_Users_UserId";
+2025-10-30 03:47:27.301 +02:00 [INF] Executed DbCommand (196ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+DROP INDEX "IX_DeletedSales_UserId";
+2025-10-30 03:47:27.499 +02:00 [INF] Executed DbCommand (196ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "DeletedSales" RENAME COLUMN "Reason" TO "ReceiptNumber";
+2025-10-30 03:47:27.705 +02:00 [INF] Executed DbCommand (203ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+UPDATE "DeletedSales" SET "UserId" = 0 WHERE "UserId" IS NULL;
+ALTER TABLE "DeletedSales" ALTER COLUMN "UserId" SET NOT NULL;
+ALTER TABLE "DeletedSales" ALTER COLUMN "UserId" SET DEFAULT 0;
+2025-10-30 03:47:27.904 +02:00 [INF] Executed DbCommand (196ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "DeletedSales" ADD "AmountPaid" numeric NOT NULL DEFAULT 0.0;
+2025-10-30 03:47:28.100 +02:00 [INF] Executed DbCommand (193ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "DeletedSales" ADD "Code" text NOT NULL DEFAULT '';
+2025-10-30 03:47:28.297 +02:00 [INF] Executed DbCommand (194ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "DeletedSales" ADD "DeletedByUserId" integer;
+2025-10-30 03:47:28.492 +02:00 [INF] Executed DbCommand (192ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "DeletedSales" ADD "Discount" numeric NOT NULL DEFAULT 0.0;
+2025-10-30 03:47:28.689 +02:00 [INF] Executed DbCommand (194ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "DeletedSales" ADD "PaymentMethod" text NOT NULL DEFAULT '';
+2025-10-30 03:47:28.889 +02:00 [INF] Executed DbCommand (198ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "DeletedSales" ADD "SaleDate" timestamp with time zone NOT NULL DEFAULT TIMESTAMPTZ '-infinity';
+2025-10-30 03:47:29.081 +02:00 [INF] Executed DbCommand (189ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+ALTER TABLE "DeletedSales" ADD "TotalAmount" numeric NOT NULL DEFAULT 0.0;
+2025-10-30 03:47:29.320 +02:00 [INF] Executed DbCommand (236ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE TABLE "DeletedSaleItems" (
+    "Id" integer GENERATED BY DEFAULT AS IDENTITY,
+    "DeletedSaleId" integer NOT NULL,
+    "ProductId" integer NOT NULL,
+    "ProductCategory" text NOT NULL,
+    "UnitPrice" numeric NOT NULL,
+    "Quantity" integer NOT NULL,
+    CONSTRAINT "PK_DeletedSaleItems" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_DeletedSaleItems_DeletedSales_DeletedSaleId" FOREIGN KEY ("DeletedSaleId") REFERENCES "DeletedSales" ("Id") ON DELETE CASCADE
+);
+2025-10-30 03:47:29.513 +02:00 [INF] Executed DbCommand (190ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+CREATE INDEX "IX_DeletedSaleItems_DeletedSaleId" ON "DeletedSaleItems" ("DeletedSaleId");
+2025-10-30 03:47:29.711 +02:00 [INF] Executed DbCommand (195ms) [Parameters=[], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20251030014659_AddDeletSaleNdDeleteSaleItem', '9.0.10');
+2025-10-30 03:47:47.091 +02:00 [INF] User profile is available. Using 'C:\Users\COUTINHO\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-30 03:47:47.259 +02:00 [INF] Now listening on: http://localhost:5087
+2025-10-30 03:47:47.263 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-30 03:47:47.264 +02:00 [INF] Hosting environment: Development
+2025-10-30 03:47:47.265 +02:00 [INF] Content root path: D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend
+2025-10-30 03:47:55.493 +02:00 [INF] Request starting HTTP/1.1 DELETE http://localhost:5087/api/Sales/12 - null null
+2025-10-30 03:47:55.601 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-30 03:47:55.604 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.SalesController.Delete (Xavissa.Backend)'
+2025-10-30 03:47:55.618 +02:00 [INF] Route matched with {action = "Delete", controller = "Sales"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult] Delete(Int32) on controller Xavissa.Backend.Controllers.SalesController (Xavissa.Backend).
+2025-10-30 03:47:58.569 +02:00 [INF] Executed DbCommand (241ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+SELECT s1."Id", s1."AmountPaid", s1."Code", s1."Discount", s1."IsRefunded", s1."LastModified", s1."PaymentMethod", s1."ReceiptNumber", s1."RefundReason", s1."SaleDate", s1."TotalAmount", s1."UserId", s0."Id", s0."LastModified", s0."ProductCategory", s0."ProductId", s0."Quantity", s0."SaleId", s0."UnitPrice"
+FROM (
+    SELECT s."Id", s."AmountPaid", s."Code", s."Discount", s."IsRefunded", s."LastModified", s."PaymentMethod", s."ReceiptNumber", s."RefundReason", s."SaleDate", s."TotalAmount", s."UserId"
+    FROM "Sales" AS s
+    WHERE s."Id" = @__id_0
+    LIMIT 1
+) AS s1
+LEFT JOIN "SaleItems" AS s0 ON s1."Id" = s0."SaleId"
+ORDER BY s1."Id"
+2025-10-30 03:47:59.046 +02:00 [INF] Executed DbCommand (198ms) [Parameters=[@p0='?' (DbType = Decimal), @p1='?', @p2='?' (DbType = DateTime), @p3='?' (DbType = Int32), @p4='?' (DbType = Decimal), @p5='?' (DbType = Int32), @p6='?', @p7='?', @p8='?' (DbType = DateTime), @p9='?' (DbType = Decimal), @p10='?' (DbType = Int32), @p11='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "DeletedSales" ("AmountPaid", "Code", "DeletedAt", "DeletedByUserId", "Discount", "OriginalSaleId", "PaymentMethod", "ReceiptNumber", "SaleDate", "TotalAmount", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10)
+RETURNING "Id";
+DELETE FROM "SaleItems"
+WHERE "Id" = @p11;
+2025-10-30 03:47:59.257 +02:00 [INF] Executed DbCommand (193ms) [Parameters=[@p12='?' (DbType = Int32), @p13='?', @p14='?' (DbType = Int32), @p15='?' (DbType = Int32), @p16='?' (DbType = Decimal), @p17='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='120']
+INSERT INTO "DeletedSaleItems" ("DeletedSaleId", "ProductCategory", "ProductId", "Quantity", "UnitPrice")
+VALUES (@p12, @p13, @p14, @p15, @p16)
+RETURNING "Id";
+DELETE FROM "Sales"
+WHERE "Id" = @p17;
+2025-10-30 03:47:59.473 +02:00 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2025-10-30 03:47:59.480 +02:00 [INF] Executed action Xavissa.Backend.Controllers.SalesController.Delete (Xavissa.Backend) in 3856.4022ms
+2025-10-30 03:47:59.486 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Delete (Xavissa.Backend)'
+2025-10-30 03:47:59.496 +02:00 [INF] Request finished HTTP/1.1 DELETE http://localhost:5087/api/Sales/12 - 200 null text/plain; charset=utf-8 4004.9078ms
+2025-10-30 04:04:30.809 +02:00 [INF] Application is shutting down...

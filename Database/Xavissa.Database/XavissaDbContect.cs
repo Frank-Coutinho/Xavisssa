@@ -13,6 +13,7 @@ namespace Xavissa.Database
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleItem> SaleItems { get; set; }
         public DbSet<DeletedSale> DeletedSales { get; set; }
+        public DbSet<DeletedSaleItem> DeletedSaleItems { get; set; }
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,9 +21,22 @@ namespace Xavissa.Database
             base.OnModelCreating(modelBuilder);
 
             // Unique constraint for barcode
-            modelBuilder.Entity<Product>()
-                .HasIndex(p => p.Barcode)
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.Property(p => p.Category)
+                    .HasConversion<string>();
+                entity.HasIndex(p => p.Barcode)
                 .IsUnique();
+            });
+                
+            modelBuilder.Entity<Sale>()
+                .Property(s => s.PaymentMethod)
+                .HasConversion<string>();
+                
+
+            modelBuilder.Entity<User>()
+        .Property(u => u.Role)
+        .HasConversion<string>();
         }
     }
 }

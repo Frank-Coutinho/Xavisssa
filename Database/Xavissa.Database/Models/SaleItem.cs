@@ -10,8 +10,9 @@ namespace Xavissa.Database.Models
         public Product Product { get; set; } = null!;
 
         public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
+        public required decimal UnitPrice { get; set; }
         public decimal Subtotal => Quantity * UnitPrice;
+        public ProductCategory ProductCategory { get; set; }
 
         public DateTime LastModified { get; set; } = DateTime.UtcNow;
     }
