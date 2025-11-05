@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Xavissa.Frontend.ViewModels"
+             xmlns:views="using:Xavissa.Frontend.Views"
+             x:Class="Xavissa.Frontend.Views.ConfigView"
+             x:DataType="vm:ConfigViewModel"
+             Foreground="#333">
+
+    <TabControl>
+        <!-- General App Settings -->
+        <TabItem Header="Geral">
+            <ScrollViewer>
+                <StackPanel Margin="20" Spacing="10">
+                    <TextBlock Text="{Binding CurrentDateTime}" Foreground="#333" FontSize="16" FontWeight="Bold" HorizontalAlignment="Right"/>
+                    <TextBlock Text="Configurações Gerais" FontSize="24" Foreground="#333" FontWeight="Bold"/>
+                    <TextBlock Text="App settings go here..." FontSize="16" Foreground="#333" />
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- Printer Settings -->
+        <TabItem Header="Impressora">
+            <!-- Embed PrinterConfigView -->
+            <views:PrinterConfigView/>
+        </TabItem>
+    </TabControl>
+</UserControl>

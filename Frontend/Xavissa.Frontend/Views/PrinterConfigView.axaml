@@ -1,0 +1,68 @@
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    x:Class="Xavissa.Frontend.Views.PrinterConfigView"
+    x:DataType="vm:PrinterConfigViewModel"
+    x:CompileBindings="False"
+    Foreground="#333">
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="10">
+
+            <TextBlock Text="Configurações da Impressora" FontSize="20" FontWeight="Bold" Foreground="#333"/>
+
+            <!-- Printer Name -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+                <TextBlock Text="Nome da Impressora:" Width="150" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding AvailablePrinters}" SelectedItem="{Binding PrinterName}" Width="200"/>
+            </StackPanel>
+
+            <!-- Paper Width -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+    <TextBlock Text="Largura do Papel:" Width="150" VerticalAlignment="Center"/>
+    <ComboBox ItemsSource="{Binding PopularPaperWidths}" 
+              SelectedItem="{Binding PaperWidth}" 
+              Width="100"/>
+</StackPanel>
+
+            <!-- Header Text -->
+            <TextBlock Text="Texto do Cabeçalho:"/>
+            <TextBox Text="{Binding HeaderText}" AcceptsReturn="True" Height="80" Width="500" HorizontalAlignment="Left"/>
+
+            <!-- Footer Text -->
+            <TextBlock Text="Texto do Rodapé:" Foreground="#333"/>
+            <TextBox Text="{Binding FooterText}" AcceptsReturn="True" Height="80" Width="500" HorizontalAlignment="Left"/>
+
+            <!-- Show DateTime -->
+            <CheckBox Content="Mostrar Data e Hora" IsChecked="{Binding ShowDateTime}" Foreground="#333" />
+
+            <!-- Header Image -->
+<StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+    <CheckBox Content="Usar Imagem no Cabeçalho" 
+              IsChecked="{Binding UseHeaderImage}" 
+              Foreground="#333"/>
+    
+    <!-- Display selected file path -->
+    <TextBlock Text="{Binding HeaderImagePath}" Width="200" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+    
+    <!-- Browse button -->
+    <Button Content="Selecionar..." CommandParameter="{Binding $parent[Window]}" Command="{Binding BrowseImageCommand}" Width="100" Background="#0C4E32"/>
+</StackPanel>
+
+
+            <!-- Print Image -->
+            <CheckBox Content="Imprimir Imagem no Recibo" IsChecked="{Binding PrintImageOnReceipt}" Foreground="#333"/>
+
+            <!-- Image Position -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="10">
+                <TextBlock Text="Posição da Imagem:" Width="150" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding ImagePositions}" SelectedItem="{Binding ImagePosition}" Width="150"/>
+            </StackPanel>
+
+            <!-- Save Button -->
+            <Button Content="Salvar Configurações" Command="{Binding SaveConfigCommand}" 
+                    HorizontalAlignment="Left" Margin="0,20,0,0" Width="180" Background="#0C4E32" Foreground="White"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

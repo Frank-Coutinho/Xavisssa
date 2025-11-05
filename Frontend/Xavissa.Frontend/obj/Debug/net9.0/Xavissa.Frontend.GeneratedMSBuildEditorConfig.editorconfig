@@ -40,5 +40,26 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/Views/AppView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/Views/ConfigView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/Views/HistoryView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/Views/HomeView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/Views/LoginView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/Views/MainView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/Views/ManagementView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Work Spot/PROJECTS/Business/Xavissa/Frontend/Xavissa.Frontend/Views/PrinterConfigView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

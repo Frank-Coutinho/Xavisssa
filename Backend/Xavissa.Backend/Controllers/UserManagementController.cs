@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Xavissa.Backend.Services;
-using Xavissa.Database.Models;
 using Xavissa.Backend.DTOs;
+using Xavissa.Backend.Services;
 using Xavissa.Backend.Utilities;
-
+using Xavissa.Database.Models;
 
 namespace Xavissa.Backend.Controllers
 {
@@ -25,8 +24,14 @@ namespace Xavissa.Backend.Controllers
         [Authorize(Roles = "Superuser")]
         public async Task<IActionResult> CreateAdmin([FromBody] RegisterRequest request)
         {
-            var user = await _authService.Register(request.Username, request.Email, request.Password, UserRole.Admin);
-            if (user == null) return BadRequest("User already exists");
+            var user = await _authService.Register(
+                request.Username,
+                request.Email,
+                request.Password,
+                UserRole.Admin
+            );
+            if (user == null)
+                return BadRequest("User already exists");
             return Ok(user);
         }
 
@@ -35,8 +40,14 @@ namespace Xavissa.Backend.Controllers
         [Authorize(Roles = "Superuser,Admin")]
         public async Task<IActionResult> CreateClerk([FromBody] RegisterRequest request)
         {
-            var user = await _authService.Register(request.Username, request.Email, request.Password, UserRole.Clerk);
-            if (user == null) return BadRequest("User already exists");
+            var user = await _authService.Register(
+                request.Username,
+                request.Email,
+                request.Password,
+                UserRole.Clerk
+            );
+            if (user == null)
+                return BadRequest("User already exists");
             return Ok(user);
         }
 
@@ -47,7 +58,8 @@ namespace Xavissa.Backend.Controllers
         {
             var currentRole = User.FindFirst("role")?.Value;
             var result = await _authService.UpdateUserAsync(id, request, currentRole);
-            if (!result) return NotFound("User not found or not allowed.");
+            if (!result)
+                return NotFound("User not found or not allowed.");
             return Ok("User updated successfully");
         }
 
@@ -58,7 +70,8 @@ namespace Xavissa.Backend.Controllers
         {
             var currentRole = User.FindFirst("role")?.Value;
             var result = await _authService.DeleteUserAsync(id, currentRole);
-            if (!result) return NotFound("User not found or not allowed.");
+            if (!result)
+                return NotFound("User not found or not allowed.");
             return Ok("User deleted successfully");
         }
     }

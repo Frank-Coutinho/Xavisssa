@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Xavissa.Database.Models;
-using Xavissa.Backend.Services;
 using Xavissa.Backend.DTOs;
+using Xavissa.Backend.Services;
 using Xavissa.Backend.Utilities;
+using Xavissa.Database.Models;
 
 namespace Xavissa.Backend.Controllers
 {
@@ -33,7 +33,8 @@ namespace Xavissa.Backend.Controllers
         public IActionResult GetProduct(int id)
         {
             var product = _productService.GetProductById(id);
-            if (product == null) return NotFound();
+            if (product == null)
+                return NotFound();
             return Ok(product);
         }
 
@@ -52,9 +53,10 @@ namespace Xavissa.Backend.Controllers
                     Category = dto.Category,
                     Price = dto.Price,
                     StockQuantity = dto.StockQuantity,
-                    IsActive = dto.IsActive
+                    IsActive = dto.IsActive,
+                    Color = dto.Color,
                 };
-        
+
                 _productService.AddProduct(product);
                 return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
             }
@@ -78,8 +80,10 @@ namespace Xavissa.Backend.Controllers
                 // Apply updates using the DTO
                 product.Description = dto.Description ?? product.Description;
                 product.Price = dto.Price != 0 ? dto.Price : product.Price;
-                product.StockQuantity = dto.StockQuantity != 0 ? dto.StockQuantity : product.StockQuantity;
+                product.StockQuantity =
+                    dto.StockQuantity != 0 ? dto.StockQuantity : product.StockQuantity;
                 product.IsActive = dto.IsActive;
+                product.Color = dto.Color ?? product.Color;
 
                 _productService.UpdateProduct(product);
 
@@ -90,7 +94,6 @@ namespace Xavissa.Backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
         // DELETE: api/Product/{id}
         [HttpDelete("{id}")]

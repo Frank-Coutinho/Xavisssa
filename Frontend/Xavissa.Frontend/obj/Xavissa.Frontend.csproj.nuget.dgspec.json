@@ -48,17 +48,21 @@
               "target": "Package",
               "version": "[11.3.8, )"
             },
+            "Avalonia.Controls.DataGrid": {
+              "target": "Package",
+              "version": "[11.3.8, )"
+            },
             "Avalonia.Desktop": {
               "target": "Package",
-              "version": "[11.3.6, )"
+              "version": "[11.3.8, )"
             },
             "Avalonia.Diagnostics": {
               "target": "Package",
-              "version": "[11.3.6, )"
+              "version": "[11.3.8, )"
             },
             "Avalonia.Fonts.Inter": {
               "target": "Package",
-              "version": "[11.3.6, )"
+              "version": "[11.3.8, )"
             },
             "Avalonia.ReactiveUI": {
               "target": "Package",
@@ -66,15 +70,31 @@
             },
             "Avalonia.Themes.Fluent": {
               "target": "Package",
-              "version": "[11.3.6, )"
+              "version": "[11.3.8, )"
+            },
+            "Avalonia.Xaml.Interactions": {
+              "target": "Package",
+              "version": "[11.3.0.6, )"
+            },
+            "Avalonia.Xaml.Interactivity": {
+              "target": "Package",
+              "version": "[11.3.0.6, )"
             },
             "CommunityToolkit.Mvvm": {
               "target": "Package",
               "version": "[8.4.0, )"
             },
+            "FluentIcons.Avalonia": {
+              "target": "Package",
+              "version": "[1.2.313, )"
+            },
             "Material.Avalonia": {
               "target": "Package",
               "version": "[3.13.1, )"
+            },
+            "MessageBox.Avalonia": {
+              "target": "Package",
+              "version": "[3.3.0, )"
             },
             "Microsoft.Data.Sqlite": {
               "target": "Package",
@@ -93,6 +113,18 @@
             "Polly": {
               "target": "Package",
               "version": "[8.6.4, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2025.7.4, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.14.0, )"
             }
           },
           "imports": [

@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using Xavissa.Frontend.ViewModels;
 
 namespace Xavissa.Frontend
@@ -8,7 +9,11 @@ namespace Xavissa.Frontend
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new LoginViewModel();
+        }
+
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
         }
     }
 }

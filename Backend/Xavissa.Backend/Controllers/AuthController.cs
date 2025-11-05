@@ -1,7 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Xavissa.Backend.Services;
 using Xavissa.Database.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Xavissa.Backend.Controllers
 {
@@ -28,10 +28,17 @@ namespace Xavissa.Backend.Controllers
                 request.Role ?? UserRole.Clerk // Default Clerk if not specified
             );
 
-            if (user == null) 
+            if (user == null)
                 return BadRequest("User already exists");
 
-            return Ok(new { user.Id, user.Username, user.Role });
+            return Ok(
+                new
+                {
+                    user.Id,
+                    user.Username,
+                    user.Role,
+                }
+            );
         }
 
         // Login route (public)
@@ -40,7 +47,7 @@ namespace Xavissa.Backend.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var token = await _authService.Login(request.Username, request.Password);
-            if (token == null) 
+            if (token == null)
                 return Unauthorized("Invalid credentials");
 
             return Ok(new { Token = token });

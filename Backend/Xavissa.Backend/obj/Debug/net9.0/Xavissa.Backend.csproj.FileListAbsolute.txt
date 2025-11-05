@@ -185,3 +185,4 @@ D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend\bin\Debug\net9.0\
 D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend\bin\Debug\net9.0\System.Private.Windows.Core.dll
 D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend\bin\Debug\net9.0\zxing.dll
 D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend\bin\Debug\net9.0\runtimes\win\lib\net9.0\Microsoft.Win32.SystemEvents.dll
+D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend\obj\Debug\net9.0\Xavissa.Backend.sourcelink.json

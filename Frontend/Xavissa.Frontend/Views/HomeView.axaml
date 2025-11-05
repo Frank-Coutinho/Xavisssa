@@ -1,0 +1,248 @@
+<UserControl x:Name="RootControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Xavissa.Frontend.ViewModels"
+             xmlns:local="using:Xavissa.Frontend.Converters"
+             x:Class="Xavissa.Frontend.Views.HomeView"
+             x:DataType="vm:HomeViewModel">
+
+             <UserControl.Resources>
+    <local:TitleCaseConverter x:Key="TitleCaseConverter"/>
+</UserControl.Resources>
+
+
+    <Grid ColumnDefinitions="*,400" Background="#F5F5F5">
+
+        <!-- ==================== PRODUCTS PANEL ==================== -->
+        <DockPanel Margin="10">
+
+    <!-- Bottom static category buttons -->
+    <StackPanel Orientation="Horizontal"
+                DockPanel.Dock="Bottom"
+                HorizontalAlignment="Center"
+                Margin="0,10,0,0"
+                Spacing="10">
+        <Button Content="T-SHIRTS" Background="#0C4E32" Foreground="White" CornerRadius="30"/>
+        <Button Content="JEANS" Background="White" Foreground="#333" CornerRadius="30"/>
+        <Button Content="SHORTS" Background="White" Foreground="#333" CornerRadius="30"/>
+        <Button Content="JACKETS" Background="White" Foreground="#333" CornerRadius="30"/>
+        <Button Content="SHOES" Background="White" Foreground="#333" CornerRadius="30"/>
+        <Button Content="ACCESSORIES" Background="White" Foreground="#333" CornerRadius="30"/>
+    </StackPanel>
+
+    <!-- Scrollable content -->
+<ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
+    <StackPanel>
+
+        <!-- Top label -->
+        <TextBlock Text="T-Shirts"
+                   FontWeight="Bold"
+                   FontSize="20"
+                   Foreground="#0C4E32"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,10"/>
+
+        <!-- Product cards wrapped naturally -->
+        <ItemsControl ItemsSource="{Binding Products}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <!-- WrapPanel to arrange cards -->
+                    <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="12"
+                            Background="White"
+                            Margin="6"
+                            Width="180"
+                            Padding="8"
+                            BoxShadow="0 2 6 #00000020">
+                        <StackPanel VerticalAlignment="Center">
+
+                            <!-- Product name prominently at top -->
+                            <TextBlock Text="{Binding Name, Converter={StaticResource TitleCaseConverter}}" 
+                                       FontWeight="Bold" 
+                                       FontSize="16" 
+                                       Foreground="#333"
+                                       TextWrapping="Wrap"
+                                       Margin="0,4,0,6"/>
+
+                            <!-- Product color -->
+                            <TextBlock Text="Color:" FontSize="12" Foreground="#333"/>
+                            <TextBlock Text="{Binding Color}" FontSize="12" Margin="0,0,0,4"/>
+
+                            <!-- Product price -->
+                            <TextBlock Text="{Binding Price, StringFormat='{}{0}Mzn'}"
+                                       FontWeight="Bold"
+                                       Foreground="#0C4E32"
+                                       FontSize="14"
+                                       Margin="0,4,0,6"/>
+
+                                       <TextBlock Text="{Binding StockQuantity, StringFormat='Available Qty: {0}'}"
+                           FontSize="12"
+                           Foreground="#666"
+                           Margin="0,0,0,6"/>
+
+                            <!-- Add button -->
+                            <Button Content="Add"
+                                    Background="#0C4E32"
+                                    Foreground="White"
+                                    Margin="0,4,0,0"
+                                    CornerRadius="8"
+                                    Command="{Binding DataContext.AddToCartCommand, ElementName=RootControl}"
+                                    CommandParameter="{Binding}"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+    </StackPanel>
+</ScrollViewer>
+
+
+</DockPanel>
+
+        <!-- ==================== CART PANEL ==================== -->
+        <DockPanel Grid.Column="1" Background="White" Margin="0">
+
+            <!-- Bottom summary section -->
+<StackPanel DockPanel.Dock="Bottom" Spacing="12" Margin="10">
+
+    <!-- Subtotal -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" /> <!-- Label left -->
+            <ColumnDefinition Width="Auto" /> <!-- Value right -->
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Subtotal:" FontWeight="Bold" Foreground="#333" FontSize="14" Grid.Column="0"/>
+        <TextBlock Text="{Binding Subtotal, StringFormat='{}{0:F2}Mzn'}" FontWeight="Bold" Foreground="#333" FontSize="14" Grid.Column="1"/>
+    </Grid>
+
+    <!-- Discount -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Discount:" FontWeight="Bold" Foreground="#333" FontSize="14" Grid.Column="0"/>
+        <TextBox Width="80" Background="Transparent" Foreground="#333" Text="{Binding Discount, Mode=TwoWay}" Grid.Column="1"/>
+    </Grid>
+
+    <!-- Payment -->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Payment:" FontWeight="Bold" Foreground="#333" FontSize="14" Grid.Column="0"/>
+        <ComboBox ItemsSource="{Binding PaymentMethods}" SelectedItem="{Binding SelectedPaymentMethod}" Background="Transparent" Foreground="#333" Width="120" Grid.Column="1"/>
+    </Grid>
+
+    <!-- Total and FINALIZAR button (right-aligned) -->
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+        <TextBlock Text="{Binding FinalTotal, StringFormat='Total: {0:F2}Mzn'}"
+                   FontWeight="Bold"
+                   FontSize="20"
+                   Foreground="#0C4E32"
+                   VerticalAlignment="Center"/>
+        <Button Content="FINALIZAR"
+                Command="{Binding FinalizarSaleCommand}"
+                Background="#0C4E32"
+                Foreground="White"
+                FontSize="16"
+                FontWeight="Bold"
+                CornerRadius="12"
+                VerticalContentAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Width="180"
+                Height="45"/>
+    </StackPanel>
+
+</StackPanel>
+
+
+            <!-- Cart header -->
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*" Margin="0,0,0,10">
+                <Button Content="✕"
+                        Background="Transparent"
+                        Foreground="Red"
+                        Command="{Binding ClearCartCommand}"
+                        HorizontalAlignment="Left"/>
+            </Grid>
+
+            <!-- Scrollable cart items -->
+            <ItemsControl ItemsSource="{Binding CartItems}" Background="Transparent" Foreground="#333">
+    <ItemsControl.ItemTemplate>
+        <DataTemplate>
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Padding="6">
+                <Grid ColumnDefinitions="*,Auto,Auto" VerticalAlignment="Center">
+                    <!-- Product info -->
+                    <StackPanel>
+                        <!-- Title case using a converter or string format in ViewModel -->
+                        <TextBlock Text="{Binding Product.Name, Converter={StaticResource TitleCaseConverter}}" 
+                                   FontWeight="Bold" FontSize="14"/>
+                        <TextBlock Text="{Binding Product.Color, Converter={StaticResource TitleCaseConverter}}" 
+                                   FontSize="12" Foreground="#666"/>
+                    </StackPanel>
+
+                    <!-- Quantity controls -->
+<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+    <Button Content="-" 
+            Foreground="Green" 
+            FontSize="20"
+            Width="40" Height="40"
+            BorderBrush="Green"
+            BorderThickness="2"
+            Background="White"
+            CornerRadius="8"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Command="{Binding DataContext.DecreaseQuantityCommand, ElementName=RootControl}" 
+            CommandParameter="{Binding}"/>
+
+    <TextBlock Text="{Binding Quantity}" 
+               VerticalAlignment="Center" 
+               HorizontalAlignment="Center" 
+               Width="40" 
+               FontSize="16"
+               TextAlignment="Center"/>
+
+    <Button Content="+" 
+            Foreground="Green" 
+            FontSize="20"       
+            Width="40" Height="40" 
+            BorderBrush="Green" 
+            BorderThickness="2"
+            Background="White"
+            CornerRadius="8"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Command="{Binding DataContext.IncreaseQuantityCommand, ElementName=RootControl}" 
+            CommandParameter="{Binding}"/>
+</StackPanel>
+
+
+
+                    <!-- Remove button -->
+                    <Button Grid.Column="2"
+                            Content="✕"
+                            Command="{Binding DataContext.RemoveFromCartCommand, ElementName=RootControl}"
+                            CommandParameter="{Binding}"
+                            Background="Transparent"
+                            Foreground="Red"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </ItemsControl.ItemTemplate>
+</ItemsControl>
+
+
+        </DockPanel>
+    </Grid>
+</UserControl>

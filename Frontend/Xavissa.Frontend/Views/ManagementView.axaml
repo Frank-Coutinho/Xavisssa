@@ -1,0 +1,309 @@
+<UserControl x:Name="RootControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Xavissa.Frontend.ViewModels"
+             xmlns:models="using:Xavissa.Frontend.Models"
+             xmlns:fi="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:ficommon="clr-namespace:FluentIcons.Common;assembly=FluentIcons.Common"
+             x:Class="Xavissa.Frontend.Views.ManagementView"
+             x:DataType="vm:ManagementViewModel"
+             Background="#F5F5F5"
+             Foreground="#333">
+
+    <Grid Margin="10" RowDefinitions="Auto,*">
+
+    <!-- ========== HEADER NAVIGATION BAR ========== -->
+    <DockPanel Grid.Row="0" Margin="0,0,0,10" LastChildFill="False">
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Spacing="10">
+
+            <!-- Navigate to Main Button -->
+            <Button Content="Go to Main"
+                    Background="#0C4E32"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    CornerRadius="8"
+                    Padding="8,4"
+                    Command="{Binding GoToMainCommand}"/>
+
+            <!-- Logout Button -->
+            <Button Content="Logout"
+                    Background="White"
+                    BorderBrush="Red"
+                    Foreground="Red"
+                    FontWeight="Bold"
+                    CornerRadius="8"
+                    Padding="8,4"
+                    Command="{Binding LogoutCommand}"/>
+        </StackPanel>
+
+        <TextBlock Text="Management Dashboard"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Foreground="#0C4E32"
+                   VerticalAlignment="Center"
+                   DockPanel.Dock="Left"/>
+    </DockPanel>
+        <TabControl Grid.Row="1" Background="#F5F5F5" BorderBrush="Transparent" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+
+            <!-- ==================== USERS TAB ==================== -->
+            <TabItem Header="Users" Foreground="#333">
+                <DockPanel Margin="10">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
+                        <StackPanel Spacing="12">
+
+                            <TextBlock Text="User Management"
+                                       FontWeight="Bold"
+                                       FontSize="22"
+                                       Foreground="#0C4E32"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,20"/>
+
+                            <ItemsControl ItemsSource="{Binding Users}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="12"
+                                                Background="White"
+                                                Margin="6"
+                                                Width="250"
+                                                Padding="12"
+                                                BoxShadow="0 2 6 #00000020">
+                                            <StackPanel Spacing="6">
+
+                                                <TextBox Text="{Binding username, Mode=TwoWay}" 
+                                                         FontWeight="Bold"
+                                                         FontSize="14"
+                                                         Background="#F9F9F9"
+                                                         Padding="6"
+                                                         CornerRadius="6"
+                                                         Watermark="Username"
+                                                         Foreground="#333"/>
+
+                                                <TextBox Text="{Binding email, Mode=TwoWay}" 
+                                                         FontSize="12"
+                                                         Background="#F9F9F9"
+                                                         Padding="6"
+                                                         CornerRadius="6"
+                                                         Watermark="Email"
+                                                         Foreground="#333"/>
+
+                                                <ComboBox ItemsSource="{Binding DataContext.AvailableRoles, ElementName=RootControl}" 
+                                                          SelectedItem="{Binding role, Mode=TwoWay}"
+                                                          Background="#F9F9F9"
+                                                          CornerRadius="6"
+                                                          Foreground="#333"/>
+
+                                                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,6,0,0">
+                                                    <Button Width="100"
+                                                            Background="#0C4E32"
+                                                            Foreground="White"
+                                                            CornerRadius="8"
+                                                            Command="{Binding DataContext.UpdateUserCommand, ElementName=RootControl}"
+                                                            CommandParameter="{Binding}">
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                                            <!-- <fi:FluentIcon Icon="{x:Static ficommon:Icon.EditFilled}" Foreground="White" Width="16" Height="16"/> -->
+                                                            <TextBlock Text="Update" FontWeight="Bold"/>
+                                                        </StackPanel>
+                                                    </Button>
+
+                                                    <Button Width="100"
+                                                            Background="White"
+                                                            BorderBrush="Red"
+                                                            Foreground="Red"
+                                                            CornerRadius="8"
+                                                            Command="{Binding DataContext.DeleteUserCommand, ElementName=RootControl}"
+                                                            CommandParameter="{Binding}">
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                                                            <!-- <fi:FluentIcon Icon="{x:Static ficommon:Icon.DeleteFilled}" Foreground="Red" Width="16" Height="16"/> -->
+                                                            <TextBlock Text="Delete" FontWeight="Bold"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
+            </TabItem>
+
+            <!-- ==================== ADD USER TAB ==================== -->
+            <TabItem Header="Add User" Foreground="#333">
+                <Border Background="White" CornerRadius="12" Padding="16" Margin="10" BoxShadow="0 2 6 #00000020">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Add New User" FontWeight="Bold" FontSize="22" Foreground="#0C4E32" HorizontalAlignment="Center"/>
+
+                        <TextBox Watermark="Username" Foreground="#333" Text="{Binding NewUsername, Mode=TwoWay}" Padding="6" Background="#F9F9F9" CornerRadius="6"/>
+                        <TextBox Watermark="Email" Foreground="#333" Text="{Binding NewEmail, Mode=TwoWay}" Padding="6" Background="#F9F9F9" CornerRadius="6"/>
+                        <TextBox Watermark="Password" Foreground="#333" Text="{Binding NewPassword, Mode=TwoWay}" Padding="6" Background="#F9F9F9" CornerRadius="6"/>
+
+                        <ComboBox ItemsSource="{Binding AvailableRoles}" Foreground="#333" SelectedItem="{Binding SelectedRole, Mode=TwoWay}" Background="#F9F9F9" CornerRadius="6"/>
+
+                        <Button Content="Create User"
+                                Background="#0C4E32"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                CornerRadius="8"
+                                Height="40"
+                                Command="{Binding CreateUserCommand}"/>
+                    </StackPanel>
+                </Border>
+            </TabItem>
+
+            <!-- ==================== PRODUCTS TAB ==================== -->
+<TabItem Header="Products" Foreground="#333">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="20" Margin="10">
+
+            <!-- ==================== ADD NEW PRODUCT SECTION ==================== -->
+            <Border Background="White" CornerRadius="12" Padding="16" BoxShadow="0 2 6 #00000020">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Add New Product"
+                               FontWeight="Bold"
+                               FontSize="20"
+                               Foreground="#0C4E32"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,10"/>
+
+                    <!-- Product Name -->
+                    <TextBlock Text="Product Name" FontWeight="Bold" Foreground="#333" FontSize="13"/>
+                    <TextBox Text="{Binding NewProductName, Mode=TwoWay}"
+                             Foreground="#333"
+                             Background="#F9F9F9"
+                             CornerRadius="6"
+                             Padding="6"/>
+
+                    <!-- Color -->
+                    <TextBlock Text="Color" FontWeight="Bold" Foreground="#333" FontSize="13"/>
+                    <TextBox Text="{Binding NewProductColor, Mode=TwoWay}"
+                             Foreground="#333"
+                             Background="#F9F9F9"
+                             CornerRadius="6"
+                             Padding="6"/>
+
+                    <!-- Price -->
+                    <TextBlock Text="Price" FontWeight="Bold" Foreground="#333" FontSize="13"/>
+                    <TextBox Text="{Binding NewProductPrice, Mode=TwoWay}"
+                             Foreground="#333"
+                             Background="#F9F9F9"
+                             CornerRadius="6"
+                             Padding="6"/>
+
+                    <!-- Quantity -->
+                    <TextBlock Text="StockQuantity" FontWeight="Bold" Foreground="#333" FontSize="13"/>
+                    <TextBox Text="{Binding NewProductQuantity, Mode=TwoWay}"
+                             Foreground="#333"
+                             Background="#F9F9F9"
+                             CornerRadius="6"
+                             Padding="6"/>
+
+                    <Button Content="Create Product"
+                            Background="#0C4E32"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            CornerRadius="8"
+                            Height="40"
+                            Command="{Binding CreateProductCommand}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ==================== EXISTING PRODUCTS SECTION ==================== -->
+            <StackPanel>
+                <TextBlock Text="Existing Products"
+                           FontWeight="Bold"
+                           FontSize="20"
+                           Foreground="#0C4E32"
+                           HorizontalAlignment="Center"
+                           Margin="0,10,0,10"/>
+
+                <ItemsControl ItemsSource="{Binding Products}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White"
+                                    CornerRadius="12"
+                                    Margin="6"
+                                    Width="220"
+                                    Padding="12"
+                                    BoxShadow="0 2 6 #00000020">
+
+                                <StackPanel Spacing="6" MinHeight="280">
+                                    <!-- Product Name -->
+                                    <TextBlock Text="Product Name" FontWeight="Bold" Foreground="#333" FontSize="13"/>
+                                    <TextBox Text="{Binding Name, Mode=TwoWay}"
+                                             Foreground="#333"
+                                             Background="#F9F9F9"
+                                             CornerRadius="6"
+                                             Padding="6"/>
+
+                                    <!-- Color -->
+                                    <TextBlock Text="Color" FontWeight="Bold" Foreground="#333" FontSize="13"/>
+                                    <TextBox Text="{Binding Color, Mode=TwoWay}"
+                                             Foreground="#333"
+                                             Background="#F9F9F9"
+                                             CornerRadius="6"
+                                             Padding="6"/>
+
+                                    <!-- Price -->
+                                    <TextBlock Text="Price" FontWeight="Bold" Foreground="#333" FontSize="13"/>
+                                    <TextBox Text="{Binding Price, Mode=TwoWay}"
+                                             Foreground="#333"
+                                             Background="#F9F9F9"
+                                             CornerRadius="6"
+                                             Padding="6"/>
+
+                                    <!-- Quantity -->
+                                    <TextBlock Text="Quantity" FontWeight="Bold" Foreground="#333" FontSize="13"/>
+                                    <TextBox Text="{Binding StockQuantity, Mode=TwoWay}"
+                                             Foreground="#333"
+                                             Background="#F9F9F9"
+                                             CornerRadius="6"
+                                             Padding="6"/>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,8,0,0">
+                                        <Button Width="80"
+                                                Background="#0C4E32"
+                                                Foreground="White"
+                                                CornerRadius="8"
+                                                Command="{Binding DataContext.UpdateProductCommand, ElementName=RootControl}"
+                                                CommandParameter="{Binding}">
+                                            <TextBlock Text="Edit" FontWeight="Bold"/>
+                                        </Button>
+
+                                        <Button Width="80"
+                                                Background="White"
+                                                BorderBrush="Red"
+                                                Foreground="Red"
+                                                CornerRadius="8"
+                                                Command="{Binding DataContext.DeleteProductCommand, ElementName=RootControl}"
+                                                CommandParameter="{Binding}">
+                                            <TextBlock Text="Delete" FontWeight="Bold"/>
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</TabItem>
+
+        </TabControl>
+    </Grid>
+</UserControl>

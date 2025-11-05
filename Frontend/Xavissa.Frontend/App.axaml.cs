@@ -1,23 +1,48 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using QuestPDF.Infrastructure;
 
-namespace Xavissa.Frontend;
-
-public partial class App : Application
+namespace Xavissa.Frontend
 {
-    public override void Initialize()
+    public partial class App : Application
     {
-        AvaloniaXamlLoader.Load(this);
-    }
-
-    public override void OnFrameworkInitializationCompleted()
-    {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        public override void Initialize()
         {
-            desktop.MainWindow = new MainWindow();
+            try
+            {
+                AvaloniaXamlLoader.Load(this);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Failed to load App.axaml:");
+                Console.WriteLine(ex);
+            }
+            QuestPDF.Settings.License = LicenseType.Community;
         }
 
-        base.OnFrameworkInitializationCompleted();
+        public override void OnFrameworkInitializationCompleted()
+        {
+            try
+            {
+                if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    desktop.MainWindow = new MainWindow
+                    {
+                        Width = 1000,
+                        Height = 600,
+                        Content = new Views.AppView { DataContext = new ViewModels.AppViewModel() },
+                    };
+                }
+
+                base.OnFrameworkInitializationCompleted();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Error during OnFrameworkInitializationCompleted:");
+                Console.WriteLine(ex);
+            }
+        }
     }
 }

@@ -12,3 +12,4 @@ D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.
 D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.pdb
 D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.genruntimeconfig.cache
 D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\ref\Xavissa.Database.dll
+D:\Work Spot\PROJECTS\Business\Xavissa\Database\Xavissa.Database\obj\Debug\net9.0\Xavissa.Database.sourcelink.json

@@ -1,7 +1,5 @@
 using Avalonia.Controls;
-using System;
-using System.Threading.Tasks;
-using System.Net.Http;
+using Avalonia.Markup.Xaml;
 using Xavissa.Frontend.ViewModels;
 
 namespace Xavissa.Frontend.Views
@@ -11,6 +9,12 @@ namespace Xavissa.Frontend.Views
         public LoginView()
         {
             InitializeComponent();
+            // InitializeViewModel();
+        }
+
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
         }
     }
 }

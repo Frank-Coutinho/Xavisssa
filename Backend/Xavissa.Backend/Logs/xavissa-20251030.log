@@ -518,3 +518,45 @@ WHERE "Id" = @p17;
 2025-10-30 03:47:59.486 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.SalesController.Delete (Xavissa.Backend)'
 2025-10-30 03:47:59.496 +02:00 [INF] Request finished HTTP/1.1 DELETE http://localhost:5087/api/Sales/12 - 200 null text/plain; charset=utf-8 4004.9078ms
 2025-10-30 04:04:30.809 +02:00 [INF] Application is shutting down...
+2025-10-30 19:09:02.699 +02:00 [INF] User profile is available. Using 'C:\Users\COUTINHO\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-10-30 19:09:02.897 +02:00 [INF] Now listening on: http://localhost:5087
+2025-10-30 19:09:02.901 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-30 19:09:02.902 +02:00 [INF] Hosting environment: Development
+2025-10-30 19:09:02.903 +02:00 [INF] Content root path: D:\Work Spot\PROJECTS\Business\Xavissa\Backend\Xavissa.Backend
+2025-10-30 19:09:10.032 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/auth/login - application/json; charset=utf-8 null
+2025-10-30 19:09:10.177 +02:00 [WRN] Failed to determine the https port for redirect.
+2025-10-30 19:09:10.181 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 19:09:10.201 +02:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Xavissa.Backend.Controllers.LoginRequest) on controller Xavissa.Backend.Controllers.AuthController (Xavissa.Backend).
+2025-10-30 19:09:13.831 +02:00 [INF] Executed DbCommand (265ms) [Parameters=[@__username_0='?'], CommandType='"Text"', CommandTimeout='120']
+SELECT u."Id", u."Code", u."Email", u."PasswordHash", u."Role", u."Username"
+FROM "Users" AS u
+WHERE u."Username" = @__username_0
+LIMIT 1
+2025-10-30 19:09:13.942 +02:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-10-30 19:09:13.961 +02:00 [INF] Executed action Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend) in 3754.6167ms
+2025-10-30 19:09:13.969 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 19:09:13.981 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/auth/login - 200 null application/json; charset=utf-8 3951.1791ms
+2025-10-30 19:22:25.813 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/auth/login - application/json; charset=utf-8 null
+2025-10-30 19:22:25.819 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 19:22:25.821 +02:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Xavissa.Backend.Controllers.LoginRequest) on controller Xavissa.Backend.Controllers.AuthController (Xavissa.Backend).
+2025-10-30 19:22:27.262 +02:00 [INF] Executed DbCommand (200ms) [Parameters=[@__username_0='?'], CommandType='"Text"', CommandTimeout='120']
+SELECT u."Id", u."Code", u."Email", u."PasswordHash", u."Role", u."Username"
+FROM "Users" AS u
+WHERE u."Username" = @__username_0
+LIMIT 1
+2025-10-30 19:22:27.267 +02:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-10-30 19:22:27.270 +02:00 [INF] Executed action Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend) in 1446.6552ms
+2025-10-30 19:22:27.272 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 19:22:27.273 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/auth/login - 200 null application/json; charset=utf-8 1461.0844ms
+2025-10-30 19:23:24.055 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5087/api/auth/login - application/json; charset=utf-8 null
+2025-10-30 19:23:24.061 +02:00 [INF] Executing endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 19:23:24.063 +02:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Xavissa.Backend.Controllers.LoginRequest) on controller Xavissa.Backend.Controllers.AuthController (Xavissa.Backend).
+2025-10-30 19:23:25.155 +02:00 [INF] Executed DbCommand (1,020ms) [Parameters=[@__username_0='?'], CommandType='"Text"', CommandTimeout='120']
+SELECT u."Id", u."Code", u."Email", u."PasswordHash", u."Role", u."Username"
+FROM "Users" AS u
+WHERE u."Username" = @__username_0
+LIMIT 1
+2025-10-30 19:23:25.158 +02:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`1[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-10-30 19:23:25.160 +02:00 [INF] Executed action Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend) in 1093.4906ms
+2025-10-30 19:23:25.161 +02:00 [INF] Executed endpoint 'Xavissa.Backend.Controllers.AuthController.Login (Xavissa.Backend)'
+2025-10-30 19:23:25.162 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5087/api/auth/login - 200 null application/json; charset=utf-8 1107.3885ms

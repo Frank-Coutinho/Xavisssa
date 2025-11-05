@@ -1,14 +1,14 @@
 namespace Xavissa.Database.Models
 {
-
     public enum ProductCategory
     {
         Camisas = 1,
-        calcas = 2,
+        Calcas = 2,
         Sapatos = 3,
         Acessorios = 4,
         Other = 99
     }
+
     public class Product
     {
         public int Id { get; set; }
@@ -20,6 +20,9 @@ namespace Xavissa.Database.Models
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
         public bool IsActive { get; set; } = true;
+
+        // New: Color
+        public string Color { get; set; } = string.Empty;
 
         // Optional: for online-offline sync
         public DateTime LastModified { get; set; } = DateTime.UtcNow;

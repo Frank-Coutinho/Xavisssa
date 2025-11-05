@@ -1,17 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Xavissa.Frontend.Data;
-using System.Text.Json;
-using System;
-using System.Threading.Tasks;
-using System.Net.Http;
-
 
 namespace Xavissa.Frontend.Services
 {
     public class SyncService
     {
-        private readonly HttpClient _httpClient = new() { BaseAddress = new Uri("http://localhost:5000/") };
+        private readonly HttpClient _httpClient = new()
+        {
+            BaseAddress = new Uri("http://localhost:5000/"),
+        };
 
         public async Task SyncAsync()
         {

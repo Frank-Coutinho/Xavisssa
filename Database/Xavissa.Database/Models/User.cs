@@ -2,15 +2,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Xavissa.Database.Models
 {
-        public enum UserRole
-        {
-            Superuser,
-            Admin,   // Store Owner
-            Clerk
-        }
+    public enum UserRole
+    {
+        Superuser,
+        Admin, // Store Owner
+        Clerk,
+    }
+
     public class User
     {
-    
         [Key]
         public int Id { get; set; }
         public required string Code { get; set; }

@@ -1,0 +1,155 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:Xavissa.Frontend.Views"
+             xmlns:vm="using:Xavissa.Frontend.ViewModels"
+             xmlns:fa="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:fic="clr-namespace:FluentIcons.Common;assembly=FluentIcons.Common"
+             x:Class="Xavissa.Frontend.Views.MainView"
+             xmlns:local="using:Xavissa.Frontend.Converters"
+             x:DataType="vm:MainViewModel">
+
+             <UserControl.Resources>
+        <local:InitialsConverter x:Key="InitialsConverter"/>
+    <local:TitleCaseConverter x:Key="TitleCaseConverter"/>
+    </UserControl.Resources>
+
+    <Grid ColumnDefinitions="80,*,400"
+          RowDefinitions="Auto,*"
+          Background="#1C1C1C">
+
+        <!-- ==================== SIDEBAR ==================== -->
+<Grid Grid.RowSpan="2"
+      Width="80"
+      Background="#F7F7F7"
+      HorizontalAlignment="Center">
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>   <!-- Top navigation buttons -->
+        <RowDefinition Height="*"/>      <!-- Spacer -->
+        <RowDefinition Height="Auto"/>   <!-- Bottom user info -->
+    </Grid.RowDefinitions>
+
+    <!-- Top navigation icons -->
+    <StackPanel Grid.Row="0" Margin="0,30,0,0" Spacing="20" HorizontalAlignment="Center">
+
+        <!-- Home -->
+        <Button Command="{Binding ShowHomeCommand}" Width="50" Height="50" CornerRadius="12"
+                Background="{Binding HomeButtonBackground}">
+            <fa:FluentIcon Icon="{x:Static fic:Icon.Home}" Width="24" Height="24"/>
+        </Button>
+
+        <!-- History -->
+        <Button Command="{Binding ShowHistoryCommand}" Width="50" Height="50" CornerRadius="12"
+                Background="{Binding HistoryButtonBackground}">
+            <fa:FluentIcon Icon="{x:Static fic:Icon.History}" Width="24" Height="24"/>
+        </Button>
+
+        <!-- Settings -->
+        <Button Command="{Binding ShowConfigCommand}" Width="50" Height="50" CornerRadius="12"
+                Background="{Binding ConfigButtonBackground}">
+            <fa:FluentIcon Icon="{x:Static fic:Icon.Settings}" Width="24" Height="24"/>
+        </Button>
+
+    </StackPanel>
+
+    <!-- Bottom user info -->
+    <StackPanel Grid.Row="2"
+                Margin="0,0,0,20"
+                Spacing="8"
+                HorizontalAlignment="Center">
+        <Border Background="#474747ff"
+                CornerRadius="30"
+                Width="50"
+                Height="50"
+                HorizontalAlignment="Center">
+            <TextBlock Text="{Binding CurrentUser, Converter={StaticResource InitialsConverter}}"
+                       Foreground="White"
+                       FontSize="20"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"/>
+        </Border>
+
+        <TextBlock Text="{Binding CurrentUser, Converter={StaticResource TitleCaseConverter}}"
+           FontSize="16"
+           FontWeight="Black"
+           Foreground="#333"
+           HorizontalAlignment="Center"/>
+
+
+        <Button Click="LogoutButton_Click"
+                Background="Transparent"
+                Foreground="Red"
+                FontSize="18"
+                Content="⏻"
+                HorizontalAlignment="Center"/>
+    </StackPanel>
+
+</Grid>
+
+
+        <!-- ==================== TOP BAR ==================== -->
+        <Grid Grid.Column="1"
+              Grid.ColumnSpan="2"
+              Background="White"
+              Height="70"
+              VerticalAlignment="Top">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- QR Section -->
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Spacing="10">
+                <TextBox Width="250"
+                         Watermark="QR Code"
+                         CornerRadius="50"/>
+                <Button Content="Generate"
+                        Background="#0C4E32"
+                        Foreground="White"
+                        Padding="16,6"
+                        CornerRadius="15"/>
+            </StackPanel>
+
+            <!-- Date & Time -->
+            <StackPanel Grid.Column="1"
+                        Orientation="Vertical"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right" Margin="0,0,20,0">
+                <TextBlock Text="{Binding CurrentDate}"
+                           FontSize="14"
+                           Foreground="#333"/>
+                <TextBlock Text="{Binding CurrentTime}"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           Foreground="#0C4E32"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ==================== MAIN CONTENT ==================== -->
+        <Grid Grid.Row="1"
+              Grid.Column="1"
+              Grid.ColumnSpan="2"
+              Background="#F5F5F5">
+            <ContentControl Content="{Binding CurrentView}">
+                <ContentControl.DataTemplates>
+                    <DataTemplate DataType="vm:HomeViewModel">
+                        <views:HomeView/>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="vm:HistoryViewModel">
+                        <views:HistoryView/>
+                    </DataTemplate>
+
+                    <DataTemplate DataType="vm:ConfigViewModel">
+                        <views:PrinterConfigView/>
+                    </DataTemplate>
+                </ContentControl.DataTemplates>
+            </ContentControl>
+        </Grid>
+    </Grid>
+</UserControl>

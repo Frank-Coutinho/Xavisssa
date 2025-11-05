@@ -1,4 +1,5 @@
 using Xavissa.Database.Models;
+
 namespace Xavissa.Backend.DTOs
 {
     public class ProductCreateDto
@@ -9,5 +10,7 @@ namespace Xavissa.Backend.DTOs
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
         public bool IsActive { get; set; } = true;
+
+        public string Color { get; set; }
     }
 }

@@ -1,14 +1,13 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Xavissa.Database;
-using Xavissa.Database.Models;
 using Xavissa.Backend.DTOs;
 using Xavissa.Backend.Utilities;
-
+using Xavissa.Database;
+using Xavissa.Database.Models;
 
 namespace Xavissa.Backend.Services
 {
@@ -24,50 +23,60 @@ namespace Xavissa.Backend.Services
         }
 
         // Register user
-        public async Task<User> Register(string username, string email, string password, UserRole role)
-{
-    // Check if user exists...
-    
-    string prefix = role switch
-    {
-        UserRole.Admin => "ADM",
-        UserRole.Clerk => "CLK",
-        UserRole.Superuser => "SUPER",
-        _ => "USR"
-    };
+        public async Task<User> Register(
+            string username,
+            string email,
+            string password,
+            UserRole role
+        )
+        {
+            // Check if user exists...
 
-    var user = new User
-    {
-        Username = username,
-        Email = email,
-        PasswordHash = HashPassword(password),
-        Role = role,
-        Code = IdGenerator.GenerateId(prefix)
-    };
+            string prefix = role switch
+            {
+                UserRole.Admin => "ADM",
+                UserRole.Clerk => "CLK",
+                UserRole.Superuser => "SUPER",
+                _ => "USR",
+            };
 
-    _db.Users.Add(user);
-    await _db.SaveChangesAsync();
+            var user = new User
+            {
+                Username = username,
+                Email = email,
+                PasswordHash = HashPassword(password),
+                Role = role,
+                Code = IdGenerator.GenerateId(prefix),
+            };
 
-    return user;
-}
+            _db.Users.Add(user);
+            await _db.SaveChangesAsync();
 
-
+            return user;
+        }
 
         // Login user
         public async Task<string> Login(string username, string password)
         {
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
-            if (user == null) return null;
+            if (user == null)
+                return null;
 
-            if (!VerifyPassword(password, user.PasswordHash)) return null;
+            if (!VerifyPassword(password, user.PasswordHash))
+                return null;
 
             return GenerateJwtToken(user);
         }
 
-        public async Task<bool> UpdateUserAsync(int userId, UpdateUserRequest request, string currentUserRole)
+        public async Task<bool> UpdateUserAsync(
+            int userId,
+            UpdateUserRequest request,
+            string currentUserRole
+        )
         {
             var user = await _db.Users.FindAsync(userId);
-            if (user == null) return false;
+            if (user == null)
+                return false;
 
             // Admins cannot update Superusers
             if (currentUserRole == "Admin" && user.Role == UserRole.Superuser)
@@ -92,7 +101,8 @@ namespace Xavissa.Backend.Services
         public async Task<bool> DeleteUserAsync(int userId, string currentUserRole)
         {
             var user = await _db.Users.FindAsync(userId);
-            if (user == null) return false;
+            if (user == null)
+                return false;
 
             // Admins cannot delete Superusers
             if (currentUserRole == "Admin" && user.Role == UserRole.Superuser)
@@ -103,7 +113,7 @@ namespace Xavissa.Backend.Services
             return true;
         }
 
-         // Get all users (Superuser only)
+        // Get all users (Superuser only)
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _db.Users.ToListAsync();
@@ -133,11 +143,10 @@ namespace Xavissa.Backend.Services
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
-            
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
             };
 
             var token = new JwtSecurityToken(

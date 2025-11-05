@@ -5,6 +5,9 @@ namespace Xavissa.Backend.DTOs
     public class SaleCreateDto
     {
         public required List<SaleItemDto> SaleItems { get; set; }
+        public PaymentMethod PaymentMethod { get; set; } = PaymentMethod.Cash;
+        public decimal? Discount { get; set; }
+        public decimal? AmountPaid { get; set; }
     }
 
     public class SaleItemDto

@@ -23,7 +23,7 @@ namespace Xavissa.Backend.Services
 
         #region 🔹 CREATE SALE
 
-        public async Task<Sale> CreateSaleAsync(List<SaleItemDto> itemsDto, int userId, string paymentMethod = "Cash", decimal discount = 0, decimal amountPaid = 0)
+        public async Task<Sale> CreateSaleAsync(List<SaleItemDto> itemsDto, int userId, PaymentMethod paymentMethod = PaymentMethod.Cash, decimal discount = 0, decimal amountPaid = 0)
         {
             if (itemsDto == null || itemsDto.Count == 0)
                 throw new ArgumentException("A sale must contain at least one item.");
@@ -69,9 +69,7 @@ namespace Xavissa.Backend.Services
                 TotalAmount = total,
                 Discount = discount,
                 AmountPaid = amountPaid == 0 ? finalTotal : amountPaid,
-                PaymentMethod = Enum.TryParse<PaymentMethod>(paymentMethod, true, out var parsedMethod)
-                    ? parsedMethod
-                    : PaymentMethod.Cash,
+                PaymentMethod = paymentMethod,
                 ReceiptNumber = $"RC-{DateTime.UtcNow:yyyyMMddHHmmss}-{Guid.NewGuid().ToString("N")[..5]}",
                 Code = IdGenerator.GenerateId("SALE"),
                 UserId = userId,

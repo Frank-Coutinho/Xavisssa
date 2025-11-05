@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Xavissa.Backend.DTOs;
 using Xavissa.Backend.Services;
 using Xavissa.Database.Models;
-using Xavissa.Backend.DTOs;
 
 namespace Xavissa.Backend.Controllers
 {
@@ -19,18 +19,19 @@ namespace Xavissa.Backend.Controllers
         }
 
         [HttpGet("me")]
-[Authorize]
-public IActionResult Me()
-{
-    return Ok(new
-    {
-        Username = User.Identity?.Name,
-        Role = User.FindFirst("role")?.Value, // custom claim
-        ClaimTypesRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value, // default claim type
-        AllClaims = User.Claims.Select(c => new { c.Type, c.Value })
-    });
-}
-
+        [Authorize]
+        public IActionResult Me()
+        {
+            return Ok(
+                new
+                {
+                    Username = User.Identity?.Name,
+                    Role = User.FindFirst("role")?.Value, // custom claim
+                    ClaimTypesRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value, // default claim type
+                    AllClaims = User.Claims.Select(c => new { c.Type, c.Value }),
+                }
+            );
+        }
 
         // ✅ Superuser only: list all users
         [HttpGet("all")]
@@ -47,7 +48,8 @@ public IActionResult Me()
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _authService.GetUserByIdAsync(id);
-            if (user == null) return NotFound();
+            if (user == null)
+                return NotFound();
             return Ok(user);
         }
 
@@ -59,7 +61,8 @@ public IActionResult Me()
             var currentRole = User.FindFirst("role")?.Value;
             var success = await _authService.UpdateUserAsync(id, request, currentRole);
 
-            if (!success) return Forbid();
+            if (!success)
+                return Forbid();
             return Ok("User updated successfully");
         }
 
@@ -71,7 +74,8 @@ public IActionResult Me()
             var currentRole = User.FindFirst("role")?.Value;
             var success = await _authService.DeleteUserAsync(id, currentRole);
 
-            if (!success) return Forbid();
+            if (!success)
+                return Forbid();
             return Ok("User deleted successfully");
         }
     }

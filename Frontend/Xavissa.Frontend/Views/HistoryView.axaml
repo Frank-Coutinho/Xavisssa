@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Xavissa.Frontend.ViewModels"
+             x:Class="Xavissa.Frontend.Views.HistoryView"
+             x:DataType="vm:HistoryViewModel"
+             Foreground="#333">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto"
+          Background="White"
+          Margin="20">
+
+        <!-- 🕓 Current Date / Time -->
+        <TextBlock Text="{Binding CurrentDateTime}"
+                   FontSize="18"
+                   FontWeight="Bold"
+                   Foreground="#333"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,10"/>
+
+        <!-- 📅 Filter Section -->
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="0,0,0,15"
+                    Spacing="10">
+
+            <TextBlock Text="Filter by date:"
+                       VerticalAlignment="Center"
+                       FontWeight="Bold"
+                       Foreground="#222"/>
+
+            <DatePicker SelectedDate="{Binding FilterDate}"
+                        Width="150"
+                        HorizontalAlignment="Left"/>
+
+            <Button Content="Apply"
+                    Command="{Binding ApplyDateFilterCommand}"
+                    Width="80"
+                    Background="#2E7D32"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    CornerRadius="6"/>
+        </StackPanel>
+
+        <!-- 🧾 Sales Cards -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Sales}">
+    <ItemsControl.ItemTemplate>
+        <DataTemplate>
+            <Border Background="#F7F7F7"
+                    CornerRadius="8"
+                    Margin="5"
+                    Padding="8"
+                    BorderBrush="#DDD"
+                    BorderThickness="1">
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <TextBlock Text="{Binding Id}" Width="40" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Date}" Width="120"/>
+                    <TextBlock Text="{Binding Item}" Width="200"/>
+                    <TextBlock Text="{Binding Quantity}" Width="60"/>
+                    <TextBlock Text="{Binding Price}" Width="80"/>
+                    <TextBlock Text="{Binding Subtotal}" Width="100" FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </ItemsControl.ItemTemplate>
+</ItemsControl>
+
+        </ScrollViewer>
+
+        <!-- 💰 Total -->
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,10,0,0">
+            <TextBlock Text="Total: "
+                       FontWeight="Bold"
+                       FontSize="16"
+                       Foreground="#222"/>
+            <TextBlock Text="{Binding Total}"
+                       FontWeight="Bold"
+                       FontSize="16"
+                       Foreground="#222"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
