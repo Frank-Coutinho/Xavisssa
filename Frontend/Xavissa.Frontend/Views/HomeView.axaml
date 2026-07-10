@@ -1,248 +1,426 @@
-<UserControl x:Name="RootControl"
-             xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:Xavissa.Frontend.ViewModels"
-             xmlns:local="using:Xavissa.Frontend.Converters"
-             x:Class="Xavissa.Frontend.Views.HomeView"
-             x:DataType="vm:HomeViewModel">
+<UserControl
+    x:Class="Xavissa.Frontend.Views.HomeView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    xmlns:local="using:Xavissa.Frontend.Converters"
+    x:Name="HomeRoot"
+    x:DataType="vm:HomeViewModel"
+    Background="{DynamicResource BackgroundBrush}">
 
-             <UserControl.Resources>
-    <local:TitleCaseConverter x:Key="TitleCaseConverter"/>
-</UserControl.Resources>
+    <UserControl.Resources>
+        <local:TitleCaseConverter x:Key="TitleCaseConverter" />
+        <local:StockToEnabledConverter x:Key="StockToEnabledConverter" />
+    </UserControl.Resources>
 
-
-    <Grid ColumnDefinitions="*,400" Background="#F5F5F5">
-
-        <!-- ==================== PRODUCTS PANEL ==================== -->
-        <DockPanel Margin="10">
-
-    <!-- Bottom static category buttons -->
-    <StackPanel Orientation="Horizontal"
-                DockPanel.Dock="Bottom"
-                HorizontalAlignment="Center"
-                Margin="0,10,0,0"
-                Spacing="10">
-        <Button Content="T-SHIRTS" Background="#0C4E32" Foreground="White" CornerRadius="30"/>
-        <Button Content="JEANS" Background="White" Foreground="#333" CornerRadius="30"/>
-        <Button Content="SHORTS" Background="White" Foreground="#333" CornerRadius="30"/>
-        <Button Content="JACKETS" Background="White" Foreground="#333" CornerRadius="30"/>
-        <Button Content="SHOES" Background="White" Foreground="#333" CornerRadius="30"/>
-        <Button Content="ACCESSORIES" Background="White" Foreground="#333" CornerRadius="30"/>
-    </StackPanel>
-
-    <!-- Scrollable content -->
-<ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
-    <StackPanel>
-
-        <!-- Top label -->
-        <TextBlock Text="T-Shirts"
-                   FontWeight="Bold"
-                   FontSize="20"
-                   Foreground="#0C4E32"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,10"/>
-
-        <!-- Product cards wrapped naturally -->
-        <ItemsControl ItemsSource="{Binding Products}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <!-- WrapPanel to arrange cards -->
-                    <WrapPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border CornerRadius="12"
-                            Background="White"
-                            Margin="6"
-                            Width="180"
-                            Padding="8"
-                            BoxShadow="0 2 6 #00000020">
-                        <StackPanel VerticalAlignment="Center">
-
-                            <!-- Product name prominently at top -->
-                            <TextBlock Text="{Binding Name, Converter={StaticResource TitleCaseConverter}}" 
-                                       FontWeight="Bold" 
-                                       FontSize="16" 
-                                       Foreground="#333"
-                                       TextWrapping="Wrap"
-                                       Margin="0,4,0,6"/>
-
-                            <!-- Product color -->
-                            <TextBlock Text="Color:" FontSize="12" Foreground="#333"/>
-                            <TextBlock Text="{Binding Color}" FontSize="12" Margin="0,0,0,4"/>
-
-                            <!-- Product price -->
-                            <TextBlock Text="{Binding Price, StringFormat='{}{0}Mzn'}"
-                                       FontWeight="Bold"
-                                       Foreground="#0C4E32"
-                                       FontSize="14"
-                                       Margin="0,4,0,6"/>
-
-                                       <TextBlock Text="{Binding StockQuantity, StringFormat='Available Qty: {0}'}"
-                           FontSize="12"
-                           Foreground="#666"
-                           Margin="0,0,0,6"/>
-
-                            <!-- Add button -->
-                            <Button Content="Add"
-                                    Background="#0C4E32"
-                                    Foreground="White"
-                                    Margin="0,4,0,0"
-                                    CornerRadius="8"
-                                    Command="{Binding DataContext.AddToCartCommand, ElementName=RootControl}"
-                                    CommandParameter="{Binding}"/>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-
-    </StackPanel>
-</ScrollViewer>
-
-
-</DockPanel>
-
-        <!-- ==================== CART PANEL ==================== -->
-        <DockPanel Grid.Column="1" Background="White" Margin="0">
-
-            <!-- Bottom summary section -->
-<StackPanel DockPanel.Dock="Bottom" Spacing="12" Margin="10">
-
-    <!-- Subtotal -->
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" /> <!-- Label left -->
-            <ColumnDefinition Width="Auto" /> <!-- Value right -->
-        </Grid.ColumnDefinitions>
-
-        <TextBlock Text="Subtotal:" FontWeight="Bold" Foreground="#333" FontSize="14" Grid.Column="0"/>
-        <TextBlock Text="{Binding Subtotal, StringFormat='{}{0:F2}Mzn'}" FontWeight="Bold" Foreground="#333" FontSize="14" Grid.Column="1"/>
-    </Grid>
-
-    <!-- Discount -->
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-
-        <TextBlock Text="Discount:" FontWeight="Bold" Foreground="#333" FontSize="14" Grid.Column="0"/>
-        <TextBox Width="80" Background="Transparent" Foreground="#333" Text="{Binding Discount, Mode=TwoWay}" Grid.Column="1"/>
-    </Grid>
-
-    <!-- Payment -->
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-
-        <TextBlock Text="Payment:" FontWeight="Bold" Foreground="#333" FontSize="14" Grid.Column="0"/>
-        <ComboBox ItemsSource="{Binding PaymentMethods}" SelectedItem="{Binding SelectedPaymentMethod}" Background="Transparent" Foreground="#333" Width="120" Grid.Column="1"/>
-    </Grid>
-
-    <!-- Total and FINALIZAR button (right-aligned) -->
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
-        <TextBlock Text="{Binding FinalTotal, StringFormat='Total: {0:F2}Mzn'}"
-                   FontWeight="Bold"
-                   FontSize="20"
-                   Foreground="#0C4E32"
-                   VerticalAlignment="Center"/>
-        <Button Content="FINALIZAR"
-                Command="{Binding FinalizarSaleCommand}"
-                Background="#0C4E32"
-                Foreground="White"
-                FontSize="16"
-                FontWeight="Bold"
-                CornerRadius="12"
-                VerticalContentAlignment="Center"
-                HorizontalContentAlignment="Center"
-                Width="180"
-                Height="45"/>
-    </StackPanel>
-
-</StackPanel>
-
-
-            <!-- Cart header -->
-            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*" Margin="0,0,0,10">
-                <Button Content="✕"
-                        Background="Transparent"
-                        Foreground="Red"
-                        Command="{Binding ClearCartCommand}"
-                        HorizontalAlignment="Left"/>
-            </Grid>
-
-            <!-- Scrollable cart items -->
-            <ItemsControl ItemsSource="{Binding CartItems}" Background="Transparent" Foreground="#333">
-    <ItemsControl.ItemTemplate>
-        <DataTemplate>
-            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Padding="6">
-                <Grid ColumnDefinitions="*,Auto,Auto" VerticalAlignment="Center">
-                    <!-- Product info -->
+    <Grid RowDefinitions="Auto,*" Background="{DynamicResource BackgroundBrush}" Margin="10" RowSpacing="10">
+        <StackPanel Grid.Row="0" Spacing="10">
+            <Border Classes="status-banner"
+                    Padding="12"
+                    IsVisible="{Binding IsOfflineMode}">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                     <StackPanel>
-                        <!-- Title case using a converter or string format in ViewModel -->
-                        <TextBlock Text="{Binding Product.Name, Converter={StaticResource TitleCaseConverter}}" 
-                                   FontWeight="Bold" FontSize="14"/>
-                        <TextBlock Text="{Binding Product.Color, Converter={StaticResource TitleCaseConverter}}" 
-                                   FontSize="12" Foreground="#666"/>
+                        <TextBlock Text="Offline mode" FontWeight="SemiBold" />
+                        <TextBlock Text="Local SQLite data is available now. Sync will resume in the background when the connection returns."
+                                   Classes="caption"
+                                   TextWrapping="Wrap" />
                     </StackPanel>
-
-                    <!-- Quantity controls -->
-<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-    <Button Content="-" 
-            Foreground="Green" 
-            FontSize="20"
-            Width="40" Height="40"
-            BorderBrush="Green"
-            BorderThickness="2"
-            Background="White"
-            CornerRadius="8"
-            HorizontalContentAlignment="Center"
-            VerticalContentAlignment="Center"
-            Command="{Binding DataContext.DecreaseQuantityCommand, ElementName=RootControl}" 
-            CommandParameter="{Binding}"/>
-
-    <TextBlock Text="{Binding Quantity}" 
-               VerticalAlignment="Center" 
-               HorizontalAlignment="Center" 
-               Width="40" 
-               FontSize="16"
-               TextAlignment="Center"/>
-
-    <Button Content="+" 
-            Foreground="Green" 
-            FontSize="20"       
-            Width="40" Height="40" 
-            BorderBrush="Green" 
-            BorderThickness="2"
-            Background="White"
-            CornerRadius="8"
-            HorizontalContentAlignment="Center"
-            VerticalContentAlignment="Center"
-            Command="{Binding DataContext.IncreaseQuantityCommand, ElementName=RootControl}" 
-            CommandParameter="{Binding}"/>
-</StackPanel>
-
-
-
-                    <!-- Remove button -->
-                    <Button Grid.Column="2"
-                            Content="✕"
-                            Command="{Binding DataContext.RemoveFromCartCommand, ElementName=RootControl}"
-                            CommandParameter="{Binding}"
-                            Background="Transparent"
-                            Foreground="Red"/>
+                    <Border Grid.Column="1" Classes="status-chip warning" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding LocalDataStatusText}" Classes="caption" FontWeight="SemiBold" />
+                    </Border>
                 </Grid>
             </Border>
-        </DataTemplate>
-    </ItemsControl.ItemTemplate>
-</ItemsControl>
 
+            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="10">
+                <Border Classes="metric-card">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Active store" Classes="caption" />
+                        <TextBlock Text="{Binding ActiveStoreDisplayName}" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Classes="metric-card">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Cart total" Classes="caption" />
+                        <TextBlock Text="{Binding FinalTotal, StringFormat='MZN {0:N2}'}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Classes="metric-card">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Cart items" Classes="caption" />
+                        <TextBlock Text="{Binding CartItemCount}" FontSize="18" FontWeight="Bold" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="3" Classes="metric-card">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Low stock products" Classes="caption" />
+                        <TextBlock Text="{Binding LowStockProductCount}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource WarningBrush}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
 
-        </DockPanel>
+    <Grid x:Name="HomeLayout" Grid.Row="1" ColumnDefinitions="*,390" Background="{DynamicResource BackgroundBrush}">
+
+        <Border x:Name="CatalogPanel" Grid.Column="0" Classes="panel" Margin="0,0,10,0">
+            <Grid RowDefinitions="Auto,Auto,*">
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Loc.ProductCatalog}" Classes="title" />
+                        <TextBlock Text="{DynamicResource Loc.ProductCatalogSubtitle}" Classes="caption" />
+                    </StackPanel>
+                    <Border Grid.Column="1" Classes="chip" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <TextBlock Text="{Binding Products.Count}" />
+                            <TextBlock Text="{DynamicResource Loc.Items}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Border Grid.Row="1" Classes="card" Margin="0,0,0,10">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <TextBox Watermark="{DynamicResource Loc.SearchProductsWatermark}"
+                                 Text="{Binding SearchText, Mode=TwoWay}" />
+
+                        <Grid x:Name="FilterGrid" Grid.Row="1" ColumnDefinitions="2*,1.2*,1*,Auto,Auto,Auto" ColumnSpacing="8">
+                            <ComboBox x:Name="CategoryFilter"
+                                      Grid.Column="0"
+                                      ItemsSource="{Binding CategoryFilters}"
+                                      SelectedItem="{Binding SelectedCategoryFilter}" />
+
+                            <TextBox x:Name="MinPriceFilter"
+                                     Grid.Column="1"
+                                     Watermark="{DynamicResource Loc.MinPrice}"
+                                     Text="{Binding MinPriceFilter, Mode=TwoWay}" />
+
+                            <TextBox x:Name="MaxPriceFilter"
+                                     Grid.Column="2"
+                                     Watermark="{DynamicResource Loc.MaxPrice}"
+                                     Text="{Binding MaxPriceFilter, Mode=TwoWay}" />
+
+                            <Button x:Name="GridViewButton"
+                                    Grid.Column="3"
+                                    Classes="secondary"
+                                    Content="{DynamicResource Loc.GridView}"
+                                    Command="{Binding SetProductGridViewCommand}" />
+
+                            <Button x:Name="ListViewButton"
+                                    Grid.Column="4"
+                                    Classes="secondary"
+                                    Content="{DynamicResource Loc.ListView}"
+                                    Command="{Binding SetProductListViewCommand}" />
+
+                            <Button x:Name="ClearFiltersButton"
+                                    Grid.Column="5"
+                                    Classes="secondary"
+                                    Content="{DynamicResource Loc.Clear}"
+                                    Command="{Binding ClearProductFiltersCommand}" />
+                        </Grid>
+
+                        <Grid x:Name="BarcodeGrid" Grid.Row="2" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <StackPanel Spacing="4">
+                                <TextBox Watermark="{DynamicResource Loc.EnterBarcodeManually}"
+                                         Text="{Binding ManualBarcodeInput, Mode=TwoWay}">
+                                    <TextBox.KeyBindings>
+                                        <KeyBinding Gesture="Enter"
+                                                    Command="{Binding SubmitManualBarcodeCommand}" />
+                                    </TextBox.KeyBindings>
+                                </TextBox>
+                                <TextBlock Text="{Binding ScannerStatusText}" Classes="caption" />
+                            </StackPanel>
+
+                            <Button x:Name="BarcodeAddButton" Grid.Column="1"
+                                    Classes="secondary"
+                                    Content="{DynamicResource Loc.AddByBarcode}"
+                                    Command="{Binding SubmitManualBarcodeCommand}" />
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <StackPanel IsVisible="{Binding ShowProductSkeleton}" Spacing="8">
+                            <Border Classes="skeleton" Height="74" />
+                            <Border Classes="skeleton" Height="74" />
+                            <Border Classes="skeleton" Height="74" />
+                            <Border Classes="skeleton" Height="74" />
+                        </StackPanel>
+
+                        <Border Classes="empty-state"
+                                IsVisible="{Binding ShowProductEmptyState}"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{Binding ProductEmptyTitle}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding ProductEmptyMessage}" Classes="caption" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+
+                        <ItemsControl ItemsSource="{Binding Products}"
+                                      IsVisible="{Binding IsProductGridView}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Classes="card" Width="230" Margin="0,0,10,10">
+                                        <StackPanel Spacing="10">
+                                            <TextBlock Text="{Binding Name, Converter={StaticResource TitleCaseConverter}}"
+                                                       FontSize="15"
+                                                       FontWeight="Bold"
+                                                       TextWrapping="Wrap" />
+
+                                            <Border Classes="chip"
+                                                    HorizontalAlignment="Left"
+                                                    IsVisible="{Binding Label, Converter={StaticResource StringHasValueConverter}}">
+                                                <TextBlock Text="{Binding Label}" Classes="caption" />
+                                            </Border>
+
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8"
+                                                  IsVisible="{Binding Color, Converter={StaticResource StringHasValueConverter}}">
+                                                <TextBlock Text="{DynamicResource Loc.Color}" Classes="caption" FontWeight="SemiBold" />
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Color}"
+                                                           Classes="caption"
+                                                           TextWrapping="Wrap" />
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8"
+                                                  IsVisible="{Binding Size, Converter={StaticResource StringHasValueConverter}}">
+                                                <TextBlock Text="{DynamicResource Loc.Size}" Classes="caption" FontWeight="SemiBold" />
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Size}"
+                                                           Classes="caption"
+                                                           TextWrapping="Wrap" />
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8"
+                                                  IsVisible="{Binding Brand, Converter={StaticResource StringHasValueConverter}}">
+                                                <TextBlock Text="{DynamicResource Loc.Brand}" Classes="caption" FontWeight="SemiBold" />
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Brand}"
+                                                           Classes="caption"
+                                                           TextWrapping="Wrap" />
+                                            </Grid>
+
+                                            <TextBlock Text="{Binding Price, StringFormat='{}{0:F2} MZN'}"
+                                                       FontWeight="Bold"
+                                                       Foreground="{DynamicResource PrimaryBrush}" />
+                                            <TextBlock Classes="caption">
+                                                <Run Text="{DynamicResource Loc.Stock}" />
+                                                <Run Text=": " />
+                                                <Run Text="{Binding StockQuantity}" />
+                                            </TextBlock>
+
+                                            <Button Classes="primary with-icon"
+                                                    IsEnabled="{Binding StockQuantity, Converter={StaticResource StockToEnabledConverter}}"
+                                                    Command="{Binding DataContext.AddToCartCommand, ElementName=HomeRoot}"
+                                                    CommandParameter="{Binding}">
+                                                <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Border Classes="icon-badge">
+                                                        <Path Classes="button-icon" Data="M12,5 L12,19 M5,12 L19,12" />
+                                                    </Border>
+                                                    <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.AddToCart}" />
+                                                </Grid>
+                                            </Button>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <ItemsControl ItemsSource="{Binding Products}"
+                                      IsVisible="{Binding IsProductListView}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="8" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Classes="card" Margin="0,0,0,10">
+                                        <Grid x:Name="ListItemGrid" ColumnDefinitions="3*,1.3*,Auto" ColumnSpacing="12">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{Binding Name, Converter={StaticResource TitleCaseConverter}}"
+                                                           FontSize="15"
+                                                           FontWeight="Bold" />
+                                                <TextBlock Text="{Binding Label}" Classes="caption" />
+                                                <TextBlock Classes="caption">
+                                                    <Run Text="{DynamicResource Loc.Stock}" />
+                                                    <Run Text=": " />
+                                                    <Run Text="{Binding StockQuantity}" />
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <TextBlock x:Name="ListItemPrice" Grid.Column="1"
+                                                       Text="{Binding Price, StringFormat='{}{0:F2} MZN'}"
+                                                       FontWeight="Bold"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource PrimaryBrush}" />
+
+                                            <Button x:Name="ListItemButton" Grid.Column="2"
+                                                    Classes="primary with-icon"
+                                                    IsEnabled="{Binding StockQuantity, Converter={StaticResource StockToEnabledConverter}}"
+                                                    Command="{Binding DataContext.AddToCartCommand, ElementName=HomeRoot}"
+                                                    CommandParameter="{Binding}">
+                                                <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Border Classes="icon-badge">
+                                                        <Path Classes="button-icon" Data="M12,5 L12,19 M5,12 L19,12" />
+                                                    </Border>
+                                                    <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.AddToCart}" />
+                                                </Grid>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <Border x:Name="CartPanel" Grid.Column="1" Classes="panel">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Loc.CurrentCart}" Classes="title" FontSize="22" />
+                        <TextBlock Text="{DynamicResource Loc.CurrentCartSubtitle}" Classes="caption" />
+                    </StackPanel>
+
+                    <Button Grid.Column="1"
+                            Classes="secondary with-icon"
+                            IsEnabled="{Binding IsCartEmpty, Converter={StaticResource BoolInverseConverter}}"
+                            Command="{Binding ClearCartCommand}">
+                        <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Border Classes="icon-badge">
+                                <Path Classes="button-icon" Data="M4,7 L20,7 M9,7 L9,18 M15,7 L15,18 M8,7 L9,4 L15,4 L16,7" />
+                            </Border>
+                            <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.Clear}" />
+                        </Grid>
+                    </Button>
+                </Grid>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Border Classes="empty-state"
+                                IsVisible="{Binding IsCartEmpty}">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="{DynamicResource Loc.CartEmptyTitle}" FontWeight="SemiBold" />
+                                <TextBlock Text="{DynamicResource Loc.CartEmptyMessage}" Classes="caption" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+
+                        <ItemsControl ItemsSource="{Binding CartItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{DynamicResource DividerBrush}" BorderThickness="0,0,0,1" Padding="0,10">
+                                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Product.Name, Converter={StaticResource TitleCaseConverter}}" FontWeight="Bold" />
+                                                <TextBlock Text="{Binding Product.Label}" Classes="caption" />
+                                                <TextBlock Text="{Binding Total, StringFormat='{}{0:F2} MZN'}" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                                <Button Classes="secondary"
+                                                        Width="30"
+                                                        Height="30"
+                                                        Padding="0"
+                                                        Command="{Binding DataContext.DecreaseQuantityCommand, ElementName=HomeRoot}"
+                                                        CommandParameter="{Binding}">
+                                                    <TextBlock Text="-" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Button>
+                                                <Border Classes="chip" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Quantity}" Width="20" HorizontalAlignment="Center" TextAlignment="Center" />
+                                                </Border>
+                                                <Button Classes="secondary"
+                                                        Width="30"
+                                                        Height="30"
+                                                        Padding="0"
+                                                        Command="{Binding DataContext.IncreaseQuantityCommand, ElementName=HomeRoot}"
+                                                        CommandParameter="{Binding}">
+                                                    <TextBlock Text="+" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Button>
+                                            </StackPanel>
+
+                                            <Button Grid.Column="2"
+                                                    Classes="ghost"
+                                                    Command="{Binding DataContext.RemoveFromCartCommand, ElementName=HomeRoot}"
+                                                    CommandParameter="{Binding}">
+                                                <Path Width="12" Height="12" Data="M3,3 L21,21 M21,3 L3,21" Stroke="{DynamicResource DangerBrush}" StrokeThickness="2" />
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </ScrollViewer>
+
+                <Border Grid.Row="2" Classes="card" Background="{DynamicResource SurfaceAltBrush}" Padding="12" Margin="0,10,0,0">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Text="{DynamicResource Loc.Subtotal}" FontWeight="SemiBold" />
+                            <TextBlock Grid.Column="1" Text="{Binding Subtotal, StringFormat='{}{0:F2} MZN'}" HorizontalAlignment="Right" />
+                        </Grid>
+
+                        <Grid x:Name="TotalsDiscountGrid" ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Text="{DynamicResource Loc.Discount}" FontWeight="SemiBold" />
+                            <TextBlock />
+                            <TextBox x:Name="TotalsDiscountInput" Grid.Column="2" Width="100" Text="{Binding Discount, Mode=TwoWay}" />
+                        </Grid>
+
+                        <Grid x:Name="TotalsPaymentGrid" ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Text="{DynamicResource Loc.Payment}" FontWeight="SemiBold" />
+                            <TextBlock />
+                            <ComboBox x:Name="TotalsPaymentInput" Grid.Column="2" Width="140" ItemsSource="{Binding PaymentMethods}" SelectedItem="{Binding SelectedPaymentMethod}" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Text="{DynamicResource Loc.AmountPaid}" FontWeight="SemiBold" />
+                            <TextBlock />
+                            <TextBox Grid.Column="2" Width="120" Text="{Binding TenderedAmount, Mode=TwoWay}" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Text="{DynamicResource Loc.ChangeDue}" FontWeight="SemiBold" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding ChangeAmount, StringFormat='{}{0:F2} MZN'}"
+                                       HorizontalAlignment="Right"
+                                       FontWeight="SemiBold" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Text="{DynamicResource Loc.Total}" FontWeight="Bold" FontSize="20" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding FinalTotal, StringFormat='{}{0:F2} MZN'}"
+                                       HorizontalAlignment="Right"
+                                       FontWeight="Bold"
+                                       FontSize="20"
+                                       Foreground="{DynamicResource PrimaryBrush}" />
+                        </Grid>
+
+                        <Button Classes="primary with-icon"
+                                Height="46"
+                                IsEnabled="{Binding CanFinalizeSale}"
+                                ToolTip.Tip="{Binding FinalizeDisabledReason}"
+                                Command="{Binding FinalizeSaleCommand}">
+                            <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Border Classes="icon-badge">
+                                    <Path Classes="button-icon" Data="M5,13 L10,18 L19,7" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.FinalizeSale}" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
     </Grid>
 </UserControl>
+

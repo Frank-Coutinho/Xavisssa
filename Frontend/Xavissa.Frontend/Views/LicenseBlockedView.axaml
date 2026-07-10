@@ -1,0 +1,21 @@
+<UserControl
+    x:Class="Xavissa.Frontend.Views.LicenseBlockedView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    x:DataType="vm:LicenseBlockedViewModel"
+    Background="{DynamicResource BackgroundBrush}">
+    <Grid>
+        <Border Classes="panel" Width="520" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24">
+            <StackPanel Spacing="16">
+                <TextBlock Text="{Binding Title}" Classes="title" />
+                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+                <TextBlock Text="Support can deactivate old devices, restore suspended licenses, or upgrade the tenant plan." Classes="caption" TextWrapping="Wrap" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Classes="secondary" Height="42" Content="Retry validation" Command="{Binding RetryCommand}" />
+                    <Button Grid.Column="1" Classes="primary" Height="42" Content="Enter license key" Command="{Binding EnterLicenseCommand}" IsVisible="{Binding CanEnterLicenseKey}" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

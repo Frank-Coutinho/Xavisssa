@@ -1,9 +1,20 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="using:Xavissa.Frontend.Views"
+        xmlns:notify="using:Xavissa.Frontend.Views.Notifications"
         x:Class="Xavissa.Frontend.MainWindow"
-        Width="400" Height="300"
-        Title="Xavissa Login">
+        MinWidth="360"
+        MinHeight="640"
+        Icon="/Assets/app.ico"
+        Title="Xavissa">
 
-    <views:AppView/>
+    <Grid>
+        <views:AppView />
+
+        <notify:SnackbarHost
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top"
+            Margin="0,20,0,0"
+            IsHitTestVisible="False"/>
+    </Grid>
 </Window>

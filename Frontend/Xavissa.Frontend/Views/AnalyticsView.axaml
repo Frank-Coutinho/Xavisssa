@@ -1,0 +1,298 @@
+<UserControl
+    x:Class="Xavissa.Frontend.Views.AnalyticsView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    x:DataType="vm:AnalyticsViewModel"
+    Background="{DynamicResource BackgroundBrush}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled"
+                  AllowAutoHide="True">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto" Margin="12">
+        <Grid x:Name="AnalyticsHeaderGrid" Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+            <StackPanel>
+                <TextBlock Text="{Binding ScopeTitle}" Classes="title" />
+                <TextBlock Text="{DynamicResource Loc.AnalyticsSubtitle}" Classes="caption" />
+                <TextBlock Text="{Binding DemoReportLabel}" FontWeight="Bold" Foreground="{DynamicResource WarningBrush}" IsVisible="{Binding IsDemoReport}" />
+            </StackPanel>
+
+            <Button x:Name="AnalyticsReloadButton" Grid.Column="1" Classes="secondary with-icon" Command="{Binding LoadCommand}">
+                <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border Classes="icon-badge">
+                        <Path Classes="button-icon" Data="M18,8 A7,7 0 1 0 19,14 M19,5 L19,10 L14,10" />
+                    </Border>
+                    <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.Reload}" />
+                </Grid>
+            </Button>
+        </Grid>
+
+        <StackPanel Grid.Row="1"
+                    IsVisible="{Binding ShowAnalyticsSkeleton}"
+                    ZIndex="20"
+                    Spacing="8"
+                    Margin="0,0,0,10">
+            <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="10">
+                <Border Classes="skeleton" Height="72" />
+                <Border Grid.Column="1" Classes="skeleton" Height="72" />
+                <Border Grid.Column="2" Classes="skeleton" Height="72" />
+                <Border Grid.Column="3" Classes="skeleton" Height="72" />
+                <Border Grid.Column="4" Classes="skeleton" Height="72" />
+            </Grid>
+            <Border Classes="skeleton" Height="180" />
+        </StackPanel>
+
+        <Border Grid.Row="1"
+                Classes="empty-state"
+                IsVisible="{Binding ShowAnalyticsEmptyState}"
+                ZIndex="20"
+                Margin="0,0,0,10">
+            <StackPanel Spacing="6">
+                <TextBlock Text="{Binding AnalyticsEmptyTitle}" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding AnalyticsEmptyMessage}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1"
+                Classes="empty-state"
+                IsVisible="{Binding ShowAnalyticsErrorState}"
+                ZIndex="20"
+                Margin="0,0,0,10">
+            <StackPanel Spacing="6">
+                <TextBlock Text="{DynamicResource Loc.AnalyticsLoadFailedTitle}" FontWeight="SemiBold" Foreground="{DynamicResource DangerBrush}" />
+                <TextBlock Text="{Binding ErrorMessage}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
+
+        <Grid x:Name="MetricGrid" Grid.Row="1" ColumnDefinitions="1.1*,1.1*,1.1*,1.1*,1*" ColumnSpacing="10" Margin="0,0,0,10">
+            <Border Classes="metric-card">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Loc.TotalRevenue}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding TotalRevenue, StringFormat='MZN {0:N2}'}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Classes="metric-card">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Loc.TotalSales}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding TotalSalesCount}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource SuccessBrush}" />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="MetricAverageCard" Grid.Column="2" Classes="metric-card">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Loc.AverageSale}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding AverageSaleValue, StringFormat='MZN {0:N2}'}" FontSize="22" FontWeight="Bold" />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="MetricStoresCard" Grid.Column="3" Classes="metric-card">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Loc.Stores}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding StoreCount}" FontSize="22" FontWeight="Bold" />
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="MetricProductsCard" Grid.Column="4" Classes="metric-card">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Loc.Products}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding ProductCount}" FontSize="22" FontWeight="Bold" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid x:Name="ChartsGrid" Grid.Row="2" ColumnDefinitions="1.1*,1.4*" ColumnSpacing="12" Margin="0,0,0,10">
+            <Border Classes="panel" Padding="16">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{DynamicResource Loc.RevenueShare}" FontWeight="Bold" FontSize="16" />
+                    <Grid ColumnDefinitions="240,*" ColumnSpacing="12">
+                        <Viewbox Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Grid Width="220" Height="220" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Ellipse Width="220" Height="220" Fill="{DynamicResource SurfaceAltBrush}" />
+                                <ItemsControl ItemsSource="{Binding PieSegments}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:AnalyticsPieSegment">
+                                            <Path Data="{Binding PathData}"
+                                                  Fill="{Binding Fill}"
+                                                  Stroke="{DynamicResource BackgroundBrush}"
+                                                  StrokeThickness="2" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Border Width="92" Height="92" CornerRadius="46" Background="{DynamicResource BackgroundBrush}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding StoreCount}" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{DynamicResource Loc.Stores}" Classes="caption" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Viewbox>
+
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding PieSegments}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:AnalyticsPieSegment">
+                                    <Border Classes="card" Padding="10" Margin="0,0,0,8">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                            <Border Width="12" Height="12" Background="{Binding Fill}" CornerRadius="6" VerticalAlignment="Center" />
+                                            <StackPanel Grid.Column="1" Spacing="2">
+                                                <TextBlock Text="{Binding StoreName}" FontWeight="SemiBold" />
+                                                <TextBlock Text="{Binding Revenue, StringFormat='MZN {0:F2}'}" Classes="caption" />
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="2" Text="{Binding PercentageLabel}" FontWeight="Bold" VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="TrendCard" Grid.Column="1" Classes="panel" Padding="16">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{DynamicResource Loc.RevenueTrendByStore}" FontWeight="Bold" FontSize="16" />
+                    <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch">
+                        <Grid Width="560" Height="250" HorizontalAlignment="Center">
+                            <Canvas Width="520" Height="250">
+                                <ItemsControl ItemsSource="{Binding LineGuides}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:AnalyticsLineGuide">
+                                            <Grid Width="520"
+                                                  Canvas.Top="{Binding Y}">
+                                                <Line StartPoint="24,0"
+                                                      EndPoint="496,0"
+                                                      Stroke="{DynamicResource DividerBrush}"
+                                                      StrokeThickness="1" />
+                                                <TextBlock Text="{Binding Label}"
+                                                           Classes="caption"
+                                                           Foreground="{DynamicResource TextMutedBrush}"
+                                                           Canvas.Left="0"
+                                                           Margin="0,-10,0,0" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <Line StartPoint="24,190"
+                                      EndPoint="496,190"
+                                      Stroke="{DynamicResource TextSecondaryBrush}"
+                                      StrokeThickness="1.2" />
+
+                                <Path Data="{Binding LineAreaPath}"
+                                      Fill="{DynamicResource PrimaryBrush}"
+                                      Opacity="0.14" />
+                                <Path Data="{Binding LineChartPath}"
+                                      Stroke="{DynamicResource PrimaryBrush}"
+                                      StrokeThickness="3" />
+
+                                <ItemsControl ItemsSource="{Binding LinePoints}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <Canvas />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:AnalyticsLinePoint">
+                                            <Border Width="10"
+                                                    Height="10"
+                                                    Background="{DynamicResource SurfaceBrush}"
+                                                    BorderBrush="{DynamicResource PrimaryBrush}"
+                                                    BorderThickness="2"
+                                                    CornerRadius="5"
+                                                    Canvas.Left="{Binding X}"
+                                                    Canvas.Top="{Binding Y}"
+                                                    Margin="-5,-5,0,0">
+                                                <ToolTip.Tip>
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="{Binding Label}" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding RevenueLabel}" Classes="caption" />
+                                                    </StackPanel>
+                                                </ToolTip.Tip>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Canvas>
+
+                            <ItemsControl ItemsSource="{Binding LineAxisLabels}" Margin="0,205,0,0">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:AnalyticsLineAxisLabel">
+                                        <TextBlock Text="{Binding Label}"
+                                                   Classes="caption"
+                                                   Width="48"
+                                                   TextAlignment="Center"
+                                                   Canvas.Left="{Binding X}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                    </Viewbox>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <Border Classes="table-card">
+                <Grid RowDefinitions="Auto,*">
+                    <StackPanel Grid.Row="0" Margin="14,12,14,8">
+                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DangerBrush}" />
+                    </StackPanel>
+
+                    <dg:DataGrid Grid.Row="1"
+                                 AutoGenerateColumns="False"
+                                 ItemsSource="{Binding Stores}"
+                                 IsReadOnly="True"
+                                 CanUserReorderColumns="False"
+                                 CanUserResizeColumns="True"
+                                 CanUserSortColumns="True"
+                                 HeadersVisibility="Column"
+                                 GridLinesVisibility="Horizontal"
+                                 BorderThickness="0"
+                                 MinHeight="260"
+                                 Background="{DynamicResource SurfaceBrush}">
+                        <dg:DataGrid.Columns>
+                            <dg:DataGridTextColumn Header="{DynamicResource Loc.Store}"
+                                                   Width="2*"
+                                                   Binding="{Binding StoreName}" />
+                            <dg:DataGridTextColumn Header="{DynamicResource Loc.Status}"
+                                                   Width="1*"
+                                                   Binding="{Binding StatusLabel}" />
+                            <dg:DataGridTemplateColumn Header="{DynamicResource Loc.Sales}"
+                                                       Width="1.1*">
+                                <dg:DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="vm:StoreAnalyticsRow">
+                                        <StackPanel Spacing="2"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding TotalSalesCount}"
+                                                       FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding AverageSaleLabel}"
+                                                       Classes="caption" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </dg:DataGridTemplateColumn.CellTemplate>
+                            </dg:DataGridTemplateColumn>
+                            <dg:DataGridTextColumn Header="{DynamicResource Loc.Revenue}"
+                                                   Width="1*"
+                                                   Binding="{Binding TotalRevenue, StringFormat='MZN {0:F2}'}" />
+                            <dg:DataGridTextColumn Header="{DynamicResource Loc.LastSale}"
+                                                   Width="1.2*"
+                                                   Binding="{Binding LastSaleLabel}" />
+                        </dg:DataGrid.Columns>
+                    </dg:DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

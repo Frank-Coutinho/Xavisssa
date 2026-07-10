@@ -6,11 +6,19 @@ using Xavissa.Database;
 public class TestController : ControllerBase
 {
     private readonly XavissaDbContext _db;
-    public TestController(XavissaDbContext db) => _db = db;
+    private readonly IWebHostEnvironment _environment;
+    public TestController(XavissaDbContext db, IWebHostEnvironment environment)
+    {
+        _db = db;
+        _environment = environment;
+    }
 
     [HttpGet("ping")]
     public IActionResult Ping()
     {
+        if (!_environment.IsDevelopment())
+            return NotFound();
+
         var count = _db.Products.Count();
         return Ok(new { message = "Connected to Supabase!", products = count });
     }

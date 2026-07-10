@@ -1,5 +1,6 @@
+using Avalonia;
 using Avalonia.Controls;
-
+using Avalonia.Styling;
 
 namespace Xavissa.Frontend.Views
 {
@@ -8,6 +9,11 @@ namespace Xavissa.Frontend.Views
         public AppView()
         {
             InitializeComponent();
+        }
+
+        protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnDetachedFromVisualTree(e);
         }
     }
 }

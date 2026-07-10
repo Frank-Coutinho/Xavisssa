@@ -1,3 +1,10 @@
+
+using System.Net.Http.Json;
+
+
+namespace Xavissa.Frontend.Services
+{
+
 public class ProductService
 {
     private readonly HttpClient _httpClient;
@@ -9,7 +16,8 @@ public class ProductService
 
     public async Task<List<Product>> GetProductsAsync()
     {
-        var response = await _httpClient.GetFromJsonAsync<List<Product>>("api/products");
+        var response = await _httpClient.GetFromJsonAsync<List<Product>>("api/product");
         return response ?? new List<Product>();
     }
+}
 }

@@ -1,6 +1,11 @@
+using System;
+using Avalonia;
 using Avalonia.Controls;
+#if DEBUG
+using Avalonia.Diagnostics;
+#endif
 using Avalonia.Markup.Xaml;
-using Xavissa.Frontend.ViewModels;
+using Xavissa.Frontend.Views;
 
 namespace Xavissa.Frontend
 {
@@ -9,6 +14,9 @@ namespace Xavissa.Frontend
         public MainWindow()
         {
             InitializeComponent();
+#if DEBUG
+            this.AttachDevTools();
+#endif
         }
 
         private void InitializeComponent()

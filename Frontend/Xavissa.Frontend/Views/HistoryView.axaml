@@ -1,87 +1,441 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:Xavissa.Frontend.ViewModels"
-             x:Class="Xavissa.Frontend.Views.HistoryView"
-             x:DataType="vm:HistoryViewModel"
-             Foreground="#333">
+<UserControl
+    x:Class="Xavissa.Frontend.Views.HistoryView"
+    x:Name="Root"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    x:DataType="vm:HistoryViewModel"
+    Background="{DynamicResource BackgroundBrush}">
 
-    <Grid RowDefinitions="Auto,Auto,*,Auto"
-          Background="White"
-          Margin="20">
-
-        <!-- 🕓 Current Date / Time -->
-        <TextBlock Text="{Binding CurrentDateTime}"
-                   FontSize="18"
-                   FontWeight="Bold"
-                   Foreground="#333"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,10"/>
-
-        <!-- 📅 Filter Section -->
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Margin="0,0,0,15"
-                    Spacing="10">
-
-            <TextBlock Text="Filter by date:"
-                       VerticalAlignment="Center"
-                       FontWeight="Bold"
-                       Foreground="#222"/>
-
-            <DatePicker SelectedDate="{Binding FilterDate}"
-                        Width="150"
-                        HorizontalAlignment="Left"/>
-
-            <Button Content="Apply"
-                    Command="{Binding ApplyDateFilterCommand}"
-                    Width="80"
-                    Background="#2E7D32"
-                    Foreground="White"
-                    FontWeight="Bold"
-                    CornerRadius="6"/>
-        </StackPanel>
-
-        <!-- 🧾 Sales Cards -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Sales}">
-    <ItemsControl.ItemTemplate>
-        <DataTemplate>
-            <Border Background="#F7F7F7"
-                    CornerRadius="8"
-                    Margin="5"
-                    Padding="8"
-                    BorderBrush="#DDD"
-                    BorderThickness="1">
-                <StackPanel Orientation="Horizontal" Spacing="20">
-                    <TextBlock Text="{Binding Id}" Width="40" FontWeight="Bold"/>
-                    <TextBlock Text="{Binding Date}" Width="120"/>
-                    <TextBlock Text="{Binding Item}" Width="200"/>
-                    <TextBlock Text="{Binding Quantity}" Width="60"/>
-                    <TextBlock Text="{Binding Price}" Width="80"/>
-                    <TextBlock Text="{Binding Subtotal}" Width="100" FontWeight="Bold"/>
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="12">
+        <Grid x:Name="HistoryHeaderGrid" Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+            <StackPanel>
+                <TextBlock Text="{DynamicResource Loc.SalesHistory}" Classes="title" />
+                <TextBlock Text="{DynamicResource Loc.SalesHistorySubtitle}" Classes="caption" />
+            </StackPanel>
+            <Border x:Name="HistoryCountChip" Grid.Column="1" Classes="chip" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Text="{Binding FilteredSales.Count}" />
+                    <TextBlock Text="{DynamicResource Loc.Records}" />
                 </StackPanel>
             </Border>
-        </DataTemplate>
-    </ItemsControl.ItemTemplate>
-</ItemsControl>
+        </Grid>
 
-        </ScrollViewer>
+        <Border Grid.Row="1" Classes="panel" Padding="10" Margin="0,0,0,10">
+            <Grid x:Name="HistoryFiltersGrid" ColumnDefinitions="Auto,190,220,230,*,Auto" ColumnSpacing="10" VerticalAlignment="Center">
+                <TextBlock x:Name="HistoryFilterLabel" Grid.Column="0"
+                           Text="{DynamicResource Loc.Filter}"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
 
-        <!-- 💰 Total -->
-        <StackPanel Grid.Row="3"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,10,0,0">
-            <TextBlock Text="Total: "
-                       FontWeight="Bold"
-                       FontSize="16"
-                       Foreground="#222"/>
-            <TextBlock Text="{Binding Total}"
-                       FontWeight="Bold"
-                       FontSize="16"
-                       Foreground="#222"/>
-        </StackPanel>
+                <ComboBox x:Name="HistoryFilterOption" Grid.Column="1"
+                          ItemsSource="{Binding FilterOptions}"
+                          SelectedItem="{Binding SelectedFilterOption}" />
+
+                <DatePicker x:Name="HistoryDateFilter" Grid.Column="2"
+                            SelectedDate="{Binding CustomDate}"
+                            IsEnabled="{Binding IsCustomDateEnabled}"
+                            IsVisible="{Binding IsCustomDateEnabled}" />
+
+                <ComboBox x:Name="HistoryStoreFilter" Grid.Column="3"
+                          ItemsSource="{Binding AvailableStoreFilters}"
+                          SelectedItem="{Binding SelectedStoreFilter}"
+                          IsVisible="{Binding ShowStoreFilter}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <Button x:Name="HistoryReloadButton" Grid.Column="5" Classes="secondary with-icon" Command="{Binding ReloadCommand}">
+                    <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Border Classes="icon-badge">
+                            <Path Classes="button-icon" Data="M18,8 A7,7 0 1 0 19,14 M19,5 L19,10 L14,10" />
+                        </Border>
+                        <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.Reload}" />
+                    </Grid>
+                </Button>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Border Classes="panel" Padding="0">
+                <Grid RowDefinitions="Auto,*">
+                    <StackPanel Grid.Row="0" Margin="14,12,14,8">
+                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DangerBrush}" />
+                    </StackPanel>
+
+                    <dg:DataGrid Grid.Row="1"
+                                 AutoGenerateColumns="False"
+                                 ItemsSource="{Binding FilteredSales}"
+                                 IsReadOnly="True"
+                                 CanUserReorderColumns="False"
+                                 CanUserResizeColumns="True"
+                                 CanUserSortColumns="True"
+                                 HeadersVisibility="Column"
+                                 GridLinesVisibility="Horizontal"
+                                 BorderThickness="0"
+                                 Background="{DynamicResource SurfaceBrush}">
+                        <dg:DataGrid.Columns>
+                            <dg:DataGridTextColumn Header="{DynamicResource Loc.Receipt}"
+                                                   Width="1.9*"
+                                                   Binding="{Binding ReceiptLabel}" />
+                            <dg:DataGridTextColumn Header="{DynamicResource Loc.Store}"
+                                                   Width="1.2*"
+                                                   Binding="{Binding StoreName}" />
+                            <dg:DataGridTextColumn Header="{DynamicResource Loc.ColumnDate}"
+                                                   Width="1.2*"
+                                                   Binding="{Binding Date, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" />
+                            <dg:DataGridTextColumn Header="{DynamicResource Loc.Payment}"
+                                                   Width="1*"
+                                                   Binding="{Binding PaymentSummary}" />
+                            <dg:DataGridTemplateColumn Header="{DynamicResource Loc.Items}"
+                                                       Width="1.1*">
+                                <dg:DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="vm:HistorySaleRow">
+                                        <StackPanel Spacing="2"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding ItemCount}"
+                                                       FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding StatusLabel}"
+                                                       Classes="caption" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </dg:DataGridTemplateColumn.CellTemplate>
+                            </dg:DataGridTemplateColumn>
+                            <dg:DataGridTemplateColumn Header="{DynamicResource Loc.Total}"
+                                                       Width="1.2*">
+                                <dg:DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="vm:HistorySaleRow">
+                                        <StackPanel Spacing="2"
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding FinalTotal, StringFormat='MZN {0:F2}'}"
+                                                       FontWeight="SemiBold" />
+                                            <TextBlock Text="{Binding Discount, StringFormat='Discount: MZN {0:F2}'}"
+                                                       Classes="caption" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </dg:DataGridTemplateColumn.CellTemplate>
+                            </dg:DataGridTemplateColumn>
+                            <dg:DataGridTemplateColumn Header="{DynamicResource Loc.Action}"
+                                                       Width="Auto">
+                                <dg:DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="vm:HistorySaleRow">
+                                        <StackPanel Orientation="Horizontal"
+                                                    Spacing="8"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center">
+                                            <Button Classes="secondary icon-only"
+                                                    Command="{Binding DataContext.OpenSaleDetailsCommand, ElementName=Root}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip.Tip="{DynamicResource Loc.ViewSaleDetails}">
+                                                <Path Classes="button-icon" Data="M12,5 C7,5 3.2,8.1 1.5,12 C3.2,15.9 7,19 12,19 C17,19 20.8,15.9 22.5,12 C20.8,8.1 17,5 12,5 M12,8.5 A3.5,3.5 0 1 1 8.5,12 A3.5,3.5 0 0 1 12,8.5" />
+                                            </Button>
+                                            <Button Classes="danger icon-only"
+                                                    Command="{Binding DataContext.RequestDeleteSaleCommand, ElementName=Root}"
+                                                    CommandParameter="{Binding}"
+                                                    IsEnabled="{Binding DataContext.IsOnline, ElementName=Root}"
+                                                    IsVisible="{Binding DataContext.CanManageHistoryDeletions, ElementName=Root}"
+                                                    ToolTip.Tip="{Binding DataContext.OnlineOnlyActionMessage, ElementName=Root}">
+                                                <Path Classes="button-icon" Data="M4,7 L20,7 M9,7 L9,18 M15,7 L15,18 M8,7 L9,4 L15,4 L16,7" />
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </dg:DataGridTemplateColumn.CellTemplate>
+                            </dg:DataGridTemplateColumn>
+                        </dg:DataGrid.Columns>
+                    </dg:DataGrid>
+                </Grid>
+            </Border>
+
+            <StackPanel IsVisible="{Binding ShowHistoryLoading}"
+                        Spacing="8"
+                        Margin="14,52,14,14">
+                <Border Classes="skeleton" Height="46" />
+                <Border Classes="skeleton" Height="46" />
+                <Border Classes="skeleton" Height="46" />
+                <Border Classes="skeleton" Height="46" />
+            </StackPanel>
+
+            <Border Classes="empty-state"
+                    IsVisible="{Binding ShowHistoryEmptyState}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="360">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="{Binding HistoryEmptyTitle}" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding HistoryEmptyMessage}" Classes="caption" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid x:Name="HistoryFooterGrid" Grid.Row="3" ColumnDefinitions="*,Auto,Auto" Margin="0,10,0,0">
+            <StackPanel x:Name="HistorySummaryCards" Orientation="Horizontal" Spacing="10">
+                <Border x:Name="HistoryRevenueCard" Classes="panel" Padding="16" Width="230">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Loc.TotalRevenue}" FontWeight="Bold" />
+                        <TextBlock Text="{Binding Total, StringFormat='MZN {0:N2}'}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" />
+                    </StackPanel>
+                </Border>
+
+                <Border x:Name="HistoryEntriesCard" Classes="panel" Padding="16" Width="200">
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Loc.TotalEntries}" FontWeight="Bold" />
+                        <TextBlock Text="{Binding FilteredSales.Count}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource SuccessBrush}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <Button x:Name="HistoryLoadMoreButton" Grid.Column="1"
+                    Classes="secondary with-icon"
+                    Command="{Binding LoadMoreCommand}"
+                    IsVisible="{Binding HasMoreSales}"
+                    Margin="10,0,0,0">
+                <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border Classes="icon-badge">
+                        <Path Classes="button-icon" Data="M12,5 L12,19 M5,12 L12,19 L19,12" />
+                    </Border>
+                    <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.LoadMore}" />
+                </Grid>
+            </Button>
+
+            <Button x:Name="HistoryExportButton" Grid.Column="2" Classes="primary with-icon" Command="{Binding ExportToCsvCommand}" Margin="10,0,0,0">
+                <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border Classes="icon-badge">
+                        <Path Classes="button-icon" Data="M12,5 L12,15 M7,11 L12,16 L17,11 M5,19 L19,19" />
+                    </Border>
+                    <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.ExportCsv}" />
+                </Grid>
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="0"
+              Grid.RowSpan="4"
+              IsVisible="{Binding IsSaleDetailsOpen}"
+              Background="#80000000"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              ZIndex="80">
+            <Border x:Name="SaleDetailsDialog"
+                    Width="760"
+                    MaxHeight="640"
+                    Classes="panel"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="12">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <StackPanel>
+                            <TextBlock Text="{Binding SelectedSale.ReceiptLabel}" FontWeight="Bold" FontSize="18" />
+                            <TextBlock Text="{Binding SelectedSale.SecondaryLabel}" Classes="caption" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="secondary icon-only" Command="{Binding CloseSaleDetailsCommand}" ToolTip.Tip="{DynamicResource Loc.Close}">
+                            <Path Classes="button-icon" Data="M6,6 L18,18 M18,6 L6,18" />
+                        </Button>
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="12">
+                            <Border Classes="card">
+                                <Grid x:Name="SaleDetailsSummary" ColumnDefinitions="2.2*,1.2*,1.2*" ColumnSpacing="12">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{Binding SelectedSale.PaymentSummary}" FontWeight="SemiBold" />
+                                        <TextBlock Classes="caption">
+                                            <Run Text="{DynamicResource Loc.ColumnDate}" />
+                                            <Run Text=": " />
+                                            <Run Text="{Binding SelectedSale.Date, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" />
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding SelectedSale.RefundReason}" Classes="caption" IsVisible="{Binding SelectedSale.IsRefunded}" />
+                                    </StackPanel>
+                                    <StackPanel x:Name="SaleDetailsCol2" Grid.Column="1" Spacing="4">
+                                        <TextBlock Text="{Binding SelectedSale.StatusLabel}" FontWeight="SemiBold" />
+                                        <TextBlock Classes="caption">
+                                            <Run Text="{DynamicResource Loc.Items}" />
+                                            <Run Text=": " />
+                                            <Run Text="{Binding SelectedSale.ItemCount}" />
+                                        </TextBlock>
+                                        <TextBlock Classes="caption">
+                                            <Run Text="{DynamicResource Loc.AmountPaid}" />
+                                            <Run Text=": MZN " />
+                                            <Run Text="{Binding SelectedSale.TotalPaid, StringFormat='{}{0:F2}'}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <StackPanel x:Name="SaleDetailsCol3" Grid.Column="2" Spacing="4" HorizontalAlignment="Right">
+                                        <TextBlock Text="{Binding SelectedSale.FinalTotal, StringFormat='MZN {0:F2}'}" FontWeight="Bold" HorizontalAlignment="Right" />
+                                        <TextBlock Classes="caption" HorizontalAlignment="Right">
+                                            <Run Text="{DynamicResource Loc.Subtotal}" />
+                                            <Run Text=": MZN " />
+                                            <Run Text="{Binding SelectedSale.Subtotal, StringFormat='{}{0:F2}'}" />
+                                        </TextBlock>
+                                        <TextBlock Classes="caption" HorizontalAlignment="Right">
+                                            <Run Text="{DynamicResource Loc.Discount}" />
+                                            <Run Text=": MZN " />
+                                            <Run Text="{Binding SelectedSale.Discount, StringFormat='{}{0:F2}'}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <dg:DataGrid AutoGenerateColumns="False"
+                                         ItemsSource="{Binding SelectedSale.Items}"
+                                         IsReadOnly="True"
+                                         CanUserReorderColumns="False"
+                                         CanUserResizeColumns="True"
+                                         CanUserSortColumns="False"
+                                         HeadersVisibility="Column"
+                                         GridLinesVisibility="Horizontal"
+                                         BorderBrush="{DynamicResource DividerBrush}"
+                                         BorderThickness="1"
+                                         Background="{DynamicResource SurfaceBrush}">
+                                <dg:DataGrid.Columns>
+                                    <dg:DataGridTextColumn Header="{DynamicResource Loc.Product}"
+                                                           Width="2*"
+                                                           Binding="{Binding ItemName}" />
+                                    <dg:DataGridTextColumn Header="{DynamicResource Loc.QuantityLabel}"
+                                                           Width="0.8*"
+                                                           Binding="{Binding Quantity}" />
+                                    <dg:DataGridTextColumn Header="{DynamicResource Loc.Status}"
+                                                           Width="1.3*"
+                                                           Binding="{Binding RefundStatusLabel}" />
+                                    <dg:DataGridTextColumn Header="{DynamicResource Loc.UnitPrice}"
+                                                           Width="1*"
+                                                           Binding="{Binding UnitPrice, StringFormat='MZN {0:F2}'}" />
+                                    <dg:DataGridTextColumn Header="{DynamicResource Loc.Discount}"
+                                                           Width="1*"
+                                                           Binding="{Binding Discount, StringFormat='MZN {0:F2}'}" />
+                                    <dg:DataGridTextColumn Header="{DynamicResource Loc.Total}"
+                                                           Width="1*"
+                                                           Binding="{Binding Total, StringFormat='MZN {0:F2}'}" />
+                                    <dg:DataGridTemplateColumn Header="{DynamicResource Loc.Action}"
+                                                               Width="Auto">
+                                        <dg:DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate x:DataType="vm:HistorySaleLine">
+                                                <Button Classes="secondary icon-only"
+                                                        Command="{Binding DataContext.RequestRefundItemCommand, ElementName=Root}"
+                                                        CommandParameter="{Binding}"
+                                                        IsEnabled="{Binding DataContext.IsOnline, ElementName=Root}"
+                                                        IsVisible="{Binding CanRefund}"
+                                                        ToolTip.Tip="{Binding DataContext.OnlineOnlyActionMessage, ElementName=Root}">
+                                                    <Path Classes="button-icon" Data="M4,12 A8,8 0 1 0 12,4 M12,4 L12,8 L16,8" />
+                                                </Button>
+                                            </DataTemplate>
+                                        </dg:DataGridTemplateColumn.CellTemplate>
+                                    </dg:DataGridTemplateColumn>
+                                </dg:DataGrid.Columns>
+                            </dg:DataGrid>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Classes="primary with-icon"
+                                Command="{Binding RequestRefundSaleCommand}"
+                                CommandParameter="{Binding SelectedSale}"
+                                IsEnabled="{Binding IsOnline}"
+                                ToolTip.Tip="{Binding OnlineOnlyActionMessage}"
+                                IsVisible="{Binding SelectedSale.CanRefund}"
+                                Margin="0,0,8,0">
+                            <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Border Classes="icon-badge">
+                                    <Path Classes="button-icon" Data="M4,12 A8,8 0 1 0 12,4 M12,4 L12,8 L16,8" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.RefundSale}" />
+                            </Grid>
+                        </Button>
+                        <Button Classes="secondary with-icon" Command="{Binding CloseSaleDetailsCommand}">
+                            <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Border Classes="icon-badge">
+                                    <Path Classes="button-icon" Data="M6,6 L18,18 M18,6 L6,18" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.Close}" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="0"
+              Grid.RowSpan="4"
+              IsVisible="{Binding IsRefundDialogOpen}"
+              Background="#80000000"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              ZIndex="85">
+            <Border x:Name="RefundDialog"
+                    Width="420"
+                    Classes="panel"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{DynamicResource Loc.RefundItem}" FontWeight="Bold" FontSize="18" IsVisible="{Binding IsRefundingItem}" />
+                    <TextBlock Text="{DynamicResource Loc.RefundSale}" FontWeight="Bold" FontSize="18" IsVisible="{Binding IsRefundingSale}" />
+                    <TextBlock Text="{Binding PendingRefundItem.ItemName}" FontWeight="SemiBold" IsVisible="{Binding IsRefundingItem}" />
+                    <TextBlock Text="{Binding PendingRefundItem.RefundStatusLabel}" Classes="caption" IsVisible="{Binding IsRefundingItem}" />
+                    <TextBlock Text="{Binding PendingRefundSale.ReceiptLabel}" FontWeight="SemiBold" IsVisible="{Binding IsRefundingSale}" />
+                    <TextBlock Text="{DynamicResource Loc.ThisWillRefundAll}" Classes="caption" IsVisible="{Binding IsRefundingSale}" />
+
+                    <StackPanel Spacing="6" IsVisible="{Binding IsRefundingItem}">
+                        <TextBlock Text="{DynamicResource Loc.QuantityLabel}" FontWeight="SemiBold" />
+                        <ComboBox ItemsSource="{Binding PendingRefundItem.AvailableRefundQuantities}"
+                                  SelectedItem="{Binding RefundQuantity}" />
+                    </StackPanel>
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{DynamicResource Loc.Reason}" FontWeight="SemiBold" />
+                        <TextBox Text="{Binding RefundReason}" Watermark="{DynamicResource Loc.ReasonForRefund}" AcceptsReturn="True" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                        <Button Classes="primary with-icon" Command="{Binding ConfirmRefundCommand}">
+                            <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Border Classes="icon-badge">
+                                    <Path Classes="button-icon" Data="M9,16.2 L4.8,12 L3.4,13.4 L9,19 L21,7 L19.6,5.6 z" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.ConfirmRefund}" />
+                            </Grid>
+                        </Button>
+                        <Button Classes="secondary with-icon" Command="{Binding CancelRefundCommand}">
+                            <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Border Classes="icon-badge">
+                                    <Path Classes="button-icon" Data="M6,6 L18,18 M18,6 L6,18" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Classes="button-label" Text="{DynamicResource Loc.Cancel}" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="0"
+              Grid.RowSpan="4"
+              IsVisible="{Binding IsDeleteConfirmationOpen}"
+              Background="#80000000"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              ZIndex="90">
+            <Border x:Name="DeleteDialog"
+                    Width="480"
+                    Classes="panel"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="{Binding DeleteConfirmationTitle}" FontWeight="Bold" FontSize="18" />
+                    <TextBlock Text="{Binding DeleteConfirmationMessage}" Classes="caption" TextWrapping="Wrap" />
+
+                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,8,0,0">
+                        <Button Classes="secondary" Command="{Binding CancelDeleteCommand}" Content="{DynamicResource Loc.Cancel}" />
+                        <Button Classes="danger with-icon" Command="{Binding ConfirmDeleteCommand}" ToolTip.Tip="{DynamicResource Loc.ConfirmDelete}">
+                            <Grid Classes="button-content" ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Path Classes="button-icon" Data="M4,7 L20,7 M9,7 L9,18 M15,7 L15,18 M8,7 L9,4 L15,4 L16,7" />
+                                <TextBlock Grid.Column="1" Classes="button-label" Text="Delete" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
     </Grid>
 </UserControl>

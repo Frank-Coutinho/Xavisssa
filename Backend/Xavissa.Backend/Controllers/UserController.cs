@@ -1,90 +1,100 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Xavissa.Backend.DTOs;
+using Xavissa.Backend.Security;
 using Xavissa.Backend.Services;
-using Xavissa.Database.Models;
 
 namespace Xavissa.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // All endpoints require authentication
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly AuthService _authService;
+        private readonly TenantAccessService _tenantAccess;
 
-        public UsersController(AuthService authService)
+        public UsersController(AuthService authService, TenantAccessService tenantAccess)
         {
             _authService = authService;
+            _tenantAccess = tenantAccess;
         }
 
         [HttpGet("me")]
-        [Authorize]
         public IActionResult Me()
         {
             return Ok(
                 new
                 {
                     Username = User.Identity?.Name,
-                    Role = User.FindFirst("role")?.Value, // custom claim
-                    ClaimTypesRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value, // default claim type
+                    PlatformRole = User.FindFirst("platform_role")?.Value
+                        ?? User.FindFirst(ClaimTypes.Role)?.Value,
+                    ActingRole = User.FindFirst("acting_role")?.Value,
                     AllClaims = User.Claims.Select(c => new { c.Type, c.Value }),
                 }
             );
         }
 
-        // ✅ Superuser only: list all users
         [HttpGet("all")]
-        [Authorize(Roles = "Superuser")]
         public async Task<IActionResult> GetAllUsers()
         {
-            var users = await _authService.GetAllUsersAsync();
-            return Ok(users);
+            return Ok(
+                await _authService.GetUsersForManagementAsync(
+                    _tenantAccess.CurrentUserId,
+                    _tenantAccess.PlatformRole,
+                    _tenantAccess.ActingRole,
+                    _tenantAccess.SelectedTenantId,
+                    _tenantAccess.SelectedStoreId,
+                    _tenantAccess.AllowedTenantIds,
+                    _tenantAccess.AllowedStoreIds
+                )
+            );
         }
 
-        // ✅ Admin and Superuser: get a specific user
-        [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,Superuser")]
+        [HttpGet("{id:int}")]
+        [Authorize(Roles = AccessRoles.SystemAdmin)]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _authService.GetUserByIdAsync(id);
-            if (user == null)
-                return NotFound();
-            return Ok(user);
+            return user == null ? NotFound() : Ok(user);
         }
 
-        // ✅ Admin and Superuser: update user info
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Superuser")]
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = AccessRoles.SystemAdmin)]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequest request)
         {
-            var currentRole = User.FindFirst("role")?.Value;
-            var success = await _authService.UpdateUserAsync(id, request, currentRole);
-
-            if (!success)
-                return Forbid();
-            return Ok("User updated successfully");
+            var currentPlatformRole =
+                User.FindFirst("platform_role")?.Value ?? User.FindFirst(ClaimTypes.Role)?.Value;
+            var success = await _authService.UpdateUserAsync(
+                id,
+                request,
+                _tenantAccess.CurrentUserId,
+                currentPlatformRole,
+                _tenantAccess.ActingRole,
+                _tenantAccess.SelectedTenantId,
+                _tenantAccess.SelectedStoreId,
+                _tenantAccess.AllowedTenantIds,
+                _tenantAccess.AllowedStoreIds);
+            return success ? Ok("User updated successfully") : Forbid();
         }
 
-        // ✅ Admin and Superuser: delete users
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin,Superuser")]
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = AccessRoles.SystemAdmin)]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var currentRole = User.FindFirst("role")?.Value;
-            var success = await _authService.DeleteUserAsync(id, currentRole);
-
-            if (!success)
-                return Forbid();
-            return Ok("User deleted successfully");
+            var currentPlatformRole =
+                User.FindFirst("platform_role")?.Value ?? User.FindFirst(ClaimTypes.Role)?.Value;
+            var success = await _authService.DeleteUserAsync(
+                id,
+                _tenantAccess.CurrentUserId,
+                currentPlatformRole,
+                _tenantAccess.ActingRole,
+                _tenantAccess.SelectedTenantId,
+                _tenantAccess.SelectedStoreId,
+                _tenantAccess.AllowedTenantIds,
+                _tenantAccess.AllowedStoreIds);
+            return success ? Ok("User deleted successfully") : Forbid();
         }
-    }
-
-    // Request DTO for updates
-    public class UpdateUserSelfRequest
-    {
-        public string? Username { get; set; }
-        public string? Email { get; set; }
-        public UserRole? Role { get; set; }
     }
 }

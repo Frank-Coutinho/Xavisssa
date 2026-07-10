@@ -1,0 +1,16 @@
+<UserControl
+    x:Class="Xavissa.Frontend.Views.DemoExpiredView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    x:DataType="vm:DemoExpiredViewModel"
+    Background="{DynamicResource BackgroundBrush}">
+    <Grid>
+        <Border Classes="panel" Width="520" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24">
+            <StackPanel Spacing="16">
+                <TextBlock Text="Demo mode disabled" Classes="title" />
+                <TextBlock Text="Demo flows are currently disabled. Use a normal tenant, store, and user account to enter the POS workspace." TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

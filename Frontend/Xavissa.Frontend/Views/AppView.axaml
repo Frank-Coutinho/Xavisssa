@@ -1,23 +1,31 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:Xavissa.Frontend.ViewModels"
-             xmlns:views="using:Xavissa.Frontend.Views"
-             x:Class="Xavissa.Frontend.Views.AppView"
-             x:DataType="vm:AppViewModel">
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    xmlns:local="using:Xavissa.Frontend"
+    x:Class="Xavissa.Frontend.Views.AppView"
+    x:DataType="vm:AppViewModel">
 
-    <ContentControl Content="{Binding CurrentView}">
-        <ContentControl.DataTemplates>
-            <DataTemplate DataType="vm:LoginViewModel">
-                <views:LoginView/>
-            </DataTemplate>
+    <Grid>
 
-            <DataTemplate DataType="vm:MainViewModel">
-                <views:MainView/>
-            </DataTemplate>
+        <!-- THIS IS WHAT WAS MISSING -->
+        <ContentControl Content="{Binding CurrentView}">
+            <ContentControl.ContentTemplate>
+                <local:ViewLocator/>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
 
-            <DataTemplate DataType="vm:ManagementViewModel">
-                <views:ManagementView/>
-            </DataTemplate>
-        </ContentControl.DataTemplates>
-    </ContentControl>
+        <Border x:Name="ToastHost"
+                Background="#AA000000"
+                CornerRadius="6"
+                Padding="12"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="0,20,0,0"
+                IsVisible="False">
+            <TextBlock x:Name="ToastText" Foreground="White"/>
+        </Border>
+
+    </Grid>
+
 </UserControl>

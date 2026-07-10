@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Avalonia;
 using Avalonia.ReactiveUI;
 
@@ -15,7 +15,7 @@ namespace Xavissa.Frontend
             }
             catch (Exception ex)
             {
-                Console.WriteLine("❌ Application failed to start:");
+                Console.WriteLine("? Application failed to start:");
                 Console.WriteLine(ex);
                 Console.ReadLine(); // Wait so you can see the error
             }

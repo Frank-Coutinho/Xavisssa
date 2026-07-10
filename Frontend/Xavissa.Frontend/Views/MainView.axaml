@@ -1,154 +1,360 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:views="using:Xavissa.Frontend.Views"
-             xmlns:vm="using:Xavissa.Frontend.ViewModels"
-             xmlns:fa="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
-             xmlns:fic="clr-namespace:FluentIcons.Common;assembly=FluentIcons.Common"
-             x:Class="Xavissa.Frontend.Views.MainView"
-             xmlns:local="using:Xavissa.Frontend.Converters"
-             x:DataType="vm:MainViewModel">
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    xmlns:local="using:Xavissa.Frontend"
+    xmlns:cv="using:Xavissa.Frontend.Converters"
+    x:Class="Xavissa.Frontend.Views.MainView"
+    x:DataType="vm:MainViewModel"
+    Background="{DynamicResource BackgroundBrush}">
 
-             <UserControl.Resources>
-        <local:InitialsConverter x:Key="InitialsConverter"/>
-    <local:TitleCaseConverter x:Key="TitleCaseConverter"/>
+    <UserControl.Resources>
+        <cv:InitialsConverter x:Key="InitialsConverter" />
     </UserControl.Resources>
 
-    <Grid ColumnDefinitions="80,*,400"
-          RowDefinitions="Auto,*"
-          Background="#1C1C1C">
+    <Grid ColumnDefinitions="Auto,*"
+          Background="{DynamicResource BackgroundBrush}">
+        <Border Grid.Column="0"
+                Width="{Binding SidebarWidth}"
+                Background="{DynamicResource SidebarBackgroundBrush}"
+                BorderBrush="{DynamicResource DividerBrush}"
+                BorderThickness="0,0,1,0">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <Border Grid.Row="0"
+                        Padding="12"
+                        BorderBrush="{DynamicResource DividerBrush}"
+                        BorderThickness="0,0,0,1">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Border Width="36"
+                                Height="36"
+                                CornerRadius="6"
+                                Background="{DynamicResource PrimaryBrush}">
+                            <Path Data="M3,8 L17,8 L17,5 L21,9 L17,13 L17,10 L3,10 Z"
+                                  Fill="{DynamicResource PrimaryForegroundBrush}"
+                                  Width="18"
+                                  Height="18"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" />
+                        </Border>
+                        <StackPanel Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    IsVisible="{Binding IsSidebarExpanded}">
+                            <TextBlock Text="{Binding AppShellTitle}"
+                                       FontSize="18"
+                                       FontWeight="Bold" />
+                            <TextBlock Text="{Binding CurrentStoreDisplayName}"
+                                       Classes="caption"
+                                       TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
 
-        <!-- ==================== SIDEBAR ==================== -->
-<Grid Grid.RowSpan="2"
-      Width="80"
-      Background="#F7F7F7"
-      HorizontalAlignment="Center">
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="8,10,8,12" Spacing="4">
+                        <Button Classes="nav-item sidebar-nav-button"
+                                Command="{Binding ToggleSidebarCommand}"
+                                ToolTip.Tip="Toggle navigation">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Path Classes="nav-stroke-icon"
+                                      Data="M4,7 L20,7 M4,12 L20,12 M4,17 L20,17" />
+                                <TextBlock Grid.Column="1"
+                                           Text="Collapse"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsSidebarExpanded}" />
+                            </Grid>
+                        </Button>
 
-    <Grid.RowDefinitions>
-        <RowDefinition Height="Auto"/>   <!-- Top navigation buttons -->
-        <RowDefinition Height="*"/>      <!-- Spacer -->
-        <RowDefinition Height="Auto"/>   <!-- Bottom user info -->
-    </Grid.RowDefinitions>
+                        <Button Classes="nav-item sidebar-nav-button"
+                                Classes.active="{Binding IsHomeActive}"
+                                Command="{Binding ShowHomeCommand}"
+                                IsVisible="{Binding ShowSalesWorkspace}"
+                                ToolTip.Tip="{DynamicResource Loc.SalesWorkspace}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Path Classes="nav-fill-icon"
+                                      Data="M3,11 L12,3 L21,11 L21,21 L15,21 L15,15 L9,15 L9,21 L3,21 Z" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{DynamicResource Loc.SalesWorkspace}"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsSidebarExpanded}" />
+                            </Grid>
+                        </Button>
 
-    <!-- Top navigation icons -->
-    <StackPanel Grid.Row="0" Margin="0,30,0,0" Spacing="20" HorizontalAlignment="Center">
+                        <Button Classes="nav-item sidebar-nav-button"
+                                Classes.active="{Binding IsAnalyticsActive}"
+                                Command="{Binding ShowAnalyticsCommand}"
+                                IsVisible="{Binding ShowAnalyticsSection}"
+                                ToolTip.Tip="{DynamicResource Loc.Analytics}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Path Classes="nav-fill-icon"
+                                      Data="M5,19 L9,19 L9,10 L5,10 Z M11,19 L15,19 L15,5 L11,5 Z M17,19 L21,19 L21,13 L17,13 Z" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{DynamicResource Loc.Analytics}"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsSidebarExpanded}" />
+                            </Grid>
+                        </Button>
 
-        <!-- Home -->
-        <Button Command="{Binding ShowHomeCommand}" Width="50" Height="50" CornerRadius="12"
-                Background="{Binding HomeButtonBackground}">
-            <fa:FluentIcon Icon="{x:Static fic:Icon.Home}" Width="24" Height="24"/>
-        </Button>
+                        <Button Classes="nav-item sidebar-nav-button"
+                                Classes.active="{Binding IsHistoryActive}"
+                                Command="{Binding ShowHistoryCommand}"
+                                IsVisible="{Binding CanAccessHistory}"
+                                ToolTip.Tip="{DynamicResource Loc.SalesHistory}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Path Classes="nav-fill-icon"
+                                      Data="M4,4 L20,4 L20,20 L4,20 Z M7,8 L17,8 L17,10 L7,10 Z M7,12 L17,12 L17,14 L7,14 Z" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{DynamicResource Loc.SalesHistory}"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsSidebarExpanded}" />
+                            </Grid>
+                        </Button>
 
-        <!-- History -->
-        <Button Command="{Binding ShowHistoryCommand}" Width="50" Height="50" CornerRadius="12"
-                Background="{Binding HistoryButtonBackground}">
-            <fa:FluentIcon Icon="{x:Static fic:Icon.History}" Width="24" Height="24"/>
-        </Button>
+                        <Expander Classes="sidebar-management-expander"
+                                  IsExpanded="{Binding IsManagementMenuExpanded}"
+                                  IsVisible="{Binding CanAccessManagement}">
+                            <Expander.IsVisible>
+                                <Binding Path="IsSidebarExpanded" />
+                            </Expander.IsVisible>
+                            <Expander.Header>
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                    <Path Classes="nav-fill-icon"
+                                          Data="M12,6 A3,3 0 1 1 12,12 A3,3 0 1 1 12,6 Z M5,9 A2,2 0 1 1 5,13 A2,2 0 1 1 5,9 Z M19,9 A2,2 0 1 1 19,13 A2,2 0 1 1 19,9 Z M8,16 L16,16 L16,21 L8,21 Z M2,17 L7,17 L7,21 L2,21 Z M17,17 L22,17 L22,21 L17,21 Z" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding ManagementSectionTitle}"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+                            </Expander.Header>
+                            <Border Classes="sidebar-dropdown-panel"
+                                    Margin="0,4,0,6">
+                                <StackPanel Spacing="2">
+                                    <Button Classes="subnav-item sidebar-subnav-button"
+                                            Classes.active="{Binding IsManagementTeamActive}"
+                                            Command="{Binding ShowManagementUsersCommand}"
+                                            IsVisible="{Binding ManagementVm.ShowEmployeeTabs}"
+                                            Content="{Binding ManagementVm.TeamTabHeader}" />
+                                    <Button Classes="subnav-item sidebar-subnav-button"
+                                            Classes.active="{Binding IsManagementStoresActive}"
+                                            Command="{Binding ShowManagementStoresCommand}"
+                                            IsVisible="{Binding ManagementVm.ShowStoreTab}"
+                                            Content="{Binding ManagementVm.StoreTabHeader}" />
+                                    <Button Classes="subnav-item sidebar-subnav-button"
+                                            Classes.active="{Binding IsManagementCategoriesActive}"
+                                            Command="{Binding ShowManagementCategoriesCommand}"
+                                            IsVisible="{Binding ManagementVm.ShowCategoriesTab}"
+                                            Content="{Binding ManagementVm.CategoriesTabHeader}" />
+                                    <Button Classes="subnav-item sidebar-subnav-button"
+                                            Classes.active="{Binding IsManagementProductsActive}"
+                                            Command="{Binding ShowManagementProductsCommand}"
+                                            IsVisible="{Binding ManagementVm.ShowCatalogTabs}"
+                                            Content="{Binding ManagementVm.CatalogTabHeader}" />
+                                    <Button Classes="subnav-item sidebar-subnav-button"
+                                            Classes.active="{Binding IsManagementVariantsActive}"
+                                            Command="{Binding ShowManagementVariantsCommand}"
+                                            IsVisible="{Binding ManagementVm.ShowVariantManagementTab}"
+                                            Content="{Binding ManagementVm.VariantManagementTabHeader}" />
+                                </StackPanel>
+                            </Border>
+                        </Expander>
 
-        <!-- Settings -->
-        <Button Command="{Binding ShowConfigCommand}" Width="50" Height="50" CornerRadius="12"
-                Background="{Binding ConfigButtonBackground}">
-            <fa:FluentIcon Icon="{x:Static fic:Icon.Settings}" Width="24" Height="24"/>
-        </Button>
+                        <Button Classes="nav-item sidebar-nav-button"
+                                Classes.active="{Binding IsManagementActive}"
+                                IsVisible="{Binding IsSidebarExpanded, Converter={StaticResource BoolInverseConverter}}"
+                                ToolTip.Tip="{Binding ManagementSectionTitle}">
+                            <Button.Flyout>
+                                <Flyout Placement="RightEdgeAlignedTop"
+                                        FlyoutPresenterClasses="sidebar-dropdown">
+                                    <Border Classes="panel sidebar-flyout-panel"
+                                            Padding="8"
+                                            MinWidth="210">
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Classes="sidebar-flyout-title"
+                                                       Text="{Binding ManagementSectionTitle}"
+                                                       FontWeight="Bold" />
+                                            <Button Classes="secondary sidebar-flyout-item"
+                                                    Content="{Binding ManagementVm.TeamTabHeader}"
+                                                    Command="{Binding ShowManagementUsersCommand}"
+                                                    IsVisible="{Binding ManagementVm.ShowEmployeeTabs}" />
+                                            <Button Classes="secondary sidebar-flyout-item"
+                                                    Content="{Binding ManagementVm.StoreTabHeader}"
+                                                    Command="{Binding ShowManagementStoresCommand}"
+                                                    IsVisible="{Binding ManagementVm.ShowStoreTab}" />
+                                            <Button Classes="secondary sidebar-flyout-item"
+                                                    Content="{Binding ManagementVm.CategoriesTabHeader}"
+                                                    Command="{Binding ShowManagementCategoriesCommand}"
+                                                    IsVisible="{Binding ManagementVm.ShowCategoriesTab}" />
+                                            <Button Classes="secondary sidebar-flyout-item"
+                                                    Content="{Binding ManagementVm.CatalogTabHeader}"
+                                                    Command="{Binding ShowManagementProductsCommand}"
+                                                    IsVisible="{Binding ManagementVm.ShowCatalogTabs}" />
+                                            <Button Classes="secondary sidebar-flyout-item"
+                                                    Content="{Binding ManagementVm.VariantManagementTabHeader}"
+                                                    Command="{Binding ShowManagementVariantsCommand}"
+                                                    IsVisible="{Binding ManagementVm.ShowVariantManagementTab}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Flyout>
+                            </Button.Flyout>
+                            <Grid ColumnDefinitions="Auto">
+                                <Path Classes="nav-fill-icon"
+                                      Data="M12,6 A3,3 0 1 1 12,12 A3,3 0 1 1 12,6 Z M5,9 A2,2 0 1 1 5,13 A2,2 0 1 1 5,9 Z M19,9 A2,2 0 1 1 19,13 A2,2 0 1 1 19,9 Z M8,16 L16,16 L16,21 L8,21 Z M2,17 L7,17 L7,21 L2,21 Z M17,17 L22,17 L22,21 L17,21 Z" />
+                            </Grid>
+                        </Button>
 
-    </StackPanel>
+                        <Button Classes="nav-item sidebar-nav-button"
+                                Classes.active="{Binding IsConfigActive}"
+                                Command="{Binding ShowConfigCommand}"
+                                IsVisible="{Binding CanAccessConfig}"
+                                ToolTip.Tip="{DynamicResource Loc.Settings}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Path Classes="nav-fill-icon"
+                                      Data="M12,8 A4,4 0 1 1 12,16 A4,4 0 1 1 12,8 Z M11,2 L13,2 L13,5 L11,5 Z M11,19 L13,19 L13,22 L11,22 Z M2,11 L5,11 L5,13 L2,13 Z M19,11 L22,11 L22,13 L19,13 Z" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{DynamicResource Loc.Settings}"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsSidebarExpanded}" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
 
-    <!-- Bottom user info -->
-    <StackPanel Grid.Row="2"
-                Margin="0,0,0,20"
-                Spacing="8"
-                HorizontalAlignment="Center">
-        <Border Background="#474747ff"
-                CornerRadius="30"
-                Width="50"
-                Height="50"
-                HorizontalAlignment="Center">
-            <TextBlock Text="{Binding CurrentUser, Converter={StaticResource InitialsConverter}}"
-                       Foreground="White"
-                       FontSize="20"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontWeight="Bold"/>
+                <Border Grid.Row="2"
+                        BorderBrush="{DynamicResource DividerBrush}"
+                        BorderThickness="0,1,0,0"
+                        Padding="8">
+                    <StackPanel Spacing="8">
+                        <Border Classes="sidebar-session-panel"
+                                IsVisible="{Binding IsSidebarExpanded}">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Current Store"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding CurrentStoreDisplayName}"
+                                           Classes="caption" />
+                                <ComboBox Width="210"
+                                          Classes="app-dropdown sidebar-dropdown-control"
+                                          ItemsSource="{Binding AllowedStores}"
+                                          SelectedValue="{Binding SelectedStoreId, Mode=TwoWay}"
+                                          SelectedValueBinding="{Binding Id}"
+                                          IsVisible="{Binding HasStoreSwitcher}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Border Width="36"
+                                    Height="36"
+                                    CornerRadius="6"
+                                    Background="{DynamicResource SurfaceAltBrush}">
+                                <TextBlock Text="{Binding CurrentUser, Converter={StaticResource InitialsConverter}}"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </Border>
+                            <StackPanel Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding IsSidebarExpanded}">
+                                <TextBlock Text="{Binding CurrentUser}" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding CurrentRoleLabel}" Classes="caption" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Button Classes="nav-item danger-ghost sidebar-nav-button"
+                                Command="{Binding LogoutCommand}"
+                                ToolTip.Tip="{DynamicResource Loc.Logout}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Path Classes="nav-fill-icon"
+                                      Data="M10,3 L10,9 L4,9 L4,15 L10,15 L10,21 L20,12 Z" />
+                                <TextBlock Grid.Column="1"
+                                           Text="{DynamicResource Loc.Logout}"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding IsSidebarExpanded}" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Border>
 
-        <TextBlock Text="{Binding CurrentUser, Converter={StaticResource TitleCaseConverter}}"
-           FontSize="16"
-           FontWeight="Black"
-           Foreground="#333"
-           HorizontalAlignment="Center"/>
-
-
-        <Button Click="LogoutButton_Click"
-                Background="Transparent"
-                Foreground="Red"
-                FontSize="18"
-                Content="⏻"
-                HorizontalAlignment="Center"/>
-    </StackPanel>
-
-</Grid>
-
-
-        <!-- ==================== TOP BAR ==================== -->
         <Grid Grid.Column="1"
-              Grid.ColumnSpan="2"
-              Background="White"
-              Height="70"
-              VerticalAlignment="Top">
+              RowDefinitions="Auto,Auto,*"
+              Background="{DynamicResource BackgroundBrush}">
+            <Border Grid.Row="0"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource DividerBrush}"
+                    BorderThickness="0,0,0,1"
+                    Padding="18,12">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                    <StackPanel>
+                        <TextBlock Text="{Binding CurrentSectionTitle}"
+                                   Classes="title"
+                                   FontSize="24" />
+                        <TextBlock Text="{Binding CurrentSectionSubtitle}"
+                                   Classes="caption"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Spacing="10">
+                        <Border Padding="10,6"
+                                CornerRadius="5"
+                                Background="{DynamicResource WarningBrush}"
+                                IsVisible="{Binding IsDemoSession}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="DEMO MODE" FontWeight="Bold" />
+                                <TextBlock Text="{Binding DemoRemainingText}" FontWeight="SemiBold" />
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="status-chip"
+                                ToolTip.Tip="{Binding ConnectivityStatusText}">
+                            <TextBlock Text="{Binding ConnectivityStatusText}" Classes="caption" FontWeight="SemiBold" />
+                        </Border>
+                        <Border Classes="status-chip"
+                                ToolTip.Tip="{Binding LastSyncText}">
+                            <StackPanel Spacing="1">
+                                <TextBlock Text="{Binding SyncStatusText}" Classes="caption" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding LastSyncText}" Classes="caption" />
+                            </StackPanel>
+                        </Border>
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="{Binding CurrentDate}" Classes="caption" HorizontalAlignment="Right" />
+                            <TextBlock Text="{Binding CurrentTime}" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" HorizontalAlignment="Right" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            <Border Grid.Row="1"
+                    Margin="12,12,12,0"
+                    Padding="10,8"
+                    Classes="status-banner"
+                    IsVisible="{Binding ShowDemoWarning}">
+                <TextBlock Text="{Binding DemoWarningText}" FontWeight="SemiBold" />
+            </Border>
 
-            <!-- QR Section -->
-            <StackPanel Orientation="Horizontal"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Spacing="10">
-                <TextBox Width="250"
-                         Watermark="QR Code"
-                         CornerRadius="50"/>
-                <Button Content="Generate"
-                        Background="#0C4E32"
-                        Foreground="White"
-                        Padding="16,6"
-                        CornerRadius="15"/>
-            </StackPanel>
+            <Border Grid.Row="1"
+                    Margin="12,12,12,0"
+                    Padding="10,8"
+                    Classes="status-banner"
+                    IsVisible="{Binding IsSessionBusy}">
+                <StackPanel Spacing="6">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{DynamicResource Loc.Syncing}" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding SessionStatusText}" Classes="caption" />
+                    </StackPanel>
+                    <ProgressBar IsIndeterminate="True" Height="6" />
+                </StackPanel>
+            </Border>
 
-            <!-- Date & Time -->
-            <StackPanel Grid.Column="1"
-                        Orientation="Vertical"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Right" Margin="0,0,20,0">
-                <TextBlock Text="{Binding CurrentDate}"
-                           FontSize="14"
-                           Foreground="#333"/>
-                <TextBlock Text="{Binding CurrentTime}"
-                           FontSize="18"
-                           FontWeight="Bold"
-                           Foreground="#0C4E32"/>
-            </StackPanel>
-        </Grid>
-
-        <!-- ==================== MAIN CONTENT ==================== -->
-        <Grid Grid.Row="1"
-              Grid.Column="1"
-              Grid.ColumnSpan="2"
-              Background="#F5F5F5">
-            <ContentControl Content="{Binding CurrentView}">
-                <ContentControl.DataTemplates>
-                    <DataTemplate DataType="vm:HomeViewModel">
-                        <views:HomeView/>
-                    </DataTemplate>
-
-                    <DataTemplate DataType="vm:HistoryViewModel">
-                        <views:HistoryView/>
-                    </DataTemplate>
-
-                    <DataTemplate DataType="vm:ConfigViewModel">
-                        <views:PrinterConfigView/>
-                    </DataTemplate>
-                </ContentControl.DataTemplates>
+            <ContentControl Grid.Row="2"
+                            Content="{Binding CurrentView}">
+                <ContentControl.ContentTemplate>
+                    <local:ViewLocator />
+                </ContentControl.ContentTemplate>
             </ContentControl>
         </Grid>
     </Grid>

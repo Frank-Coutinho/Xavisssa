@@ -1,10 +1,39 @@
-<Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Xavissa.Frontend.App"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+<Application
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Xavissa.Frontend"
+    xmlns:conv="using:Xavissa.Frontend.Converters"
+    x:Class="Xavissa.Frontend.App">
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+
+                <!-- Base always -->
+                <ResourceInclude Source="avares://Xavissa.Frontend/Views/Themes/BaseTheme.axaml"/>
+
+                <!-- Default theme -->
+                <ResourceInclude Source="avares://Xavissa.Frontend/Views/Themes/LightTheme.axaml"/>
+                <ResourceInclude Source="avares://Xavissa.Frontend/Views/Localization/Strings.en-US.axaml"/>
+
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:NullToBoolConverter x:Key="NullToBoolConverter"/>
+            <conv:StringHasValueConverter x:Key="StringHasValueConverter"/>
+            <conv:BoolInverseConverter x:Key="BoolInverseConverter"/>
+            <conv:HeaderImagePathToBitmapConverter x:Key="HeaderImagePathToBitmapConverter"/>
+
+        </ResourceDictionary>
+    </Application.Resources>
 
     <Application.Styles>
-        <FluentTheme />
+        <FluentTheme/>
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+        <StyleInclude Source="avares://Xavissa.Frontend/Views/Themes/MaterialStyles.axaml"/>
     </Application.Styles>
+
 </Application>

@@ -1,11 +1,8 @@
-using System.Linq;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Xavissa.Backend.DTOs;
+using Xavissa.Backend.Security;
 using Xavissa.Backend.Services;
-using Xavissa.Backend.Utilities;
-using Xavissa.Database;
 using Xavissa.Database.Models;
 using Xavissa.Database.ViewModels;
 
@@ -13,58 +10,34 @@ namespace Xavissa.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Route("api/v1/sales")]
+    [Authorize]
     public class SalesController : ControllerBase
     {
-        private readonly XavissaDbContext _db;
         private readonly SalesService _salesService;
+        private readonly TenantAccessService _tenantAccess;
 
-        public SalesController(XavissaDbContext db, SalesService salesService)
+        public SalesController(
+            SalesService salesService,
+            TenantAccessService tenantAccess
+        )
         {
-            _db = db;
             _salesService = salesService;
+            _tenantAccess = tenantAccess;
         }
 
-        #region 🔹 GET Endpoints
-
         [HttpGet]
-        public async Task<ActionResult<List<Sale>>> GetAll()
+        public async Task<ActionResult<List<SaleReadDto>>> GetAll()
         {
-            var sales = await _db
-                .Sales.Include(s => s.SaleItems)
-                .ThenInclude(si => si.Product)
-                .Include(s => s.User)
-                .OrderByDescending(s => s.SaleDate)
-                .ToListAsync();
-
-            return Ok(sales);
+            var sales = await _salesService.GetAllSalesAsync();
+            return Ok(sales.Select(MapSale));
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Sale>> GetById(int id)
+        public async Task<ActionResult<SaleReadDto>> GetById(int id)
         {
-            var sale = await _db
-                .Sales.Include(s => s.SaleItems)
-                .ThenInclude(si => si.Product)
-                .Include(s => s.User)
-                .FirstOrDefaultAsync(s => s.Id == id);
-
-            if (sale == null)
-                return NotFound();
-            return Ok(sale);
-        }
-
-        [HttpGet("by-date")]
-        public async Task<ActionResult<List<Sale>>> GetByDateRange(DateTime start, DateTime end)
-        {
-            var sales = await _db
-                .Sales.Include(s => s.SaleItems)
-                .ThenInclude(si => si.Product)
-                .Include(s => s.User)
-                .Where(s => s.SaleDate >= start && s.SaleDate <= end)
-                .OrderByDescending(s => s.SaleDate)
-                .ToListAsync();
-
-            return Ok(sales);
+            var sale = await _salesService.GetSaleByIdAsync(id);
+            return sale == null ? NotFound() : Ok(MapSale(sale));
         }
 
         [HttpGet("summary")]
@@ -73,256 +46,217 @@ namespace Xavissa.Backend.Controllers
             DateTime? end = null
         )
         {
-            var query = _db.Sales.AsQueryable();
-
-            if (start.HasValue)
-                query = query.Where(s => s.SaleDate >= start.Value);
-            if (end.HasValue)
-                query = query.Where(s => s.SaleDate <= end.Value);
-
-            var salesList = await query.ToListAsync();
-
-            if (!salesList.Any())
-            {
-                return Ok(
-                    new SalesReportViewModel
-                    {
-                        StartDate = start,
-                        EndDate = end,
-                        TotalSalesCount = 0,
-                        TotalRevenue = 0,
-                        AverageSaleValue = 0,
-                    }
-                );
-            }
-
-            var report = new SalesReportViewModel
-            {
-                StartDate = start ?? salesList.Min(s => s.SaleDate),
-                EndDate = end ?? salesList.Max(s => s.SaleDate),
-                TotalSalesCount = salesList.Count,
-                TotalRevenue = salesList.Sum(s => s.TotalAmount),
-                AverageSaleValue = salesList.Average(s => s.TotalAmount),
-            };
-
-            return Ok(report);
+            return Ok(await _salesService.GetSalesSummaryAsync(start, end));
         }
-
-        [HttpGet("by-category/{category}")]
-        public async Task<ActionResult<List<Sale>>> GetByCategory(string category)
-        {
-            // Parse string to enum
-            if (!Enum.TryParse<ProductCategory>(category, true, out var categoryEnum))
-            {
-                return BadRequest("Invalid category");
-            }
-
-            var sales = await _db
-                .Sales.Include(s => s.SaleItems)
-                .Where(s => s.SaleItems.Any(i => i.ProductCategory == categoryEnum))
-                .ToListAsync();
-
-            return Ok(sales);
-        }
-
-        [HttpGet("payment/{paymentMethod}")]
-        public async Task<ActionResult<List<Sale>>> GetByPaymentMethod(string paymentMethod)
-        {
-            if (!Enum.TryParse<PaymentMethod>(paymentMethod, true, out var parsedMethod))
-                return BadRequest("Invalid payment method.");
-
-            var sales = await _db
-                .Sales.Where(s => s.PaymentMethod == parsedMethod)
-                .Include(s => s.SaleItems)
-                .ThenInclude(si => si.Product)
-                .ToListAsync();
-
-            return Ok(sales);
-        }
-
-        [HttpGet("top-products")]
-        public async Task<ActionResult<List<ProductSalesReportViewModel>>> GetTopSellingProducts(
-            int topCount = 10
-        )
-        {
-            var topProducts = await _db
-                .SaleItems.Include(si => si.Product)
-                .GroupBy(si => si.Product.Name)
-                .Select(g => new ProductSalesReportViewModel
-                {
-                    ProductName = g.Key,
-                    TotalQuantitySold = g.Sum(x => x.Quantity),
-                    TotalRevenue = g.Sum(x => x.Quantity * x.UnitPrice),
-                    TransactionCount = g.Count(),
-                })
-                .OrderByDescending(x => x.TotalQuantitySold)
-                .Take(topCount)
-                .ToListAsync();
-
-            return Ok(topProducts);
-        }
-
-        #endregion
-
-        #region  POST Endpoint
 
         [HttpPost]
-        [HttpPost]
-        [HttpPost]
-        public async Task<ActionResult<Sale>> Create([FromBody] SaleCreateDto dto)
+        public async Task<ActionResult<SaleReadDto>> Create([FromBody] SaleCreateDto dto)
         {
-            if (dto == null || dto.SaleItems == null || !dto.SaleItems.Any())
-                return BadRequest("Invalid sale data");
+            var storeRequirement = _tenantAccess.RequireSelectedStore();
+            if (storeRequirement != null)
+                return storeRequirement.Result!;
 
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim))
-                return BadRequest("Invalid user claim");
+            var tenantId = dto.TenantId ?? _tenantAccess.SelectedTenantId;
+            if (!tenantId.HasValue)
+                return BadRequest("Tenant is required.");
+            if (!_tenantAccess.CurrentUserId.HasValue)
+                return BadRequest("Invalid user claim.");
 
-            var userId = int.Parse(userIdClaim);
-
-            // Pass the DTO to the service
             var sale = await _salesService.CreateSaleAsync(
                 dto.SaleItems,
-                userId,
-                dto.SaleItems.First().PaymentMethod, // for per-sale payment method
+                dto.SalePayments,
+                _tenantAccess.CurrentUserId.Value,
+                tenantId.Value,
+                _tenantAccess.SelectedStoreId!.Value,
                 dto.Discount ?? 0,
-                dto.AmountPaid ?? 0
+                dto.SyncId,
+                dto.SourceDeviceId,
+                dto.ClientCreatedAt,
+                dto.ClientUpdatedAt
             );
 
-            return CreatedAtAction(nameof(GetById), new { id = sale.Id }, sale);
+            return CreatedAtAction(nameof(GetById), new { id = sale.Id }, MapSale(sale));
         }
 
-        #endregion
-
-        #region 🔹 PUT Endpoint
-
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult<Sale>> Update(int id, [FromBody] Sale updatedSale)
+        [HttpPost("{id:int}/soft-delete")]
+        public async Task<ActionResult> SoftDelete(int id, [FromBody] DeleteSaleRequest request)
         {
-            var existing = await _db
-                .Sales.Include(s => s.SaleItems)
-                .FirstOrDefaultAsync(s => s.Id == id);
+            var result = await _salesService.SoftDeleteSaleAsync(id, request.Reason ?? string.Empty);
+            return result ? Ok("Sale archived and soft-deleted successfully.") : NotFound();
+        }
 
-            if (existing == null)
-                return NotFound();
+        [HttpPost("{saleId:int}/items/{saleItemId:int}/soft-delete")]
+        public async Task<ActionResult> SoftDeleteSaleItem(
+            int saleId,
+            int saleItemId,
+            [FromBody] DeleteSaleRequest request)
+        {
+            var result = await _salesService.SoftDeleteSaleItemAsync(
+                saleId,
+                saleItemId,
+                request.Reason ?? string.Empty);
+            return result ? Ok("Sale item archived and soft-deleted successfully.") : NotFound();
+        }
 
-            existing.TotalAmount = updatedSale.TotalAmount;
-            existing.PaymentMethod = updatedSale.PaymentMethod;
-            existing.LastModified = DateTime.UtcNow;
-
-            _db.SaleItems.RemoveRange(existing.SaleItems);
-            foreach (var item in updatedSale.SaleItems)
+        [HttpPost("{id:int}/refund")]
+        public async Task<ActionResult> Refund(int id, [FromBody] RefundRequest request)
+        {
+            try
             {
-                item.SaleId = existing.Id;
-                item.LastModified = DateTime.UtcNow;
+                var result = await _salesService.RefundSaleAsync(id, request.Reason ?? "Refunded");
+                return result ? Ok() : NotFound();
             }
-
-            existing.SaleItems = updatedSale.SaleItems;
-
-            await _db.SaveChangesAsync();
-            return Ok(existing);
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
+            }
         }
 
-        #endregion
-
-        #region 🔹 DELETE Endpoints
-
-        [HttpDelete("{id:int}")]
-        public async Task<ActionResult> Delete(int id)
+        [HttpPost("{id:int}/void")]
+        public async Task<ActionResult> Void(int id, [FromBody] VoidSaleRequest request)
         {
-            var sale = await _db
-                .Sales.Include(s => s.SaleItems)
-                .FirstOrDefaultAsync(s => s.Id == id);
-
-            if (sale == null)
-                return NotFound();
-
-            // Archive before deleting
-            var deletedSale = new DeletedSale
+            try
             {
-                OriginalSaleId = sale.Id,
+                var result = await _salesService.VoidSaleAsync(id, request.Reason ?? "Voided");
+                return result ? Ok() : NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
+            }
+        }
+
+        [HttpPost("{saleId:int}/items/{saleItemId:int}/refund")]
+        public async Task<ActionResult> RefundSaleItem(
+            int saleId,
+            int saleItemId,
+            [FromBody] RefundSaleItemRequest request)
+        {
+            try
+            {
+                var result = await _salesService.RefundSaleItemAsync(
+                    saleId,
+                    saleItemId,
+                    request.Quantity,
+                    request.Reason ?? "Refunded");
+                return result ? Ok() : NotFound();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
+            }
+        }
+
+        private static SaleReadDto MapSale(Sale sale)
+        {
+            return new SaleReadDto
+            {
+                Id = sale.Id,
+                OnlineId = sale.Id,
+                SyncId = sale.SyncId,
+                TenantId = sale.TenantId ?? 0,
+                StoreId = sale.StoreId,
+                SourceDeviceId = sale.SourceDeviceId,
+                ClientCreatedAt = sale.ClientCreatedAt,
+                ClientUpdatedAt = sale.ClientUpdatedAt,
+                LastSyncedAt = sale.LastSyncedAt,
+                CreatedAt = sale.CreatedAt,
+                UpdatedAt = sale.UpdatedAt,
                 SaleDate = sale.SaleDate,
                 TotalAmount = sale.TotalAmount,
-                Discount = sale.Discount ?? 0,
-                AmountPaid = sale.AmountPaid ?? 0,
-                PaymentMethod = sale.PaymentMethod.ToString(),
+                Discount = sale.Discount,
+                TotalPaid = sale.Payments.Sum(x => x.Amount),
+                PaymentSummary = SalesService.BuildPaymentSummary(sale.Payments),
+                PaymentStatus = sale.PaymentStatus,
+                ChangeGiven = sale.ChangeGiven,
                 ReceiptNumber = sale.ReceiptNumber,
-                Code = sale.Code,
-                UserId = sale.UserId ?? 0,
-                DeletedAt = DateTime.UtcNow,
+                Status = sale.Status,
+                IsRefunded = sale.IsRefunded,
+                IsVoided = sale.IsVoided,
+                RefundReason = sale.RefundReason,
+                VoidedAt = sale.VoidedAt,
+                VoidedByUserId = sale.VoidedByUserId,
+                VoidReason = sale.VoidReason,
+                CashRegisterSessionId = sale.CashRegisterSessionId,
+                CashRegisterTrackingMode = sale.CashRegisterTrackingMode,
+                HasUntrackedCashPayment = sale.HasUntrackedCashPayment,
+                SalePayments = sale.Payments.Select(payment => new SalePaymentReadDto
+                {
+                    Id = payment.Id,
+                    OnlineId = payment.Id,
+                    SyncId = payment.SyncId,
+                    SourceDeviceId = payment.SourceDeviceId,
+                    ClientCreatedAt = payment.ClientCreatedAt,
+                    ClientUpdatedAt = payment.ClientUpdatedAt,
+                    LastSyncedAt = payment.LastSyncedAt,
+                    CreatedAt = payment.CreatedAt,
+                    PaymentMethod = payment.PaymentMethod,
+                    Amount = payment.Amount,
+                    CashRegisterSessionId = payment.CashRegisterSessionId,
+                    ReferenceNumber = payment.ReferenceNumber,
+                    Notes = payment.Notes,
+                }).ToList(),
                 SaleItems = sale
-                    .SaleItems.Select(i => new DeletedSaleItem
+                    .SaleItems.Select(si => new SaleItemReadDto
                     {
-                        ProductId = i.ProductId,
-                        ProductCategory = i.ProductCategory.ToString(),
-                        UnitPrice = i.UnitPrice,
-                        Quantity = i.Quantity,
+                        Id = si.Id,
+                        OnlineId = si.Id,
+                        SyncId = si.SyncId,
+                        TenantId = si.TenantId ?? 0,
+                        StoreId = si.StoreId,
+                        SourceDeviceId = si.SourceDeviceId,
+                        ClientCreatedAt = si.ClientCreatedAt,
+                        ClientUpdatedAt = si.ClientUpdatedAt,
+                        LastSyncedAt = si.LastSyncedAt,
+                        CreatedAt = si.CreatedAt,
+                        UpdatedAt = si.UpdatedAt,
+                        ProductId = si.Variant?.ProductId ?? 0,
+                        VariantId = si.VariantId,
+                        ProductName = si.Variant?.Product?.Name ?? "Unknown Product",
+                        Quantity = si.Quantity,
+                        UnitPrice = si.UnitPrice,
+                        Subtotal = si.UnitPrice * si.Quantity,
+                        ProductCategory = si.Variant?.Product?.CategoryNavigation?.Name ?? string.Empty,
+                        IsRefunded = si.IsRefunded,
+                        RefundedQuantity = si.RefundedQuantity,
+                        RefundableQuantity = Math.Max(si.Quantity - si.RefundedQuantity, 0),
+                        RefundReason = si.RefundReason,
                     })
                     .ToList(),
             };
-
-            _db.DeletedSales.Add(deletedSale);
-            _db.Sales.Remove(sale);
-
-            await _db.SaveChangesAsync();
-
-            return Ok("Sale archived and deleted successfully.");
         }
-
-        [HttpDelete("multiple")]
-        public async Task<ActionResult> DeleteMultiple([FromBody] List<int> saleIds)
-        {
-            if (saleIds == null || !saleIds.Any())
-                return BadRequest("No sale IDs provided.");
-
-            var salesToDelete = await _db.Sales.Where(s => saleIds.Contains(s.Id)).ToListAsync();
-
-            if (!salesToDelete.Any())
-                return NotFound("No sales found for provided IDs.");
-
-            _db.Sales.RemoveRange(salesToDelete);
-            await _db.SaveChangesAsync();
-
-            return Ok(salesToDelete.Count);
-        }
-
-        [HttpDelete("by-date")]
-        public async Task<ActionResult<int>> DeleteByDateRange(DateTime start, DateTime end)
-        {
-            var salesToDelete = await _db
-                .Sales.Where(s => s.SaleDate >= start && s.SaleDate <= end)
-                .ToListAsync();
-
-            if (!salesToDelete.Any())
-                return NotFound("No sales found in range.");
-
-            _db.Sales.RemoveRange(salesToDelete);
-            await _db.SaveChangesAsync();
-
-            return Ok(salesToDelete.Count);
-        }
-
-        #endregion
     }
 
-    #region 🔹 View Models for Reports
-
-    public class ProductSalesReportViewModel
+    public class RefundRequest
     {
-        public string ProductName { get; set; }
-        public int TotalQuantitySold { get; set; }
-        public decimal TotalRevenue { get; set; }
-        public int TransactionCount { get; set; }
+        public string? Reason { get; set; }
     }
 
-    public class SalesReportViewModel
+    public class RefundSaleItemRequest
     {
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public int TotalSalesCount { get; set; }
-        public decimal TotalRevenue { get; set; }
-        public decimal AverageSaleValue { get; set; }
+        public int Quantity { get; set; }
+        public string? Reason { get; set; }
     }
 
-    #endregion
+    public class DeleteSaleRequest
+    {
+        public string? Reason { get; set; }
+    }
+
+    public class VoidSaleRequest
+    {
+        public string? Reason { get; set; }
+    }
 }

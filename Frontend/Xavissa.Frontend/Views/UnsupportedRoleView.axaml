@@ -1,0 +1,20 @@
+<UserControl
+    x:Class="Xavissa.Frontend.Views.UnsupportedRoleView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    x:DataType="vm:UnsupportedRoleViewModel">
+    <Grid Margin="24">
+        <Border Classes="panel"
+                MaxWidth="520"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <StackPanel Spacing="10">
+                <TextBlock Text="{Binding Title}" Classes="title" />
+                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+                <TextBlock Text="{DynamicResource Loc.UnsupportedRoleDetail}" Classes="caption" TextWrapping="Wrap" />
+                <TextBlock Text="{DynamicResource Loc.UseLogoutToReturn}" Classes="caption" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

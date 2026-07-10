@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Xavissa.Frontend.ViewModels"
+             x:DataType="vm:ManagementViewModel"
+             Width="350" Height="300"
+             Background="White" Padding="16">
+
+    <StackPanel Spacing="12">
+        <TextBlock Text="{DynamicResource Loc.EditProduct}" FontWeight="Bold" FontSize="20" Foreground="#0C4E32" HorizontalAlignment="Center"/>
+
+        <TextBox Text="{Binding SelectedProduct.Name, Mode=TwoWay}" Watermark="{DynamicResource Loc.Product}" Background="#F9F9F9" CornerRadius="6" Padding="6"/>
+        <TextBox Text="{Binding SelectedProduct.Color, Mode=TwoWay}" Watermark="{DynamicResource Loc.Color}" Background="#F9F9F9" CornerRadius="6" Padding="6"/>
+        <TextBox Text="{Binding SelectedProduct.Price, Mode=TwoWay}" Watermark="{DynamicResource Loc.Price}" Background="#F9F9F9" CornerRadius="6" Padding="6"/>
+        <TextBox Text="{Binding SelectedProduct.StockQuantity, Mode=TwoWay}" Watermark="{DynamicResource Loc.StockQuantity}" Background="#F9F9F9" CornerRadius="6" Padding="6"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Margin="0,10,0,0">
+            <Button Content="{DynamicResource Loc.Save}" Command="{Binding SaveEditProductCommand}" Background="#0C4E32" Foreground="White" CornerRadius="8"/>
+            <Button Content="{DynamicResource Loc.Cancel}" Command="{Binding CancelEditProductCommand}" Background="White" BorderBrush="Red" Foreground="Red" CornerRadius="8"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

@@ -1,309 +1,1118 @@
-<UserControl x:Name="RootControl"
+<UserControl x:Class="Xavissa.Frontend.Views.ManagementView"
+             x:DataType="vm:ManagementViewModel"
+             x:Name="Root"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
              xmlns:vm="using:Xavissa.Frontend.ViewModels"
              xmlns:models="using:Xavissa.Frontend.Models"
-             xmlns:fi="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
-             xmlns:ficommon="clr-namespace:FluentIcons.Common;assembly=FluentIcons.Common"
-             x:Class="Xavissa.Frontend.Views.ManagementView"
-             x:DataType="vm:ManagementViewModel"
-             Background="#F5F5F5"
-             Foreground="#333">
+             Background="Transparent">
 
-    <Grid Margin="10" RowDefinitions="Auto,*">
-
-    <!-- ========== HEADER NAVIGATION BAR ========== -->
-    <DockPanel Grid.Row="0" Margin="0,0,0,10" LastChildFill="False">
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Spacing="10">
-
-            <!-- Navigate to Main Button -->
-            <Button Content="Go to Main"
-                    Background="#0C4E32"
-                    Foreground="White"
-                    FontWeight="Bold"
-                    CornerRadius="8"
-                    Padding="8,4"
-                    Command="{Binding GoToMainCommand}"/>
-
-            <!-- Logout Button -->
-            <Button Content="Logout"
-                    Background="White"
-                    BorderBrush="Red"
-                    Foreground="Red"
-                    FontWeight="Bold"
-                    CornerRadius="8"
-                    Padding="8,4"
-                    Command="{Binding LogoutCommand}"/>
+  <Grid RowDefinitions="Auto,*" Margin="12">
+    <Border Classes="panel" Grid.Row="0" Margin="0,0,0,12">
+      <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+        <TextBlock Grid.Row="0"
+                   Grid.Column="0"
+                   Text="{Binding WorkspaceTitle}"
+                   Classes="title" />
+        <StackPanel Grid.Row="0"
+                    Grid.Column="1"
+                    Orientation="Horizontal"
+                    Spacing="8">
+          <Button Classes="secondary"
+                  Content="{DynamicResource Loc.Reload}"
+                  Command="{Binding LoadCommand}" />
+          <Button Classes="danger"
+                  Content="{DynamicResource Loc.Logout}"
+                  Command="{Binding LogoutCommand}" />
         </StackPanel>
 
-        <TextBlock Text="Management Dashboard"
-                   FontSize="20"
-                   FontWeight="Bold"
-                   Foreground="#0C4E32"
-                   VerticalAlignment="Center"
-                   DockPanel.Dock="Left"/>
-    </DockPanel>
-        <TabControl Grid.Row="1" Background="#F5F5F5" BorderBrush="Transparent" SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+        <TextBlock Grid.Row="1"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Margin="0,8,0,0"
+                   Text="{Binding WorkspaceSubtitle}"
+                   Classes="caption"
+                   TextWrapping="Wrap" />
+        <Border Grid.Row="1"
+                Grid.Column="1"
+                Classes="status-chip info"
+                HorizontalAlignment="Right"
+                IsVisible="{Binding IsLoading}">
+          <TextBlock Text="{DynamicResource Loc.Loading}" Classes="caption" />
+        </Border>
+      </Grid>
+    </Border>
 
-            <!-- ==================== USERS TAB ==================== -->
-            <TabItem Header="Users" Foreground="#333">
-                <DockPanel Margin="10">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
-                        <StackPanel Spacing="12">
+    <TabControl Grid.Row="1"
+                Classes="management-tabs"
+                SelectedIndex="{Binding SelectedTabIndex, Mode=TwoWay}">
+      <TabItem Header="{Binding TeamTabHeader}"
+               IsVisible="{Binding ShowEmployeeTabs}">
+        <Grid Margin="0,8,0,0"
+              RowDefinitions="Auto,*,Auto"
+              RowSpacing="12">
+          <Border Classes="panel"
+                  Grid.Row="0">
+            <StackPanel Spacing="10">
+              <TextBlock Text="{Binding TeamTabDescription}"
+                         Classes="caption"
+                         TextWrapping="Wrap" />
 
-                            <TextBlock Text="User Management"
-                                       FontWeight="Bold"
-                                       FontSize="22"
-                                       Foreground="#0C4E32"
-                                       HorizontalAlignment="Center"
-                                       Margin="0,0,0,20"/>
+              <Grid ColumnDefinitions="*,Auto,Auto,Auto"
+                    RowDefinitions="Auto,Auto"
+                    ColumnSpacing="8"
+                    RowSpacing="8">
+                <TextBox Grid.Row="0"
+                         Grid.Column="0"
+                         Watermark="Search team"
+                         Text="{Binding TeamUserSearchText, Mode=TwoWay}" />
+                <Button Grid.Row="0"
+                        Grid.Column="1"
+                        Classes="secondary"
+                        Content="All"
+                        Command="{Binding ShowAllUsersCommand}" />
+                <Button Grid.Row="0"
+                        Grid.Column="2"
+                        Classes="secondary"
+                        Content="Active"
+                        Command="{Binding ShowActiveUsersCommand}" />
+                <Button Grid.Row="0"
+                        Grid.Column="3"
+                        Classes="secondary"
+                        Content="Inactive"
+                        Command="{Binding ShowInactiveUsersCommand}" />
 
-                            <ItemsControl ItemsSource="{Binding Users}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border CornerRadius="12"
-                                                Background="White"
-                                                Margin="6"
-                                                Width="250"
-                                                Padding="12"
-                                                BoxShadow="0 2 6 #00000020">
-                                            <StackPanel Spacing="6">
-
-                                                <TextBox Text="{Binding username, Mode=TwoWay}" 
-                                                         FontWeight="Bold"
-                                                         FontSize="14"
-                                                         Background="#F9F9F9"
-                                                         Padding="6"
-                                                         CornerRadius="6"
-                                                         Watermark="Username"
-                                                         Foreground="#333"/>
-
-                                                <TextBox Text="{Binding email, Mode=TwoWay}" 
-                                                         FontSize="12"
-                                                         Background="#F9F9F9"
-                                                         Padding="6"
-                                                         CornerRadius="6"
-                                                         Watermark="Email"
-                                                         Foreground="#333"/>
-
-                                                <ComboBox ItemsSource="{Binding DataContext.AvailableRoles, ElementName=RootControl}" 
-                                                          SelectedItem="{Binding role, Mode=TwoWay}"
-                                                          Background="#F9F9F9"
-                                                          CornerRadius="6"
-                                                          Foreground="#333"/>
-
-                                                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,6,0,0">
-                                                    <Button Width="100"
-                                                            Background="#0C4E32"
-                                                            Foreground="White"
-                                                            CornerRadius="8"
-                                                            Command="{Binding DataContext.UpdateUserCommand, ElementName=RootControl}"
-                                                            CommandParameter="{Binding}">
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                                                            <!-- <fi:FluentIcon Icon="{x:Static ficommon:Icon.EditFilled}" Foreground="White" Width="16" Height="16"/> -->
-                                                            <TextBlock Text="Update" FontWeight="Bold"/>
-                                                        </StackPanel>
-                                                    </Button>
-
-                                                    <Button Width="100"
-                                                            Background="White"
-                                                            BorderBrush="Red"
-                                                            Foreground="Red"
-                                                            CornerRadius="8"
-                                                            Command="{Binding DataContext.DeleteUserCommand, ElementName=RootControl}"
-                                                            CommandParameter="{Binding}">
-                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                                                            <!-- <fi:FluentIcon Icon="{x:Static ficommon:Icon.DeleteFilled}" Foreground="Red" Width="16" Height="16"/> -->
-                                                            <TextBlock Text="Delete" FontWeight="Bold"/>
-                                                        </StackPanel>
-                                                    </Button>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                        </StackPanel>
-                    </ScrollViewer>
-                </DockPanel>
-            </TabItem>
-
-            <!-- ==================== ADD USER TAB ==================== -->
-            <TabItem Header="Add User" Foreground="#333">
-                <Border Background="White" CornerRadius="12" Padding="16" Margin="10" BoxShadow="0 2 6 #00000020">
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="Add New User" FontWeight="Bold" FontSize="22" Foreground="#0C4E32" HorizontalAlignment="Center"/>
-
-                        <TextBox Watermark="Username" Foreground="#333" Text="{Binding NewUsername, Mode=TwoWay}" Padding="6" Background="#F9F9F9" CornerRadius="6"/>
-                        <TextBox Watermark="Email" Foreground="#333" Text="{Binding NewEmail, Mode=TwoWay}" Padding="6" Background="#F9F9F9" CornerRadius="6"/>
-                        <TextBox Watermark="Password" Foreground="#333" Text="{Binding NewPassword, Mode=TwoWay}" Padding="6" Background="#F9F9F9" CornerRadius="6"/>
-
-                        <ComboBox ItemsSource="{Binding AvailableRoles}" Foreground="#333" SelectedItem="{Binding SelectedRole, Mode=TwoWay}" Background="#F9F9F9" CornerRadius="6"/>
-
-                        <Button Content="Create User"
-                                Background="#0C4E32"
-                                Foreground="White"
-                                FontWeight="Bold"
-                                CornerRadius="8"
-                                Height="40"
-                                Command="{Binding CreateUserCommand}"/>
-                    </StackPanel>
-                </Border>
-            </TabItem>
-
-            <!-- ==================== PRODUCTS TAB ==================== -->
-<TabItem Header="Products" Foreground="#333">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="20" Margin="10">
-
-            <!-- ==================== ADD NEW PRODUCT SECTION ==================== -->
-            <Border Background="White" CornerRadius="12" Padding="16" BoxShadow="0 2 6 #00000020">
-                <StackPanel Spacing="10">
-                    <TextBlock Text="Add New Product"
-                               FontWeight="Bold"
-                               FontSize="20"
-                               Foreground="#0C4E32"
-                               HorizontalAlignment="Center"
-                               Margin="0,0,0,10"/>
-
-                    <!-- Product Name -->
-                    <TextBlock Text="Product Name" FontWeight="Bold" Foreground="#333" FontSize="13"/>
-                    <TextBox Text="{Binding NewProductName, Mode=TwoWay}"
-                             Foreground="#333"
-                             Background="#F9F9F9"
-                             CornerRadius="6"
-                             Padding="6"/>
-
-                    <!-- Color -->
-                    <TextBlock Text="Color" FontWeight="Bold" Foreground="#333" FontSize="13"/>
-                    <TextBox Text="{Binding NewProductColor, Mode=TwoWay}"
-                             Foreground="#333"
-                             Background="#F9F9F9"
-                             CornerRadius="6"
-                             Padding="6"/>
-
-                    <!-- Price -->
-                    <TextBlock Text="Price" FontWeight="Bold" Foreground="#333" FontSize="13"/>
-                    <TextBox Text="{Binding NewProductPrice, Mode=TwoWay}"
-                             Foreground="#333"
-                             Background="#F9F9F9"
-                             CornerRadius="6"
-                             Padding="6"/>
-
-                    <!-- Quantity -->
-                    <TextBlock Text="StockQuantity" FontWeight="Bold" Foreground="#333" FontSize="13"/>
-                    <TextBox Text="{Binding NewProductQuantity, Mode=TwoWay}"
-                             Foreground="#333"
-                             Background="#F9F9F9"
-                             CornerRadius="6"
-                             Padding="6"/>
-
-                    <Button Content="Create Product"
-                            Background="#0C4E32"
-                            Foreground="White"
-                            FontWeight="Bold"
-                            CornerRadius="8"
-                            Height="40"
-                            Command="{Binding CreateProductCommand}"/>
+                <CheckBox Grid.Row="1"
+                          Grid.Column="0"
+                          Content="Select all visible users"
+                          IsChecked="{Binding AllVisibleUsersSelected, Mode=TwoWay}" />
+                <StackPanel Grid.Row="1"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="3"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Spacing="8">
+                  <Button Classes="primary"
+                          Content="Add User"
+                          Command="{Binding OpenCreateUserPopupCommand}" />
+                  <Button Classes="secondary"
+                          Content="Activate Selected"
+                          Command="{Binding MarkSelectedUsersActiveCommand}"
+                          IsEnabled="{Binding HasSelectedInactiveUsers}" />
+                  <Button Classes="secondary"
+                          Content="Deactivate Selected"
+                          Command="{Binding MarkSelectedUsersInactiveCommand}"
+                          IsEnabled="{Binding HasSelectedActiveUsers}" />
+                  <Button Classes="danger"
+                          Content="Delete Selected"
+                          Command="{Binding DeleteSelectedUsersCommand}"
+                          IsEnabled="{Binding HasSelectedUsers}" />
                 </StackPanel>
+              </Grid>
+
+              <TextBlock Text="{Binding TeamSelectionSummary}"
+                         Classes="caption" />
+            </StackPanel>
+          </Border>
+
+          <dg:DataGrid Grid.Row="1"
+                       AutoGenerateColumns="False"
+                       ItemsSource="{Binding VisibleUsers}"
+                       CanUserReorderColumns="False"
+                       CanUserResizeColumns="True"
+                       CanUserSortColumns="True"
+                       HeadersVisibility="Column"
+                       GridLinesVisibility="Horizontal"
+                       BorderBrush="{DynamicResource DividerBrush}"
+                       BorderThickness="1"
+                       Background="{DynamicResource SurfaceBrush}">
+            <dg:DataGrid.Columns>
+              <dg:DataGridTemplateColumn Header=""
+                                         Width="48"
+                                         IsReadOnly="False">
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate>
+                    <CheckBox Classes="grid-selector"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Focusable="False"
+                              IsThreeState="False"
+                              IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+                <dg:DataGridTemplateColumn.CellEditingTemplate>
+                  <DataTemplate>
+                    <CheckBox Classes="grid-selector"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              Focusable="False"
+                              IsThreeState="False"
+                              IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellEditingTemplate>
+              </dg:DataGridTemplateColumn>
+              <dg:DataGridTextColumn Header="Username"
+                                     Width="1.4*"
+                                     IsReadOnly="True"
+                                     Binding="{Binding Username}" />
+              <dg:DataGridTextColumn Header="Email"
+                                     Width="1.8*"
+                                     IsReadOnly="True"
+                                     Binding="{Binding EmailDisplay}" />
+              <dg:DataGridTextColumn Header="Role"
+                                     Width="1.2*"
+                                     IsReadOnly="True"
+                                     Binding="{Binding EffectiveRole}" />
+              <dg:DataGridTextColumn Header="Status"
+                                     Width="0.9*"
+                                     IsReadOnly="True"
+                                     Binding="{Binding StatusLabel}" />
+              <dg:DataGridTextColumn Header="Stores"
+                                     Width="2*"
+                                     IsReadOnly="True"
+                                     Binding="{Binding AssignedStoreSummary}" />
+              <dg:DataGridTemplateColumn Header="Actions"
+                                         Width="2*">
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate x:DataType="models:User">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                      <Button Classes="secondary icon-only"
+                              Command="{Binding DataContext.OpenUserEditorCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              ToolTip.Tip="Edit user">
+                        <Path Classes="button-icon"
+                              Data="M4,16 L4,20 L8,20 L18,10 L14,6 Z M15,5 L19,9 L20,8 C20.6,7.4 20.6,6.5 20,6 L18,4 C17.5,3.4 16.6,3.4 16,4 Z" />
+                      </Button>
+                      <Button Classes="secondary icon-only"
+                              Command="{Binding DataContext.MarkUserActiveCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              IsVisible="{Binding IsInactive}"
+                              ToolTip.Tip="Activate user">
+                        <Path Classes="button-icon"
+                              Data="M4,12 L9,17 L20,6" />
+                      </Button>
+                      <Button Classes="secondary icon-only"
+                              Command="{Binding DataContext.MarkUserInactiveCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              IsVisible="{Binding IsActive}"
+                              ToolTip.Tip="Deactivate user">
+                        <Path Classes="button-icon"
+                              Data="M6,6 L18,18 M18,6 L6,18" />
+                      </Button>
+                      <Button Classes="danger icon-only"
+                              Command="{Binding DataContext.DeleteUserCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              ToolTip.Tip="Delete user">
+                        <Path Classes="button-icon"
+                              Data="M6,7 L18,7 M9,7 L9,19 M15,7 L15,19 M8,4 L16,4 M7,7 L8,20 L16,20 L17,7" />
+                      </Button>
+                    </StackPanel>
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+              </dg:DataGridTemplateColumn>
+            </dg:DataGrid.Columns>
+          </dg:DataGrid>
+
+          <Border Grid.Row="1"
+                  Classes="empty-state"
+                  Width="340"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  IsVisible="{Binding ShowUsersEmptyState}">
+            <StackPanel Spacing="6">
+              <TextBlock Text="{Binding EmptyUsersText}" FontWeight="SemiBold" />
+              <TextBlock Text="{DynamicResource Loc.AdjustFiltersOrCreateRecord}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+
+          <Border Classes="panel"
+                  Grid.Row="2"
+                  IsVisible="{Binding CanManageSelectedUserStores}">
+            <StackPanel Spacing="10">
+              <TextBlock Text="Store Assignments"
+                         FontWeight="SemiBold" />
+              <TextBlock Text="{Binding SelectedUserStoreSummary}"
+                         Classes="caption"
+                         TextWrapping="Wrap" />
+
+              <Grid ColumnDefinitions="*,*,Auto"
+                    ColumnSpacing="8">
+                <ComboBox Grid.Column="0"
+                          ItemsSource="{Binding AvailableAssignableStores}"
+                          SelectedItem="{Binding SelectedAssignableStore, Mode=TwoWay}" />
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding AvailableStoreRoles}"
+                          SelectedItem="{Binding SelectedStoreRole, Mode=TwoWay}" />
+                <Button Grid.Column="2"
+                        Classes="primary"
+                        Content="Assign"
+                        Command="{Binding AssignSelectedStoreCommand}" />
+              </Grid>
+
+              <dg:DataGrid AutoGenerateColumns="False"
+                           ItemsSource="{Binding SelectedUserStores}"
+                           IsReadOnly="True"
+                           CanUserReorderColumns="False"
+                           CanUserResizeColumns="True"
+                           CanUserSortColumns="True"
+                           HeadersVisibility="Column"
+                           GridLinesVisibility="Horizontal"
+                           BorderBrush="{DynamicResource DividerBrush}"
+                           BorderThickness="1"
+                           Background="{DynamicResource SurfaceBrush}">
+                <dg:DataGrid.Columns>
+                  <dg:DataGridTextColumn Header="Store"
+                                         Width="2*"
+                                         Binding="{Binding StoreName}" />
+                  <dg:DataGridTextColumn Header="Role"
+                                         Width="1.2*"
+                                         Binding="{Binding Role}" />
+                  <dg:DataGridTemplateColumn Header="Actions"
+                                             Width="1.1*">
+                    <dg:DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate x:DataType="models:UserStoreAssignment">
+                        <Button Classes="danger icon-only"
+                                Command="{Binding DataContext.RemoveUserStoreCommand, ElementName=Root}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="Remove assignment">
+                          <Path Classes="button-icon"
+                                Data="M6,7 L18,7 M9,7 L9,19 M15,7 L15,19 M8,4 L16,4 M7,7 L8,20 L16,20 L17,7" />
+                        </Button>
+                      </DataTemplate>
+                    </dg:DataGridTemplateColumn.CellTemplate>
+                  </dg:DataGridTemplateColumn>
+                </dg:DataGrid.Columns>
+              </dg:DataGrid>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="{Binding StoreTabHeader}"
+               IsVisible="{Binding ShowStoreTab}">
+        <Grid Margin="0,8,0,0"
+              RowDefinitions="Auto,*"
+              RowSpacing="12">
+          <Border Classes="panel"
+                  Grid.Row="0">
+            <StackPanel Spacing="10">
+              <TextBlock Text="{Binding StoresTabDescription}"
+                         Classes="caption"
+                         TextWrapping="Wrap" />
+              <Button Classes="primary"
+                      Content="Create Store"
+                      HorizontalAlignment="Left"
+                      Command="{Binding OpenCreateStorePopupCommand}" />
+            </StackPanel>
+          </Border>
+
+          <dg:DataGrid Grid.Row="1"
+                       AutoGenerateColumns="False"
+                       ItemsSource="{Binding Stores}"
+                       IsReadOnly="True"
+                       CanUserReorderColumns="False"
+                       CanUserResizeColumns="True"
+                       CanUserSortColumns="True"
+                       HeadersVisibility="Column"
+                       GridLinesVisibility="Horizontal"
+                       BorderBrush="{DynamicResource DividerBrush}"
+                       BorderThickness="1"
+                       Background="{DynamicResource SurfaceBrush}">
+            <dg:DataGrid.Columns>
+              <dg:DataGridTextColumn Header="Store"
+                                     Width="2*"
+                                     Binding="{Binding Name}" />
+              <dg:DataGridTextColumn Header="Code"
+                                     Width="1.1*"
+                                     Binding="{Binding CodeDisplay}" />
+              <dg:DataGridTextColumn Header="Status"
+                                     Width="1*"
+                                     Binding="{Binding StatusLabel}" />
+              <dg:DataGridTemplateColumn Header="Actions"
+                                         Width="1.6*">
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate x:DataType="models:StoreRecord">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                      <Button Classes="secondary icon-only"
+                              Command="{Binding DataContext.DeactivateStoreCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              IsVisible="{Binding IsActive}"
+                              ToolTip.Tip="Deactivate store">
+                        <Path Classes="button-icon"
+                              Data="M6,6 L18,18 M18,6 L6,18" />
+                      </Button>
+                      <Button Classes="secondary icon-only"
+                              Command="{Binding DataContext.ToggleStoreStatusCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              IsVisible="{Binding IsActive, Converter={StaticResource BoolInverseConverter}}"
+                              ToolTip.Tip="{Binding ToggleStatusLabel}">
+                        <Path Classes="button-icon"
+                              Data="M4,12 L9,17 L20,6" />
+                      </Button>
+                      <Button Classes="danger icon-only"
+                              Command="{Binding DataContext.DeleteStoreCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              ToolTip.Tip="Delete store">
+                        <Path Classes="button-icon"
+                              Data="M6,7 L18,7 M9,7 L9,19 M15,7 L15,19 M8,4 L16,4 M7,7 L8,20 L16,20 L17,7" />
+                      </Button>
+                    </StackPanel>
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+              </dg:DataGridTemplateColumn>
+            </dg:DataGrid.Columns>
+          </dg:DataGrid>
+
+          <Border Grid.Row="1"
+                  Classes="empty-state"
+                  Width="340"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  IsVisible="{Binding ShowStoresEmptyState}">
+            <StackPanel Spacing="6">
+              <TextBlock Text="{Binding EmptyStoresText}" FontWeight="SemiBold" />
+              <TextBlock Text="{DynamicResource Loc.AdjustFiltersOrCreateRecord}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="{Binding CategoriesTabHeader}"
+               IsVisible="{Binding ShowCategoriesTab}">
+        <Grid Margin="0,8,0,0"
+              RowDefinitions="Auto,*"
+              RowSpacing="12">
+          <Border Classes="panel"
+                  Grid.Row="0">
+            <StackPanel Spacing="10">
+              <TextBlock Text="{Binding CategoriesTabDescription}"
+                         Classes="caption"
+                         TextWrapping="Wrap" />
+              <Grid ColumnDefinitions="*,Auto"
+                    ColumnSpacing="8">
+                <TextBox Grid.Column="0"
+                         Watermark="Category name"
+                         Text="{Binding NewCategoryName, Mode=TwoWay}" />
+                <Button Grid.Column="1"
+                        Classes="primary"
+                        Content="Save Category"
+                        Command="{Binding SaveCategoryCommand}" />
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <dg:DataGrid Grid.Row="1"
+                       AutoGenerateColumns="False"
+                       ItemsSource="{Binding Categories}"
+                       IsReadOnly="True"
+                       CanUserReorderColumns="False"
+                       CanUserResizeColumns="True"
+                       CanUserSortColumns="True"
+                       HeadersVisibility="Column"
+                       GridLinesVisibility="Horizontal"
+                       BorderBrush="{DynamicResource DividerBrush}"
+                       BorderThickness="1"
+                       Background="{DynamicResource SurfaceBrush}">
+            <dg:DataGrid.Columns>
+              <dg:DataGridTextColumn Header="Category"
+                                     Width="2*"
+                                     Binding="{Binding Name}" />
+              <dg:DataGridTextColumn Header="Products"
+                                     Width="1*"
+                                     Binding="{Binding ProductCount}" />
+              <dg:DataGridTemplateColumn Header="Actions"
+                                         Width="1.1*">
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate x:DataType="models:CatalogCategory">
+                    <Button Classes="danger icon-only"
+                            Command="{Binding DataContext.DeleteCategoryCommand, ElementName=Root}"
+                            CommandParameter="{Binding}"
+                            ToolTip.Tip="Delete category">
+                      <Path Classes="button-icon"
+                            Data="M6,7 L18,7 M9,7 L9,19 M15,7 L15,19 M8,4 L16,4 M7,7 L8,20 L16,20 L17,7" />
+                    </Button>
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+              </dg:DataGridTemplateColumn>
+            </dg:DataGrid.Columns>
+          </dg:DataGrid>
+
+          <Border Grid.Row="1"
+                  Classes="empty-state"
+                  Width="340"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  IsVisible="{Binding ShowCategoriesEmptyState}">
+            <StackPanel Spacing="6">
+              <TextBlock Text="{Binding EmptyCategoriesText}" FontWeight="SemiBold" />
+              <TextBlock Text="{DynamicResource Loc.AdjustFiltersOrCreateRecord}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="{Binding CatalogTabHeader}"
+               IsVisible="{Binding ShowCatalogTabs}">
+        <Grid Margin="0,8,0,0"
+              RowDefinitions="Auto,*"
+              RowSpacing="12">
+          <Border Classes="panel"
+                  Grid.Row="0">
+            <StackPanel Spacing="10">
+              <TextBlock Text="{Binding CatalogHelpText}"
+                         Classes="caption"
+                         TextWrapping="Wrap" />
+              <StackPanel Orientation="Horizontal"
+                          Spacing="8">
+                <Button Classes="primary"
+                        Content="Create Product"
+                        Command="{Binding OpenCreateProductPopupCommand}" />
+              </StackPanel>
+            </StackPanel>
+          </Border>
+
+          <dg:DataGrid Grid.Row="1"
+                       AutoGenerateColumns="False"
+                       ItemsSource="{Binding Products}"
+                       IsReadOnly="True"
+                       CanUserReorderColumns="False"
+                       CanUserResizeColumns="True"
+                       CanUserSortColumns="True"
+                       HeadersVisibility="Column"
+                       GridLinesVisibility="Horizontal"
+                       BorderBrush="{DynamicResource DividerBrush}"
+                       BorderThickness="1"
+                       Background="{DynamicResource SurfaceBrush}">
+            <dg:DataGrid.Columns>
+              <dg:DataGridTextColumn Header="Product"
+                                     Width="1.8*"
+                                     Binding="{Binding Name}" />
+              <dg:DataGridTextColumn Header="Category"
+                                     Width="1.2*"
+                                     Binding="{Binding Category}" />
+              <dg:DataGridTextColumn Header="SKU"
+                                     Width="1.2*"
+                                     Binding="{Binding SKU}" />
+              <dg:DataGridTextColumn Header="Price"
+                                     Width="1*"
+                                     IsVisible="{Binding DataContext.IsTenantAdmin, ElementName=Root, Converter={StaticResource BoolInverseConverter}}"
+                                     Binding="{Binding Price, StringFormat='MZN {0:N2}'}" />
+              <dg:DataGridTextColumn Header="Stock"
+                                     Width="0.9*"
+                                     Binding="{Binding StockQuantity}" />
+              <dg:DataGridTextColumn Header="Variants"
+                                     Width="0.9*"
+                                     Binding="{Binding VariantCount}" />
+              <dg:DataGridTemplateColumn Header="Actions"
+                                         Width="2*">
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate x:DataType="models:Product">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                      <Button Classes="secondary icon-only"
+                              Command="{Binding DataContext.OpenEditProductPopupCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              ToolTip.Tip="Edit product">
+                        <Path Classes="button-icon"
+                              Data="M4,16 L4,20 L8,20 L18,10 L14,6 Z M15,5 L19,9 L20,8 C20.6,7.4 20.6,6.5 20,6 L18,4 C17.5,3.4 16.6,3.4 16,4 Z" />
+                      </Button>
+                      <Button Classes="secondary icon-only"
+                              Command="{Binding DataContext.OpenCreateVariantPopupCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              IsVisible="{Binding DataContext.CanManageVariants, ElementName=Root}"
+                              ToolTip.Tip="Manage variants">
+                        <Path Classes="button-icon"
+                              Data="M7,4 L17,4 L20,7 L20,17 L17,20 L7,20 L4,17 L4,7 Z M8,8 L12,8 M8,12 L16,12 M8,16 L14,16" />
+                      </Button>
+                      <Button Classes="danger icon-only"
+                              Command="{Binding DataContext.DeleteProductCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              ToolTip.Tip="Delete product">
+                        <Path Classes="button-icon"
+                              Data="M6,7 L18,7 M9,7 L9,19 M15,7 L15,19 M8,4 L16,4 M7,7 L8,20 L16,20 L17,7" />
+                      </Button>
+                    </StackPanel>
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+              </dg:DataGridTemplateColumn>
+            </dg:DataGrid.Columns>
+          </dg:DataGrid>
+
+          <Border Grid.Row="1"
+                  Classes="empty-state"
+                  Width="340"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  IsVisible="{Binding ShowCatalogEmptyState}">
+            <StackPanel Spacing="6">
+              <TextBlock Text="{Binding EmptyCatalogText}" FontWeight="SemiBold" />
+              <TextBlock Text="{DynamicResource Loc.AdjustFiltersOrCreateRecord}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="{Binding VariantManagementTabHeader}"
+               IsVisible="{Binding ShowVariantManagementTab}">
+        <Grid Margin="0,8,0,0"
+              RowDefinitions="Auto,*"
+              RowSpacing="12">
+          <Border Classes="panel"
+                  Grid.Row="0">
+            <StackPanel Spacing="10">
+              <TextBlock Text="{Binding VariantManagementDescription}"
+                         Classes="caption"
+                         TextWrapping="Wrap" />
+              <TextBlock Text="{Binding StoreProductVariantSummary}"
+                         Classes="caption" />
+            </StackPanel>
+          </Border>
+
+          <dg:DataGrid Grid.Row="1"
+                       AutoGenerateColumns="False"
+                       ItemsSource="{Binding StoreProductVariants}"
+                       IsReadOnly="True"
+                       CanUserReorderColumns="False"
+                       CanUserResizeColumns="True"
+                       CanUserSortColumns="True"
+                       HeadersVisibility="Column"
+                       GridLinesVisibility="Horizontal"
+                       BorderBrush="{DynamicResource DividerBrush}"
+                       BorderThickness="1"
+                       Background="{DynamicResource SurfaceBrush}">
+            <dg:DataGrid.Columns>
+              <dg:DataGridTextColumn Header="Variant"
+                                     Width="1.8*"
+                                     Binding="{Binding DisplayName}" />
+              <dg:DataGridTextColumn Header="SKU"
+                                     Width="1.2*"
+                                     Binding="{Binding SKU}" />
+              <dg:DataGridTextColumn Header="Price"
+                                     Width="1*"
+                                     Binding="{Binding Price, StringFormat='MZN {0:N2}'}" />
+              <dg:DataGridTemplateColumn Header="Actions"
+                                         Width="1.9*">
+                <dg:DataGridTemplateColumn.CellTemplate>
+                  <DataTemplate x:DataType="models:ProductVariantRecord">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="6">
+                      <Button Classes="secondary icon-only"
+                              Command="{Binding DataContext.OpenStoreProductVariantCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              ToolTip.Tip="Open variant">
+                        <Path Classes="button-icon"
+                              Data="M3,12 C5.5,7.5 8.5,5 12,5 C15.5,5 18.5,7.5 21,12 C18.5,16.5 15.5,19 12,19 C8.5,19 5.5,16.5 3,12 Z M12,9 A3,3 0 1 1 12,15 A3,3 0 1 1 12,9 Z" />
+                      </Button>
+                      <Button Classes="secondary icon-only"
+                              Command="{Binding DataContext.PrintStoreProductVariantCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              ToolTip.Tip="Print barcode">
+                        <Path Classes="button-icon"
+                              Data="M6,8 L6,16 M9,8 L9,16 M12,8 L12,16 M15,8 L15,16 M18,8 L18,16 M4,18 L20,18" />
+                      </Button>
+                      <Button Classes="danger icon-only"
+                              Command="{Binding DataContext.DeleteProductVariantCommand, ElementName=Root}"
+                              CommandParameter="{Binding}"
+                              ToolTip.Tip="Delete variant">
+                        <Path Classes="button-icon"
+                              Data="M6,7 L18,7 M9,7 L9,19 M15,7 L15,19 M8,4 L16,4 M7,7 L8,20 L16,20 L17,7" />
+                      </Button>
+                    </StackPanel>
+                  </DataTemplate>
+                </dg:DataGridTemplateColumn.CellTemplate>
+              </dg:DataGridTemplateColumn>
+            </dg:DataGrid.Columns>
+          </dg:DataGrid>
+
+          <Border Grid.Row="1"
+                  Classes="empty-state"
+                  Width="340"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  IsVisible="{Binding ShowVariantsEmptyState}">
+            <StackPanel Spacing="6">
+              <TextBlock Text="{Binding EmptyVariantsText}" FontWeight="SemiBold" />
+              <TextBlock Text="{DynamicResource Loc.AdjustFiltersOrCreateRecord}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+        </Grid>
+      </TabItem>
+    </TabControl>
+
+    <Border x:Name="CreateUserOverlay"
+            Grid.RowSpan="2"
+            Background="#66000000"
+            IsVisible="{Binding IsCreateUserPopupOpen}"
+            PointerPressed="CreateUserOverlay_PointerPressed">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Border Classes="management-modal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Width="460"
+                Margin="24">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+              <TextBlock Text="Create User" Classes="title" FontSize="20" />
+              <Button Grid.Column="1"
+                      Classes="modal-close"
+                      Command="{Binding CloseCreateUserPopupCommand}"
+                      ToolTip.Tip="Close">
+                <Path Classes="button-icon"
+                      Data="M6,6 L18,18 M18,6 L6,18" />
+              </Button>
+            </Grid>
+            <TextBlock Text="{Binding CreateUserHelpText}" Classes="caption" TextWrapping="Wrap" />
+            <StackPanel Spacing="4">
+              <TextBlock Text="Username *" FontWeight="SemiBold" />
+              <TextBox Watermark="Example: maria.santos" Text="{Binding NewUsername, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Work email" FontWeight="SemiBold" />
+              <TextBox Watermark="name@company.com" Text="{Binding NewEmail, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Temporary password *" FontWeight="SemiBold" />
+              <TextBox Watermark="Set a secure temporary password" PasswordChar="*" Text="{Binding NewPassword, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Employee role *" FontWeight="SemiBold" />
+              <ComboBox ItemsSource="{Binding AvailableUserRoles}"
+                        SelectedItem="{Binding NewUserRole, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Spacing="4" IsVisible="{Binding CanManageStores}">
+              <TextBlock Text="Assigned store" FontWeight="SemiBold" />
+              <ComboBox ItemsSource="{Binding AvailableNewUserStores}"
+                        SelectedItem="{Binding NewUserStore, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+              <Button Classes="secondary"
+                      Content="Cancel"
+                      Command="{Binding CloseCreateUserPopupCommand}" />
+              <Button Classes="primary"
+                      Content="Create"
+                      Command="{Binding CreateUserCommand}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </ScrollViewer>
+    </Border>
+
+    <Border x:Name="UserEditorOverlay"
+            Grid.RowSpan="2"
+            Background="#66000000"
+            IsVisible="{Binding IsUserEditorOpen}"
+            PointerPressed="UserEditorOverlay_PointerPressed">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Border Classes="management-modal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Width="460"
+                Margin="24">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+              <TextBlock Text="Edit User" Classes="title" FontSize="20" />
+              <Button Grid.Column="1"
+                      Classes="modal-close"
+                      Command="{Binding CloseUserEditorCommand}"
+                      ToolTip.Tip="Close">
+                <Path Classes="button-icon"
+                      Data="M6,6 L18,18 M18,6 L6,18" />
+              </Button>
+            </Grid>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Username" FontWeight="SemiBold" />
+              <TextBox Text="{Binding SelectedUser.Username, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Work email" FontWeight="SemiBold" />
+              <TextBox Text="{Binding SelectedUser.email, Mode=TwoWay}" />
+            </StackPanel>
+            <TextBlock Text="{Binding SelectedUser.EffectiveRole}" Classes="caption" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+              <Button Classes="secondary"
+                      Content="Close"
+                      Command="{Binding CloseUserEditorCommand}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </ScrollViewer>
+    </Border>
+
+    <Border x:Name="CreateStoreOverlay"
+            Grid.RowSpan="2"
+            Background="#66000000"
+            IsVisible="{Binding IsCreateStorePopupOpen}"
+            PointerPressed="CreateStoreOverlay_PointerPressed">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Border Classes="management-modal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Width="420"
+                Margin="24">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+              <TextBlock Text="Create Store" Classes="title" FontSize="20" />
+              <Button Grid.Column="1"
+                      Classes="modal-close"
+                      Command="{Binding CloseCreateStorePopupCommand}"
+                      ToolTip.Tip="Close">
+                <Path Classes="button-icon"
+                      Data="M6,6 L18,18 M18,6 L6,18" />
+              </Button>
+            </Grid>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Store name *" FontWeight="SemiBold" />
+              <TextBox Watermark="Example: Downtown branch" Text="{Binding NewStoreName, Mode=TwoWay}" />
+            </StackPanel>
+            <CheckBox Content="Store is active"
+                      IsChecked="{Binding NewStoreIsActive, Mode=TwoWay}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+              <Button Classes="secondary"
+                      Content="Cancel"
+                      Command="{Binding CloseCreateStorePopupCommand}" />
+              <Button Classes="primary"
+                      Content="Create"
+                      Command="{Binding CreateStoreCommand}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </ScrollViewer>
+    </Border>
+
+    <Border x:Name="CreateProductOverlay"
+            Grid.RowSpan="2"
+            Background="#66000000"
+            IsVisible="{Binding IsCreateProductPopupOpen}"
+            PointerPressed="CreateProductOverlay_PointerPressed">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Border Classes="management-modal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Width="520"
+                Margin="24">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+              <TextBlock Text="Create Product" Classes="title" FontSize="20" />
+              <Button Grid.Column="1"
+                      Classes="modal-close"
+                      Command="{Binding CloseCreateProductPopupCommand}"
+                      ToolTip.Tip="Close">
+                <Path Classes="button-icon"
+                      Data="M6,6 L18,18 M18,6 L6,18" />
+              </Button>
+            </Grid>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Product name *" FontWeight="SemiBold" />
+              <TextBox Watermark="Example: Cotton shirt" Text="{Binding NewProductName, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Product category *" FontWeight="SemiBold" />
+              <ComboBox ItemsSource="{Binding AvailableCategories}"
+                        SelectedItem="{Binding SelectedNewProductCategory, Mode=TwoWay}" />
+              <TextBlock Text="Choose the tenant-level catalog category for this product." Classes="caption" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Brand" FontWeight="SemiBold" />
+              <TextBox Watermark="Example: Xavissa Essentials" Text="{Binding NewProductBrand, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Internal product code" FontWeight="SemiBold" />
+              <TextBox Watermark="Optional tenant catalog code" Text="{Binding NewProductCode, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Spacing="4">
+              <TextBlock Text="Product description" FontWeight="SemiBold" />
+              <TextBox Watermark="Short catalog description"
+                       AcceptsReturn="True"
+                       MinHeight="72"
+                       TextWrapping="Wrap"
+                       Text="{Binding NewProductDescription, Mode=TwoWay}" />
+            </StackPanel>
+            <CheckBox Content="Product is active"
+                      IsChecked="{Binding NewProductIsActive, Mode=TwoWay}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+              <Button Classes="secondary"
+                      Content="Cancel"
+                      Command="{Binding CloseCreateProductPopupCommand}" />
+              <Button Classes="primary"
+                      Content="Create"
+                      Command="{Binding CreateProductCommand}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </ScrollViewer>
+    </Border>
+
+    <Border x:Name="EditProductOverlay"
+            Grid.RowSpan="2"
+            Background="#66000000"
+            IsVisible="{Binding SelectedProduct, Converter={StaticResource NullToBoolConverter}}"
+            PointerPressed="EditProductOverlay_PointerPressed">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Border Classes="management-modal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Width="720"
+                Margin="24">
+          <StackPanel Spacing="12">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+              <TextBlock Text="Edit Product" Classes="title" FontSize="20" />
+              <Button Grid.Column="1"
+                      Classes="modal-close"
+                      Command="{Binding CancelEditProductCommand}"
+                      ToolTip.Tip="Close">
+                <Path Classes="button-icon"
+                      Data="M6,6 L18,18 M18,6 L6,18" />
+              </Button>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+              <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                <TextBlock Text="Product name *" FontWeight="SemiBold" />
+                <TextBox Watermark="Example: Cotton shirt" Text="{Binding SelectedProduct.Name, Mode=TwoWay}" />
+              </StackPanel>
+              <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                <TextBlock Text="Brand" FontWeight="SemiBold" />
+                <TextBox Watermark="Example: Xavissa Essentials" Text="{Binding SelectedProduct.Brand, Mode=TwoWay}" />
+              </StackPanel>
+              <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                <TextBlock Text="Product category" FontWeight="SemiBold" />
+                <ComboBox ItemsSource="{Binding AvailableCategories}"
+                          SelectedItem="{Binding SelectedEditProductCategory, Mode=TwoWay}" />
+              </StackPanel>
+              <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                <TextBlock Text="Internal product code" FontWeight="SemiBold" />
+                <TextBox Watermark="Tenant catalog code" Text="{Binding SelectedProduct.Code, Mode=TwoWay}" />
+              </StackPanel>
+              <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="4">
+                <TextBlock Text="Product description" FontWeight="SemiBold" />
+                <TextBox Watermark="Short catalog description"
+                         AcceptsReturn="True"
+                         MinHeight="72"
+                         TextWrapping="Wrap"
+                         Text="{Binding SelectedProduct.Description, Mode=TwoWay}" />
+              </StackPanel>
+              <CheckBox Grid.Row="3"
+                        Grid.Column="0"
+                        Content="Product is active"
+                        IsChecked="{Binding SelectedProduct.IsActive, Mode=TwoWay}" />
+            </Grid>
+
+            <Border Classes="panel">
+              <StackPanel Spacing="10">
+                <TextBlock Text="Store Assignment" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding SelectedProductStoreSummary}" Classes="caption" />
+                <Grid ColumnDefinitions="*,*,*,Auto" ColumnSpacing="8">
+                  <ComboBox Grid.Column="0"
+                            ItemsSource="{Binding AvailableProductAssignmentStores}"
+                            SelectedItem="{Binding SelectedProductAssignmentStore, Mode=TwoWay}" />
+                  <TextBox Grid.Column="1"
+                           Watermark="Price"
+                           Text="{Binding SelectedProductAssignmentPrice, Mode=TwoWay}"
+                           IsVisible="{Binding IsTenantAdmin, Converter={StaticResource BoolInverseConverter}}" />
+                  <TextBox Grid.Column="2"
+                           Watermark="Quantity"
+                           Text="{Binding SelectedProductAssignmentQuantity, Mode=TwoWay}" />
+                  <Button Grid.Column="3"
+                          Classes="primary"
+                          Content="Save Assignment"
+                          Command="{Binding SaveProductStoreAssignmentCommand}" />
+                </Grid>
+
+                <dg:DataGrid AutoGenerateColumns="False"
+                             ItemsSource="{Binding SelectedProductStores}"
+                             IsReadOnly="True"
+                             CanUserReorderColumns="False"
+                             CanUserResizeColumns="True"
+                             CanUserSortColumns="True"
+                             HeadersVisibility="Column"
+                             GridLinesVisibility="Horizontal"
+                             BorderBrush="{DynamicResource DividerBrush}"
+                             BorderThickness="1"
+                             Background="{DynamicResource SurfaceBrush}">
+                  <dg:DataGrid.Columns>
+                    <dg:DataGridTextColumn Header="Store"
+                                           Width="1.8*"
+                                           Binding="{Binding StoreName}" />
+                    <dg:DataGridTextColumn Header="Price"
+                                           Width="1*"
+                                           IsVisible="{Binding DataContext.IsTenantAdmin, ElementName=Root, Converter={StaticResource BoolInverseConverter}}"
+                                           Binding="{Binding Price, StringFormat='MZN {0:N2}'}" />
+                    <dg:DataGridTextColumn Header="Stock"
+                                           Width="1*"
+                                           Binding="{Binding StockQuantity}" />
+                    <dg:DataGridTemplateColumn Header="Actions"
+                                               Width="1*">
+                      <dg:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:ProductStoreAssignment">
+                          <Button Classes="danger icon-only"
+                                  Command="{Binding DataContext.RemoveProductStoreAssignmentCommand, ElementName=Root}"
+                                  CommandParameter="{Binding}"
+                                  ToolTip.Tip="Remove assignment">
+                            <Path Classes="button-icon"
+                                  Data="M6,7 L18,7 M9,7 L9,19 M15,7 L15,19 M8,4 L16,4 M7,7 L8,20 L16,20 L17,7" />
+                          </Button>
+                        </DataTemplate>
+                      </dg:DataGridTemplateColumn.CellTemplate>
+                    </dg:DataGridTemplateColumn>
+                  </dg:DataGrid.Columns>
+                </dg:DataGrid>
+              </StackPanel>
             </Border>
 
-            <!-- ==================== EXISTING PRODUCTS SECTION ==================== -->
-            <StackPanel>
-                <TextBlock Text="Existing Products"
-                           FontWeight="Bold"
-                           FontSize="20"
-                           Foreground="#0C4E32"
-                           HorizontalAlignment="Center"
-                           Margin="0,10,0,10"/>
+            <Border Classes="panel"
+                    IsVisible="{Binding CanManageVariants}">
+              <StackPanel Spacing="10">
+                <TextBlock Text="{Binding StoreManagerVariantPopupTitle}" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding SelectedProductVariantSummary}" Classes="caption" />
 
-                <ItemsControl ItemsSource="{Binding Products}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+                  <StackPanel Grid.Row="0" Grid.Column="0" Spacing="4">
+                    <TextBlock Text="Variant description" FontWeight="SemiBold" />
+                    <TextBox Watermark="Example: Red / Large" Text="{Binding VariantLabel, Mode=TwoWay}" />
+                  </StackPanel>
+                  <StackPanel Grid.Row="0" Grid.Column="1" Spacing="4">
+                    <TextBlock Text="Variant SKU" FontWeight="SemiBold" />
+                    <TextBox Watermark="Auto-generated or manual SKU" Text="{Binding VariantSku, Mode=TwoWay}" />
+                  </StackPanel>
+                  <StackPanel Grid.Row="1" Grid.Column="0" Spacing="4">
+                    <TextBlock Text="Variant barcode" FontWeight="SemiBold" />
+                    <TextBox Watermark="Scan or generate barcode" Text="{Binding VariantBarcode, Mode=TwoWay}" />
+                  </StackPanel>
+                  <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4">
+                    <TextBlock Text="Selling price *" FontWeight="SemiBold" />
+                    <TextBox Watermark="0.00" Text="{Binding VariantPriceText, Mode=TwoWay}" />
+                  </StackPanel>
+                  <StackPanel Grid.Row="2" Grid.Column="0" Spacing="4">
+                    <TextBlock Text="Cost price" FontWeight="SemiBold" />
+                    <TextBox Watermark="Optional cost basis" Text="{Binding VariantCostPrice, Mode=TwoWay}" />
+                  </StackPanel>
+                  <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4">
+                    <TextBlock Text="Quantity in stock *" FontWeight="SemiBold" />
+                    <TextBox Watermark="Whole number" Text="{Binding VariantStockQuantityText, Mode=TwoWay}" />
+                  </StackPanel>
+                  <CheckBox Grid.Row="3" Grid.Column="0"
+                            Content="Variant is active"
+                            IsChecked="{Binding VariantIsActive, Mode=TwoWay}" />
+                </Grid>
 
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="White"
-                                    CornerRadius="12"
-                                    Margin="6"
-                                    Width="220"
-                                    Padding="12"
-                                    BoxShadow="0 2 6 #00000020">
+                <WrapPanel Orientation="Horizontal" ItemWidth="120" ItemHeight="36">
+                  <Button Classes="secondary"
+                          Content="Generate Barcode"
+                          Command="{Binding GenerateVariantBarcodeCommand}" />
+                  <Button Classes="secondary"
+                          Content="Print Barcode"
+                          Command="{Binding PrintVariantBarcodeCommand}" />
+                  <Button Classes="secondary"
+                          Content="Cancel Variant"
+                          Command="{Binding CancelVariantEditCommand}" />
+                  <Button Classes="primary"
+                          Content="Save Variant"
+                          Command="{Binding SaveProductVariantCommand}" />
+                </WrapPanel>
 
-                                <StackPanel Spacing="6" MinHeight="280">
-                                    <!-- Product Name -->
-                                    <TextBlock Text="Product Name" FontWeight="Bold" Foreground="#333" FontSize="13"/>
-                                    <TextBox Text="{Binding Name, Mode=TwoWay}"
-                                             Foreground="#333"
-                                             Background="#F9F9F9"
-                                             CornerRadius="6"
-                                             Padding="6"/>
-
-                                    <!-- Color -->
-                                    <TextBlock Text="Color" FontWeight="Bold" Foreground="#333" FontSize="13"/>
-                                    <TextBox Text="{Binding Color, Mode=TwoWay}"
-                                             Foreground="#333"
-                                             Background="#F9F9F9"
-                                             CornerRadius="6"
-                                             Padding="6"/>
-
-                                    <!-- Price -->
-                                    <TextBlock Text="Price" FontWeight="Bold" Foreground="#333" FontSize="13"/>
-                                    <TextBox Text="{Binding Price, Mode=TwoWay}"
-                                             Foreground="#333"
-                                             Background="#F9F9F9"
-                                             CornerRadius="6"
-                                             Padding="6"/>
-
-                                    <!-- Quantity -->
-                                    <TextBlock Text="Quantity" FontWeight="Bold" Foreground="#333" FontSize="13"/>
-                                    <TextBox Text="{Binding StockQuantity, Mode=TwoWay}"
-                                             Foreground="#333"
-                                             Background="#F9F9F9"
-                                             CornerRadius="6"
-                                             Padding="6"/>
-
-                                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,8,0,0">
-                                        <Button Width="80"
-                                                Background="#0C4E32"
-                                                Foreground="White"
-                                                CornerRadius="8"
-                                                Command="{Binding DataContext.UpdateProductCommand, ElementName=RootControl}"
-                                                CommandParameter="{Binding}">
-                                            <TextBlock Text="Edit" FontWeight="Bold"/>
-                                        </Button>
-
-                                        <Button Width="80"
-                                                Background="White"
-                                                BorderBrush="Red"
-                                                Foreground="Red"
-                                                CornerRadius="8"
-                                                Command="{Binding DataContext.DeleteProductCommand, ElementName=RootControl}"
-                                                CommandParameter="{Binding}">
-                                            <TextBlock Text="Delete" FontWeight="Bold"/>
-                                        </Button>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Border>
+                <dg:DataGrid AutoGenerateColumns="False"
+                             ItemsSource="{Binding SelectedProductVariants}"
+                             IsReadOnly="True"
+                             CanUserReorderColumns="False"
+                             CanUserResizeColumns="True"
+                             CanUserSortColumns="True"
+                             HeadersVisibility="Column"
+                             GridLinesVisibility="Horizontal"
+                             BorderBrush="{DynamicResource DividerBrush}"
+                             BorderThickness="1"
+                             Background="{DynamicResource SurfaceBrush}">
+                  <dg:DataGrid.Columns>
+                    <dg:DataGridTextColumn Header="Variant"
+                                           Width="1.8*"
+                                           Binding="{Binding DisplayName}" />
+                    <dg:DataGridTextColumn Header="Barcode"
+                                           Width="1.4*"
+                                           Binding="{Binding Barcode}" />
+                    <dg:DataGridTextColumn Header="Stock"
+                                           Width="0.9*"
+                                           Binding="{Binding StockQuantity}" />
+                    <dg:DataGridTemplateColumn Header="Actions"
+                                               Width="1.5*">
+                      <dg:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:ProductVariantRecord">
+                          <StackPanel Orientation="Horizontal"
+                                      Spacing="6">
+                            <Button Classes="secondary icon-only"
+                                    Command="{Binding DataContext.EditProductVariantCommand, ElementName=Root}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip.Tip="Edit variant">
+                              <Path Classes="button-icon"
+                                    Data="M4,16 L4,20 L8,20 L18,10 L14,6 Z M15,5 L19,9 L20,8 C20.6,7.4 20.6,6.5 20,6 L18,4 C17.5,3.4 16.6,3.4 16,4 Z" />
+                            </Button>
+                            <Button Classes="danger icon-only"
+                                    Command="{Binding DataContext.DeleteProductVariantCommand, ElementName=Root}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip.Tip="Delete variant">
+                              <Path Classes="button-icon"
+                                    Data="M6,7 L18,7 M9,7 L9,19 M15,7 L15,19 M8,4 L16,4 M7,7 L8,20 L16,20 L17,7" />
+                            </Button>
+                          </StackPanel>
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                      </dg:DataGridTemplateColumn.CellTemplate>
+                    </dg:DataGridTemplateColumn>
+                  </dg:DataGrid.Columns>
+                </dg:DataGrid>
+              </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+              <Button Classes="secondary"
+                      Content="Close"
+                      Command="{Binding CancelEditProductCommand}" />
+              <Button Classes="primary"
+                      Content="Save Product"
+                      Command="{Binding SaveEditProductCommand}" />
             </StackPanel>
+          </StackPanel>
+        </Border>
+      </ScrollViewer>
+    </Border>
 
-        </StackPanel>
-    </ScrollViewer>
-</TabItem>
-
-        </TabControl>
-    </Grid>
+    <Border x:Name="BarcodePrintOverlay"
+            Grid.RowSpan="2"
+            Background="#66000000"
+            IsVisible="{Binding IsBarcodePrintPopupOpen}"
+            PointerPressed="BarcodePrintOverlay_PointerPressed">
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Border Classes="management-modal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Width="420"
+                Margin="24">
+          <StackPanel Spacing="10">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+              <TextBlock Text="Print Barcode" Classes="title" FontSize="20" />
+              <Button Grid.Column="1"
+                      Classes="modal-close"
+                      Command="{Binding CloseBarcodePrintPopupCommand}"
+                      ToolTip.Tip="Close">
+                <Path Classes="button-icon"
+                      Data="M6,6 L18,18 M18,6 L6,18" />
+              </Button>
+            </Grid>
+            <TextBlock Text="{Binding BarcodePrintProductName}" />
+            <TextBlock Text="{Binding BarcodePrintVariant.DisplayName}" Classes="caption" />
+            <TextBox Watermark="Quantity"
+                     Text="{Binding BarcodePrintQuantityText, Mode=TwoWay}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+              <Button Classes="secondary"
+                      Content="Cancel"
+                      Command="{Binding CloseBarcodePrintPopupCommand}" />
+              <Button Classes="primary"
+                      Content="Print"
+                      Command="{Binding ConfirmBarcodePrintCommand}" />
+            </StackPanel>
+          </StackPanel>
+        </Border>
+      </ScrollViewer>
+    </Border>
+  </Grid>
 </UserControl>

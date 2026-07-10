@@ -1,27 +1,335 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Xavissa.Frontend.ViewModels"
-             xmlns:views="using:Xavissa.Frontend.Views"
              x:Class="Xavissa.Frontend.Views.ConfigView"
              x:DataType="vm:ConfigViewModel"
-             Foreground="#333">
+             Foreground="{DynamicResource TextPrimaryBrush}"
+             Background="{DynamicResource BackgroundBrush}">
 
-    <TabControl>
-        <!-- General App Settings -->
-        <TabItem Header="Geral">
-            <ScrollViewer>
-                <StackPanel Margin="20" Spacing="10">
-                    <TextBlock Text="{Binding CurrentDateTime}" Foreground="#333" FontSize="16" FontWeight="Bold" HorizontalAlignment="Right"/>
-                    <TextBlock Text="Configurações Gerais" FontSize="24" Foreground="#333" FontWeight="Bold"/>
-                    <TextBlock Text="App settings go here..." FontSize="16" Foreground="#333" />
-                </StackPanel>
-            </ScrollViewer>
-        </TabItem>
+    <Grid Margin="12" RowDefinitions="Auto,*">
+        <Border Grid.Row="0" Classes="panel" Margin="0,0,0,10">
+            <StackPanel Spacing="6">
+                <TextBlock Text="{Binding ConfigScopeTitle}" Classes="title" />
+                <TextBlock Text="{Binding ConfigScopeSubtitle}" Classes="caption" TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
 
-        <!-- Printer Settings -->
-        <TabItem Header="Impressora">
-            <!-- Embed PrinterConfigView -->
-            <views:PrinterConfigView/>
-        </TabItem>
-    </TabControl>
+        <TabControl Grid.Row="1">
+            <TabItem Header="{DynamicResource Loc.General}" Foreground="{DynamicResource TextPrimaryBrush}">
+                <ScrollViewer>
+                    <Border Classes="panel" Margin="0,6,0,0">
+                        <StackPanel Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Loc.GeneralPreferences}" Classes="title" />
+                                    <TextBlock Text="{DynamicResource Loc.GeneralPreferencesSubtitle}" Classes="caption" />
+                                </StackPanel>
+                                <Border Grid.Column="1" Classes="chip" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding CurrentDateTime}" Classes="caption" />
+                                </Border>
+                            </Grid>
+
+                            <Grid x:Name="GeneralCards" ColumnDefinitions="*,*" ColumnSpacing="10">
+                                <Border Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center" ColumnSpacing="10">
+                                        <Border Classes="icon-badge"
+                                                Background="{DynamicResource SurfaceBrush}"
+                                                BorderBrush="{DynamicResource DividerBrush}"
+                                                BorderThickness="1">
+                                            <Path Classes="muted-icon"
+                                                  Data="M4,12 A8,8 0 1 0 20,12 A8,8 0 1 0 4,12 M12,4 L12,20 M4,12 L20,12" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Loc.Language}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{DynamicResource Loc.InterfaceLanguage}" Classes="caption" />
+                                            <ComboBox Width="150"
+                                                      ItemsSource="{Binding AvailableLanguages}"
+                                                      SelectedItem="{Binding SelectedLanguage}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Border x:Name="GeneralThemeCard" Grid.Column="1" Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <Grid ColumnDefinitions="Auto,*" VerticalAlignment="Center" ColumnSpacing="10">
+                                        <Border Classes="icon-badge"
+                                                Background="{DynamicResource SurfaceBrush}"
+                                                BorderBrush="{DynamicResource DividerBrush}"
+                                                BorderThickness="1">
+                                            <Path Classes="muted-icon"
+                                                  Data="M14,4 A8,8 0 1 0 14,20 A6,6 0 1 1 14,4" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Loc.DarkMode}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{DynamicResource Loc.DarkModeSubtitle}" Classes="caption" />
+                                            <ToggleSwitch IsChecked="{Binding IsDarkMode}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{DynamicResource Loc.License}" Foreground="{DynamicResource TextPrimaryBrush}" IsVisible="{Binding ShowLicenseUsage}">
+                <ScrollViewer>
+                    <Border Classes="panel" Margin="0,6,0,0">
+                        <StackPanel Spacing="12">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource Loc.LicenseUsage}" Classes="title" />
+                                    <TextBlock Text="{DynamicResource Loc.LicenseUsageHint}" Classes="caption" />
+                                </StackPanel>
+                                <Button Grid.Column="1"
+                                        Classes="secondary"
+                                        Content="{DynamicResource Loc.Reload}"
+                                        Command="{Binding RefreshLicenseUsageCommand}" />
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                                <Border Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Plan" Classes="caption" />
+                                        <TextBlock Text="{Binding LicensePlanName}" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="1" Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Status" Classes="caption" />
+                                        <TextBlock Text="{Binding LicenseStatus}" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Row="1" Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Stores used / allowed" Classes="caption" />
+                                        <TextBlock Text="{Binding StoresUsage}" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Row="1" Grid.Column="1" Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Users used / allowed" Classes="caption" />
+                                        <TextBlock Text="{Binding UsersUsage}" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Row="2" Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Devices used / allowed" Classes="caption" />
+                                        <TextBlock Text="{Binding DevicesUsage}" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Row="2" Grid.Column="1" Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="Offline grace ends" Classes="caption" />
+                                        <TextBlock Text="{Binding OfflineGraceEnds}" FontWeight="SemiBold" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+                            <TextBlock Text="{Binding LastValidated}" Classes="caption" />
+                            <TextBlock Text="{Binding LicenseUpgradeMessage}"
+                                       Foreground="{DynamicResource PrimaryBrush}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{DynamicResource Loc.Printer}" Foreground="{DynamicResource TextPrimaryBrush}" IsVisible="{Binding ShowPrintingSettings}">
+                <ScrollViewer>
+                    <Border Classes="panel" Margin="0,6,0,0">
+                        <StackPanel Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding PrintingScopeLabel}" Classes="title" />
+                                    <TextBlock Text="{Binding PrintingScopeHint}" Classes="caption" TextWrapping="Wrap" />
+                                </StackPanel>
+                                <Border Grid.Column="1" Classes="status-chip" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding PrinterStatusText}" Classes="caption" />
+                                </Border>
+                            </Grid>
+
+                            <Border Classes="empty-state"
+                                    IsVisible="{Binding HasAvailablePrinters, Converter={StaticResource BoolInverseConverter}}">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{DynamicResource Loc.NoPrintersAvailable}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{DynamicResource Loc.NoPrintersAvailableHint}" Classes="caption" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel x:Name="PrinterCards" Spacing="10">
+                                <Border Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <StackPanel Spacing="10">
+                                        <StackPanel Spacing="2">
+                                            <TextBlock Text="{DynamicResource Loc.ReceiptPrinterSettings}" FontWeight="SemiBold" />
+                                            <TextBlock Text="{DynamicResource Loc.ReceiptPrinterSettingsHint}" Classes="caption" TextWrapping="Wrap" />
+                                        </StackPanel>
+
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Loc.ReceiptPrinter}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                            <ComboBox Grid.Column="1"
+                                                      ItemsSource="{Binding AvailablePrinters}"
+                                                      SelectedItem="{Binding SelectedReceiptPrinter}"
+                                                      PlaceholderText="{DynamicResource Loc.SelectPrinter}" />
+                                        </Grid>
+
+                                        <Grid x:Name="PaperSizeRow" ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Loc.PaperSize}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                            <StackPanel x:Name="PaperSizeInputs" Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                                                <ComboBox Width="120"
+                                                          ItemsSource="{Binding PopularPaperWidths}"
+                                                          SelectedItem="{Binding PaperWidth}"
+                                                          PlaceholderText="{DynamicResource Loc.PaperWidth}" />
+                                                <NumericUpDown Width="140"
+                                                               Value="{Binding PaperHeight}"
+                                                               Minimum="40"
+                                                               Maximum="500"
+                                                               Increment="5"
+                                                               FormatString="0"
+                                                               InnerRightContent="mm" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Loc.FontSize}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                            <NumericUpDown Grid.Column="1"
+                                                           Width="140"
+                                                           Value="{Binding FontSize}"
+                                                           Minimum="8"
+                                                           Maximum="24"
+                                                           Increment="1"
+                                                           FormatString="0"
+                                                           ShowButtonSpinner="True" />
+                                        </Grid>
+
+                                        <ToggleSwitch Content="{DynamicResource Loc.ShowDateTime}" IsChecked="{Binding ShowDateTime}" />
+
+                                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1" CornerRadius="6" Padding="8">
+                                            <StackPanel Spacing="10">
+                                                <Grid x:Name="HeaderLogoRow" ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalAlignment="Center">
+                                                    <TextBlock Text="{DynamicResource Loc.HeaderLogo}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                                    <StackPanel x:Name="HeaderLogoButtons" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                                                        <Button Classes="secondary" Content="{DynamicResource Loc.UploadLogo}" Command="{Binding PickLogoCommand}" />
+                                                        <Button Classes="danger" Content="{DynamicResource Loc.Remove}" Command="{Binding RemoveLogoCommand}" />
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <Grid x:Name="HeaderPreviewRow" ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalAlignment="Center">
+                                                    <Border Width="72"
+                                                            Height="72"
+                                                            Background="{DynamicResource SurfaceAltBrush}"
+                                                            BorderBrush="{DynamicResource DividerBrush}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="6"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Center"
+                                                            ClipToBounds="True">
+                                                        <Grid>
+                                                            <Image Source="{Binding HeaderImagePath, Converter={StaticResource HeaderImagePathToBitmapConverter}}"
+                                                                   Stretch="Uniform"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center"
+                                                                   IsVisible="{Binding HasHeaderImage}" />
+                                                            <TextBlock Text="{DynamicResource Loc.SelectImage}"
+                                                                       Classes="caption"
+                                                                       TextWrapping="Wrap"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       TextAlignment="Center"
+                                                                       IsVisible="{Binding HasHeaderImage, Converter={StaticResource BoolInverseConverter}}" />
+                                                        </Grid>
+                                                    </Border>
+
+                                                    <StackPanel x:Name="HeaderPreviewText" Grid.Column="1" Spacing="6" VerticalAlignment="Center">
+                                                        <TextBlock Text="{DynamicResource Loc.Header}" FontWeight="SemiBold" />
+                                                        <TextBox Text="{Binding HeaderText}" AcceptsReturn="True" Height="56" />
+                                                        <TextBlock Text="{DynamicResource Loc.Footer}" FontWeight="SemiBold" />
+                                                        <TextBox Text="{Binding FooterText}" AcceptsReturn="True" Height="56" />
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <Grid x:Name="PrintingToggleRow" ColumnDefinitions="*,*" ColumnSpacing="10">
+                                                    <ToggleSwitch Content="{DynamicResource Loc.UseImageInHeader}" IsChecked="{Binding UseHeaderImage}" />
+                                                    <ToggleSwitch x:Name="PrintImageToggle" Grid.Column="1" Content="{DynamicResource Loc.PrintImageOnReceipt}" IsChecked="{Binding PrintImageOnReceipt}" />
+                                                </Grid>
+
+                                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalAlignment="Center">
+                                                    <TextBlock Text="{DynamicResource Loc.ImagePosition}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                                    <ComboBox Grid.Column="1" ItemsSource="{Binding ImagePositions}" SelectedItem="{Binding SelectedImagePosition}" />
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border x:Name="LabelPrinterCard" Classes="card" Background="{DynamicResource SurfaceAltBrush}">
+                                    <StackPanel Spacing="10">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                            <StackPanel Spacing="2">
+                                                <TextBlock Text="{DynamicResource Loc.LabelPrinterSettings}" FontWeight="SemiBold" />
+                                                <TextBlock Text="{DynamicResource Loc.LabelPrinterSettingsHint}" Classes="caption" TextWrapping="Wrap" />
+                                            </StackPanel>
+                                            <Button Grid.Column="1"
+                                                    Classes="secondary"
+                                                    Content="{DynamicResource Loc.ApplyXpP203ADefaults}"
+                                                    Command="{Binding ApplyLabelDefaultsCommand}" />
+                                        </Grid>
+
+                                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalAlignment="Center">
+                                            <TextBlock Text="{DynamicResource Loc.LabelPrinter}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                            <ComboBox Grid.Column="1"
+                                                      ItemsSource="{Binding AvailablePrinters}"
+                                                      SelectedItem="{Binding SelectedLabelPrinter}"
+                                                      PlaceholderText="{DynamicResource Loc.SelectPrinter}" />
+                                        </Grid>
+
+                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1" CornerRadius="6" Padding="10">
+                                                <StackPanel Spacing="8">
+                                                    <TextBlock Text="{DynamicResource Loc.LabelMedia}" FontWeight="SemiBold" />
+                                                    <TextBlock Text="{DynamicResource Loc.LabelWidth}" Classes="caption" />
+                                                    <NumericUpDown Value="{Binding LabelWidthMm}" Minimum="20" Maximum="80" Increment="1" FormatString="0.0" InnerRightContent="mm" />
+                                                    <TextBlock Text="{DynamicResource Loc.LabelHeight}" Classes="caption" />
+                                                    <NumericUpDown Value="{Binding LabelHeightMm}" Minimum="15" Maximum="80" Increment="1" FormatString="0.0" InnerRightContent="mm" />
+                                                    <TextBlock Text="{DynamicResource Loc.LabelGap}" Classes="caption" />
+                                                    <NumericUpDown Value="{Binding LabelGapMm}" Minimum="0" Maximum="10" Increment="0.5" FormatString="0.0" InnerRightContent="mm" />
+                                                </StackPanel>
+                                            </Border>
+
+                                            <Border Grid.Column="1" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource DividerBrush}" BorderThickness="1" CornerRadius="6" Padding="10">
+                                                <StackPanel Spacing="8">
+                                                    <TextBlock Text="{DynamicResource Loc.LabelContent}" FontWeight="SemiBold" />
+                                                    <TextBlock Text="{DynamicResource Loc.LabelBarcodeWidth}" Classes="caption" />
+                                                    <NumericUpDown Value="{Binding LabelBarcodeWidthMm}" Minimum="15" Maximum="70" Increment="1" FormatString="0.0" InnerRightContent="mm" />
+                                                    <TextBlock Text="{DynamicResource Loc.LabelBarcodeHeight}" Classes="caption" />
+                                                    <NumericUpDown Value="{Binding LabelBarcodeHeightMm}" Minimum="6" Maximum="25" Increment="0.5" FormatString="0.0" InnerRightContent="mm" />
+                                                    <TextBlock Text="{DynamicResource Loc.LabelTextSize}" Classes="caption" />
+                                                    <NumericUpDown Value="{Binding LabelFontSize}" Minimum="6" Maximum="14" Increment="1" FormatString="0" />
+                                                </StackPanel>
+                                            </Border>
+                                        </Grid>
+
+                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalAlignment="Center">
+                                                <TextBlock Text="{DynamicResource Loc.LabelHorizontalPadding}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                                <NumericUpDown Grid.Column="1" Value="{Binding LabelHorizontalPaddingMm}" Minimum="0" Maximum="8" Increment="0.5" FormatString="0.0" InnerRightContent="mm" />
+                                            </Grid>
+                                            <Grid Grid.Column="1" ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalAlignment="Center">
+                                                <TextBlock Text="{DynamicResource Loc.LabelVerticalPadding}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                                <NumericUpDown Grid.Column="1" Value="{Binding LabelVerticalPaddingMm}" Minimum="0" Maximum="8" Increment="0.5" FormatString="0.0" InnerRightContent="mm" />
+                                            </Grid>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel x:Name="ConfigActionRow" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                                <Button Classes="secondary" Content="{DynamicResource Loc.PrintTest}" Width="160" Command="{Binding TestPrintCommand}" />
+                                <Button Classes="primary" Content="{DynamicResource Loc.Save}" Width="140" Command="{Binding SaveCommand}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </UserControl>

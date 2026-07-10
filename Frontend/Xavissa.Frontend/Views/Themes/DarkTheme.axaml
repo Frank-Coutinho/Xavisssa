@@ -1,0 +1,38 @@
+﻿<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Color x:Key="PrimaryColor">#2DBE7A</Color>
+  <Color x:Key="PrimaryLightColor">#56D59A</Color>
+  <Color x:Key="PrimaryDarkColor">#1E8A57</Color>
+  <Color x:Key="PrimaryHoverColor">#39C986</Color>
+  <Color x:Key="PrimaryPressedColor">#1E8A57</Color>
+
+  <Color x:Key="BackgroundColor">#0F1512</Color>
+  <Color x:Key="SurfaceColor">#17211C</Color>
+  <Color x:Key="SurfaceAltColor">#202B25</Color>
+  <Color x:Key="HoverSurfaceColor">#28362F</Color>
+  <Color x:Key="PressedSurfaceColor">#314238</Color>
+  <Color x:Key="DividerColor">#34463C</Color>
+  <Color x:Key="BorderColor">#34463C</Color>
+  <Color x:Key="BorderStrongColor">#61756B</Color>
+
+  <Color x:Key="TextPrimaryColor">#F3F7F5</Color>
+  <Color x:Key="TextSecondaryColor">#D7E0DB</Color>
+  <Color x:Key="TextMutedColor">#A6B3AD</Color>
+  <Color x:Key="PrimaryForegroundColor">#F8FFFC</Color>
+  <Color x:Key="SuccessColor">#43D18C</Color>
+  <Color x:Key="DangerColor">#FF7A7A</Color>
+  <Color x:Key="WarningColor">#FFBF66</Color>
+  <Color x:Key="InfoColor">#7CA8FF</Color>
+  <Color x:Key="DisabledBackgroundColor">#26312B</Color>
+  <Color x:Key="DisabledTextColor">#84928B</Color>
+  <Color x:Key="FocusRingColor">#56D59A</Color>
+  <Color x:Key="TableRowHoverColor">#202E27</Color>
+  <Color x:Key="TableRowSelectedColor">#234432</Color>
+  <Color x:Key="SidebarBackgroundColor">#17211C</Color>
+  <Color x:Key="SidebarActiveBackgroundColor">#1E8A57</Color>
+  <Color x:Key="SidebarHoverBackgroundColor">#24342B</Color>
+
+</ResourceDictionary>
+

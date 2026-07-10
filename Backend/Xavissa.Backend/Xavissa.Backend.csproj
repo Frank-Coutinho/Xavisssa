@@ -1,11 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
-
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- <UseWindowsForms>false</UseWindowsForms> -->
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>a3c112d8-c25b-4ca7-9d43-43415430a2c7</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
@@ -27,10 +28,11 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
     <PackageReference Include="ZXing.Net" Version="0.16.11" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Database\Xavissa.Database\Xavissa.Database.csproj" />
-    <ProjectReference Include="..\Shared\Xavissa.Shared\Xavissa.Shared.csproj" />
+    <ProjectReference Include="..\..\Shared\Xavissa.Shared\Xavissa.Shared.csproj" />
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-
 </Project>

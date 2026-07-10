@@ -1,33 +1,46 @@
-namespace Xavissa.Database.Models
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+
+namespace Xavissa.Database.Models;
+
+public class Product : ITenantScopedEntity, IAuditableEntity, IOfflineSyncEntity
 {
-    public enum ProductCategory
-    {
-        Camisas = 1,
-        Calcas = 2,
-        Sapatos = 3,
-        Acessorios = 4,
-        Other = 99
-    }
+    public int Id { get; set; }
+    public Guid SyncId { get; set; } = Guid.NewGuid();
+    public string? SourceDeviceId { get; set; }
+    public DateTimeOffset? ClientCreatedAt { get; set; }
+    public DateTimeOffset? ClientUpdatedAt { get; set; }
+    public DateTimeOffset? LastSyncedAt { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public bool IsActive { get; set; } = true;
+    public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? DeletedAt { get; set; }
+    public string Code { get; set; } = string.Empty;
+    public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+    public int? CreatedBy { get; set; }
+    public int? UpdatedBy { get; set; }
+    public int? TenantId { get; set; }
+    public int? CategoryId { get; set; }
+    public Category? CategoryNavigation { get; set; }
+    public string? Brand { get; set; }
 
-    public class Product
-    {
-        public int Id { get; set; }
-        public required string Code { get; set; }
-        public string Barcode { get; set; } = string.Empty;
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public ProductCategory Category { get; set; } = ProductCategory.Other;
-        public decimal Price { get; set; }
-        public int StockQuantity { get; set; }
-        public bool IsActive { get; set; } = true;
+    public ICollection<ProductStoreAssignment> StoreAssignments { get; set; } = new List<ProductStoreAssignment>();
 
-        // New: Color
-        public string Color { get; set; } = string.Empty;
+    [NotMapped]
+    public ICollection<ProductVariant> Variants =>
+        StoreAssignments.SelectMany(assignment => assignment.Variants).ToList();
 
-        // Optional: for online-offline sync
-        public DateTime LastModified { get; set; } = DateTime.UtcNow;
+    [NotMapped]
+    public string CategoryName => CategoryNavigation?.Name ?? string.Empty;
 
-        // Relationships
-        public ICollection<SaleItem> SaleItems { get; set; } = new List<SaleItem>();
-    }
+    [NotMapped]
+    public ProductVariant? PrimaryVariant =>
+        Variants.FirstOrDefault(v => v.IsActive != false) ?? Variants.FirstOrDefault();
+
+    [NotMapped]
+    public string Barcode => PrimaryVariant?.Barcode ?? string.Empty;
+
+    [NotMapped]
+    public decimal Price => PrimaryVariant?.Price ?? 0;
 }

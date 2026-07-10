@@ -1,0 +1,16 @@
+<UserControl
+    x:Class="Xavissa.Frontend.Views.LicenseStatusView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Xavissa.Frontend.ViewModels"
+    x:DataType="vm:LicenseStatusViewModel"
+    Background="{DynamicResource BackgroundBrush}">
+    <ScrollViewer>
+        <Border Classes="panel" Margin="18" Padding="18">
+            <StackPanel Spacing="12">
+                <TextBlock Text="License status" Classes="title" />
+                <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
+    </ScrollViewer>
+</UserControl>
