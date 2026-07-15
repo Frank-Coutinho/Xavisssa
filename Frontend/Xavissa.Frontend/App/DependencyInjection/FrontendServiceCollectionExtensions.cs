@@ -8,6 +8,7 @@ using Xavissa.Frontend.Infrastructure.LocalDatabase;
 using Xavissa.Frontend.Models;
 using Xavissa.Frontend.Modules.Catalog;
 using Xavissa.Frontend.Modules.Identity;
+using Xavissa.Frontend.Modules.Inventory;
 using Xavissa.Frontend.Modules.Licensing;
 using Xavissa.Frontend.Modules.Reports;
 using Xavissa.Frontend.Modules.Sales;
@@ -27,6 +28,7 @@ public static class FrontendServiceCollectionExtensions
     {
         services.Configure<BackendOptions>(configuration.GetSection("Backend"));
         services.Configure<LicensingOptions>(configuration.GetSection("Licensing"));
+        services.Configure<OfflineFirstOptions>(configuration.GetSection(OfflineFirstOptions.SectionName));
 
         services.AddSingleton<IWorkspaceService, WorkspaceService>();
         services.AddSingleton<IDbContextFactory<LocalDbContext>, WorkspaceDbContextFactory>();
@@ -68,6 +70,7 @@ public static class FrontendServiceCollectionExtensions
         return services
             .AddIdentityModule()
             .AddCatalogModule()
+            .AddInventoryModule()
             .AddSalesModule()
             .AddReportsModule()
             .AddSettingsModule()

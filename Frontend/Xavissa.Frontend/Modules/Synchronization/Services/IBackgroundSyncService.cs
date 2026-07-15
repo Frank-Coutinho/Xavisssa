@@ -17,6 +17,7 @@ namespace Xavissa.Frontend.Services
         Reconnected,
         StoreChanged,
         SaleCompleted,
+        StockAdjusted,
         Manual,
     }
 

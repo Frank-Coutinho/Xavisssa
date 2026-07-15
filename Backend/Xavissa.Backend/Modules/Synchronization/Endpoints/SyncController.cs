@@ -61,6 +61,24 @@ public class SyncController : ControllerBase
         }
     }
 
+    [HttpPost("stock-check")]
+    public async Task<ActionResult<LiveStockCheckResponseDto>> CheckLiveStock(
+        [FromBody] LiveStockCheckRequestDto request)
+    {
+        try
+        {
+            return Ok(await _syncService.GetLiveStockAsync(request));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet("catalog")]
     public async Task<ActionResult<CatalogDeltaDto>> GetCatalog(
         [FromQuery] int tenantId,

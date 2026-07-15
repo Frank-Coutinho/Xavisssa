@@ -26,7 +26,7 @@ Assert-FileContains "Database\Xavissa.Database\Models\EntityContracts.cs" "inter
 Assert-FileContains "Database\Xavissa.Database\XavissaDbContect.cs" "ConfigureSyncMetadata<\s*Sale\s*>" "Sale sync metadata mapping is missing."
 Assert-FileContains "Database\Xavissa.Database\XavissaDbContect.cs" "ApplySyncInfo" "Remote SaveChanges sync metadata generation is missing."
 Assert-FileContains "Database\Xavissa.Database\Migrations\20260513090000_AddOfflineSyncMetadata.cs" "gen_random_uuid" "Remote sync metadata migration does not backfill UUIDs."
-Assert-FileContains "Frontend\Xavissa.Frontend\Infrastructure\LocalDatabase\Data\Repositories\LocalDbSchema.cs" "CurrentSchemaVersion = 6" "Local SQLite schema version was not bumped."
+Assert-FileContains "Frontend\Xavissa.Frontend\Infrastructure\LocalDatabase\Data\Repositories\LocalDbSchema.cs" "CurrentSchemaVersion = 7" "Local SQLite schema version was not bumped."
 Assert-FileContains "Frontend\Xavissa.Frontend\Infrastructure\LocalDatabase\Data\LocalBdContext.cs" "BackfillOfflineSyncMetadataAsync" "Local SQLite SyncId backfill is missing."
 Assert-FileContains "Frontend\Xavissa.Frontend\Modules\Sales\Infrastructure\Repositories\SaleRepository.cs" "SyncId = sale\.SyncId" "Sale upload does not include SyncId."
 Assert-FileContains "Backend\Xavissa.Backend\Modules\Synchronization\Application\SyncService.cs" "FirstOrDefaultAsync\(\s*sale =>\s*sale\.SyncId == dto\.SyncId" "Sale upload is not idempotent by SyncId."

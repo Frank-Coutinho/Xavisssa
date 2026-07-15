@@ -25,6 +25,7 @@ namespace Xavissa.Frontend.Services
         private readonly ILicenseStateService _licenseState;
         private readonly ILicenseFeatureGate _featureGate;
         private readonly IDemoStateService _demoState;
+        private readonly IStockAdjustmentSyncService _stockAdjustments;
 
         public SyncService(
             IConnectivityService net,
@@ -39,7 +40,8 @@ namespace Xavissa.Frontend.Services
             IHttpClientFactory httpFactory,
             ILicenseStateService licenseState,
             ILicenseFeatureGate featureGate,
-            IDemoStateService demoState
+            IDemoStateService demoState,
+            IStockAdjustmentSyncService stockAdjustments
         )
         {
             _net = net;
@@ -55,6 +57,7 @@ namespace Xavissa.Frontend.Services
             _licenseState = licenseState;
             _featureGate = featureGate;
             _demoState = demoState;
+            _stockAdjustments = stockAdjustments;
         }
 
         private bool CanUseAuthenticatedOnline() =>
@@ -68,6 +71,7 @@ namespace Xavissa.Frontend.Services
                 return;
 
             await UploadPendingSalesAsync();
+            await _stockAdjustments.SyncPendingAsync();
             await _users.SyncFromServerAsync();
             await _stores.GetStoresAsync();
             await ApplyBootstrapAsync(includeCatalog: ShouldIncludeCatalogBootstrap());
@@ -122,6 +126,7 @@ namespace Xavissa.Frontend.Services
             if (!await CanUseAuthenticatedOnlineWithLicenseAsync("SyncValidation") || !_auth.SelectedStoreId.HasValue)
                 return;
 
+            await _stockAdjustments.SyncPendingAsync();
             await _sales.SyncAsync();
             await SyncSellableVariantsDeltaAsync(_auth.SelectedStoreId.Value);
             await SyncStockDeltaAsync(_auth.SelectedStoreId.Value);
@@ -133,6 +138,7 @@ namespace Xavissa.Frontend.Services
                 return;
 
             await UploadPendingSalesAsync();
+            await _stockAdjustments.SyncPendingAsync();
             await SyncStoreScopedDataAsync();
         }
 
@@ -164,6 +170,15 @@ namespace Xavissa.Frontend.Services
         }
 
         public Task SyncAfterSaleAsync(int storeId) => SyncAfterSaleAsync();
+
+        public async Task SyncAfterStockAdjustmentAsync()
+        {
+            if (!await CanUseAuthenticatedOnlineWithLicenseAsync("SyncValidation") || !_auth.SelectedStoreId.HasValue)
+                return;
+
+            await _stockAdjustments.SyncPendingAsync();
+            await SyncStockDeltaAsync(_auth.SelectedStoreId.Value);
+        }
 
         public async Task UploadPendingSalesAsync()
         {

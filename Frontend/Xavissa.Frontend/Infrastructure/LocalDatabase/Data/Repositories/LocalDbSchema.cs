@@ -1,6 +1,6 @@
 public static class LocalDbSchema
 {
-    public const int CurrentSchemaVersion = 6;
+    public const int CurrentSchemaVersion = 7;
 
     public const string ConfigureSqlitePragmasSql =
         @"
@@ -201,6 +201,8 @@ public static class LocalDbSchema
         DeletedAt TEXT,
         Synced INTEGER NOT NULL DEFAULT 0,
         SyncFailed INTEGER NOT NULL DEFAULT 0,
+        SyncConflictId INTEGER,
+        SyncError TEXT,
         CONSTRAINT CK_Sales_Discount_NotGreaterThanTotalAmount
             CHECK (Discount IS NULL OR Discount <= TotalAmount)
     );

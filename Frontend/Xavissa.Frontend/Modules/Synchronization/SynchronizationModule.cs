@@ -7,6 +7,7 @@ public static class SynchronizationModule
 {
     public static IServiceCollection AddSynchronizationModule(this IServiceCollection services)
     {
+        services.AddSingleton<ISyncConflictHandler, SyncConflictHandler>();
         services.AddSingleton<BackgroundSyncService>();
         services.AddSingleton<IBackgroundSyncService>(sp =>
             sp.GetRequiredService<BackgroundSyncService>());

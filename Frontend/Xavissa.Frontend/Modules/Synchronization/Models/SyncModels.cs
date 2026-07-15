@@ -37,6 +37,18 @@ namespace Xavissa.Frontend.Models
         public List<StockLevelDeltaItemDto> Items { get; set; } = new();
     }
 
+    public class LiveStockCheckRequestDto
+    {
+        public int StoreId { get; set; }
+        public List<int> VariantIds { get; set; } = new();
+    }
+
+    public class LiveStockCheckResponseDto
+    {
+        public DateTime ServerUtcNow { get; set; }
+        public List<StockLevelDeltaItemDto> Items { get; set; } = new();
+    }
+
     public class CatalogDeltaDto
     {
         public DateTime ServerUtcNow { get; set; }
@@ -78,6 +90,8 @@ namespace Xavissa.Frontend.Models
         public int? ServerSaleId { get; set; }
         public Guid? SyncId { get; set; }
         public bool Success { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public int? ConflictId { get; set; }
         public string? Error { get; set; }
     }
 

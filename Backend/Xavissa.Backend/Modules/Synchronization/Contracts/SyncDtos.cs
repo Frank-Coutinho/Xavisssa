@@ -33,6 +33,18 @@ public class StockLevelsDeltaDto
     public List<StockLevelDeltaItemDto> Items { get; set; } = new();
 }
 
+public class LiveStockCheckRequestDto
+{
+    public int StoreId { get; set; }
+    public List<int> VariantIds { get; set; } = new();
+}
+
+public class LiveStockCheckResponseDto
+{
+    public DateTime ServerUtcNow { get; set; }
+    public List<StockLevelDeltaItemDto> Items { get; set; } = new();
+}
+
 public class CatalogDeltaDto
 {
     public DateTime ServerUtcNow { get; set; }

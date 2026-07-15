@@ -13,7 +13,7 @@ namespace Xavissa.Frontend.Data.Repositories
         Task AddAsync(Sale sale);
         Task MarkAsSyncedAsync(int id);
         Task MarkAsSyncedAsync(int id, int? onlineId, Guid? syncId);
-        Task MarkAsFailedAsync(int saleId);
+        Task MarkAsFailedAsync(int saleId, int? conflictId = null, string? error = null);
         Task UpdateLocalSaleIdAsync(int oldId, int newId);
         Task UpsertRangeAsync(IEnumerable<Sale> sales);
         Task DeleteRangeAsync(IEnumerable<int> saleIds);

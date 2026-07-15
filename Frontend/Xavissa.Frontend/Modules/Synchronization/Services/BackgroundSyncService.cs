@@ -5,16 +5,17 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Xavissa.Frontend.Auth.Common;
+using Xavissa.Frontend.Models;
 
 namespace Xavissa.Frontend.Services
 {
     public sealed class BackgroundSyncService : BackgroundService, IBackgroundSyncService
     {
-        private static readonly TimeSpan PeriodicInterval = TimeSpan.FromMinutes(3);
-
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<BackgroundSyncService> _logger;
+        private readonly TimeSpan _periodicInterval;
         private readonly Channel<BackgroundSyncReason> _requests =
             Channel.CreateUnbounded<BackgroundSyncReason>(new UnboundedChannelOptions
             {
@@ -27,10 +28,13 @@ namespace Xavissa.Frontend.Services
 
         public BackgroundSyncService(
             IServiceScopeFactory scopeFactory,
-            ILogger<BackgroundSyncService> logger)
+            ILogger<BackgroundSyncService> logger,
+            IOptions<OfflineFirstOptions> options)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
+            _periodicInterval = TimeSpan.FromSeconds(
+                Math.Clamp(options.Value.BackgroundSyncIntervalSeconds, 30, 3600));
         }
 
         public event EventHandler<BackgroundSyncStatusChangedEventArgs>? StatusChanged;
@@ -68,7 +72,7 @@ namespace Xavissa.Frontend.Services
 
         private async Task ProcessPeriodicAsync(CancellationToken stoppingToken)
         {
-            using var timer = new PeriodicTimer(PeriodicInterval);
+            using var timer = new PeriodicTimer(_periodicInterval);
 
             try
             {
@@ -133,7 +137,9 @@ namespace Xavissa.Frontend.Services
                     Reason = reason,
                     Message = "Sync complete.",
                     LastSuccessfulSyncAt = DateTimeOffset.Now,
-                    ShouldRefreshLocalViews = reason != BackgroundSyncReason.Periodic,
+                    // Periodic pulls can change stock warnings and availability, so
+                    // successful timer syncs must refresh views as well.
+                    ShouldRefreshLocalViews = true,
                 });
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -170,6 +176,7 @@ namespace Xavissa.Frontend.Services
                 BackgroundSyncReason.SaleCompleted => auth.SelectedStoreId.HasValue
                     ? sync.SyncAfterSaleAsync(auth.SelectedStoreId.Value)
                     : sync.SyncAfterSaleAsync(),
+                BackgroundSyncReason.StockAdjusted => sync.SyncAfterStockAdjustmentAsync(),
                 BackgroundSyncReason.Manual => sync.SyncAllAsync(),
                 _ => sync.RefreshOperationalDataAsync(),
             };
@@ -182,6 +189,7 @@ namespace Xavissa.Frontend.Services
                 BackgroundSyncReason.Reconnected => "Syncing after reconnect.",
                 BackgroundSyncReason.StoreChanged => "Refreshing store-scoped data.",
                 BackgroundSyncReason.SaleCompleted => "Syncing sale and stock changes.",
+                BackgroundSyncReason.StockAdjusted => "Syncing a local stock adjustment.",
                 BackgroundSyncReason.Manual => "Running manual sync.",
                 _ => "Refreshing operational data.",
             };

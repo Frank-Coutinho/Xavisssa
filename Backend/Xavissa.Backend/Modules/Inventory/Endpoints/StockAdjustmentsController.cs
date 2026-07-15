@@ -23,6 +23,31 @@ public class StockAdjustmentsController : ControllerBase
     public async Task<ActionResult<StockAdjustmentReadDto>> Create(StockAdjustmentCreateDto request) =>
         await Handle(async () => Ok(Map(await _service.CreateAsync(request))));
 
+    [HttpPost("sync-apply")]
+    public async Task<ActionResult<StockAdjustmentSyncResultDto>> SyncApply(
+        StockAdjustmentSyncRequestDto request)
+    {
+        try
+        {
+            var adjustment = await _service.ApplySyncedAsync(request);
+            return Ok(new StockAdjustmentSyncResultDto
+            {
+                Id = adjustment.Id,
+                SyncId = adjustment.SyncId,
+                Status = adjustment.Status,
+                ServerUtcNow = DateTime.UtcNow,
+            });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
+        }
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet]
     public async Task<ActionResult<List<StockAdjustmentReadDto>>> List() =>
         Ok((await _service.ListAsync()).Select(Map).ToList());

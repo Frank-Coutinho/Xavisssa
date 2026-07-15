@@ -10,6 +10,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Threading;
+using Microsoft.Extensions.Options;
 using ReactiveUI;
 using Xavissa.Frontend.Data.Repositories;
 using Xavissa.Frontend.Helpers;
@@ -39,6 +40,8 @@ namespace Xavissa.Frontend.ViewModels
         private readonly IBarcodeScannerInputService _scannerInput;
         private readonly ILocalizationService _localization;
         private readonly IDemoStateService _demoState;
+        private readonly IStockAvailabilityService _stockAvailability;
+        private readonly int _lowStockThreshold;
 
         // ================================
         // DATA COLLECTIONS
@@ -66,7 +69,8 @@ namespace Xavissa.Frontend.ViewModels
         public bool ShowProductEmptyState => !IsLoadingProducts && Products.Count == 0;
         public bool IsCartEmpty => CartItems.Count == 0;
         public int CartItemCount => CartItems.Sum(item => item.Quantity);
-        public int LowStockProductCount => Products.Count(product => product.StockQuantity <= 5);
+        public int LowStockProductCount => Products.Count(product =>
+            product.StockQuantity <= _lowStockThreshold);
         public string ActiveStoreDisplayName => _auth.AllowedStores.FirstOrDefault(store => store.Id == _auth.SelectedStoreId)?.Name
             ?? _localization.GetString("Loc.SelectStoreBeforeProducts");
         public string LocalDataStatusText => _net.IsOnline()
@@ -265,7 +269,9 @@ namespace Xavissa.Frontend.ViewModels
             IBackgroundSyncService backgroundSync,
             IBarcodeScannerInputService scannerInput,
             ILocalizationService localization,
-            IDemoStateService demoState
+            IDemoStateService demoState,
+            IStockAvailabilityService stockAvailability,
+            IOptions<OfflineFirstOptions> offlineFirstOptions
         )
         {
             _productRepo = productRepo;
@@ -278,6 +284,8 @@ namespace Xavissa.Frontend.ViewModels
             _scannerInput = scannerInput;
             _localization = localization;
             _demoState = demoState;
+            _stockAvailability = stockAvailability;
+            _lowStockThreshold = Math.Max(0, offlineFirstOptions.Value.LowStockThreshold);
 
             _filterDebounceTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
             _filterDebounceTimer.Tick += (_, _) =>
@@ -402,6 +410,9 @@ namespace Xavissa.Frontend.ViewModels
                 {
                     list = new List<Product>();
                 }
+
+                foreach (var product in list)
+                    product.LowStockThreshold = _lowStockThreshold;
 
                 _allProducts.Clear();
                 _allProducts.AddRange(list);
@@ -779,18 +790,6 @@ namespace Xavissa.Frontend.ViewModels
                     $"🧪 AFTER CREATE | SaleId={created.Id}, Items={created.Items?.Count ?? -1}"
                 );
 
-                var sellableStockUpdates = CartItems
-                    .Where(line => line.Product.VariantId > 0)
-                    .Select(line => (VariantId: line.Product.VariantId, Quantity: line.Quantity))
-                    .ToList();
-                await _productRepo.DecreaseSellableVariantStockRangeAsync(sellableStockUpdates);
-
-                var baseStockUpdates = CartItems
-                    .Where(line => line.Product.Id > 0)
-                    .Select(line => (ProductId: line.Product.Id, Quantity: line.Quantity))
-                    .ToList();
-                await _productRepo.DecreaseStockRangeAsync(baseStockUpdates);
-
                 foreach (var line in CartItems)
                     ApplyLocalStockReduction(line.Product.Id, line.Quantity, line.Product.VariantId);
 
@@ -827,7 +826,7 @@ namespace Xavissa.Frontend.ViewModels
                     _notify.Show(_localization.GetString("Loc.SaleCompletedReceiptFailed"));
                 }
 
-                if (_net.IsOnline() && !_demoState.IsDemoActive)
+                if (!_demoState.IsDemoActive)
                     _backgroundSync.RequestSync(BackgroundSyncReason.SaleCompleted);
             }
             catch (Exception ex)
@@ -871,15 +870,12 @@ namespace Xavissa.Frontend.ViewModels
                     : p.Id == productId))
                 product.StockQuantity = Math.Max(0, product.StockQuantity - quantity);
 
-            foreach (var product in Products.Where(p =>
-                variantId.HasValue && variantId.Value > 0
-                    ? p.VariantId == variantId.Value
-                    : p.Id == productId))
-                product.StockQuantity = Math.Max(0, product.StockQuantity - quantity);
+            this.RaisePropertyChanged(nameof(LowStockProductCount));
         }
 
         private async Task<bool> ValidateStockBeforeFinalizeAsync()
         {
+            var criticalLines = new List<CartLine>();
             var productsByVariantId = _allProducts
                 .Where(product => product.VariantId > 0)
                 .GroupBy(product => product.VariantId)
@@ -916,6 +912,46 @@ namespace Xavissa.Frontend.ViewModels
                     await LoadProductsAsync();
                     return false;
                 }
+
+                if (line.Product.VariantId > 0
+                    && currentProduct.StockQuantity - line.Quantity <= _lowStockThreshold)
+                {
+                    criticalLines.Add(line);
+                }
+            }
+
+            if (criticalLines.Count == 0)
+                return true;
+
+            var liveCheck = await _stockAvailability.GetLiveAvailabilityAsync(
+                _auth.SelectedStoreId!.Value,
+                criticalLines.Select(line => line.Product.VariantId));
+            if (!liveCheck.IsAvailable)
+            {
+                _notify.Show(
+                    liveCheck.Error ?? "Critical stock could not be verified with the server.",
+                    NotificationType.Warning,
+                    6000);
+                return false;
+            }
+
+            foreach (var line in criticalLines)
+            {
+                if (!liveCheck.QuantityByVariantId.TryGetValue(line.Product.VariantId, out var serverQuantity))
+                    serverQuantity = 0;
+
+                // Keep the more conservative value so a live response never erases
+                // stock already reserved by another unsynced local sale.
+                var effectiveQuantity = Math.Min(line.Product.StockQuantity, serverQuantity);
+                if (line.Quantity <= effectiveQuantity)
+                    continue;
+
+                _notify.Show(
+                    $"Live stock check: '{line.Product.Name}' has only {effectiveQuantity} available. The sale was not completed.",
+                    NotificationType.Warning,
+                    6000);
+                _backgroundSync.RequestSync(BackgroundSyncReason.Manual);
+                return false;
             }
 
             return true;

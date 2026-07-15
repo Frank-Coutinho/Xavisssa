@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Xavissa.Frontend.Models
 {
@@ -35,6 +36,7 @@ namespace Xavissa.Frontend.Models
         private int _variantCount;
         private DateTime _createdAt = DateTime.UtcNow;
         private DateTime _updatedAt = DateTime.UtcNow;
+        private int _lowStockThreshold = 5;
 
         public int Id { get => _id; set { if (_id != value) { _id = value; OnPropertyChanged(nameof(Id)); } } }
         public int OnlineId { get => _onlineId; set { if (_onlineId != value) { _onlineId = value; OnPropertyChanged(nameof(OnlineId)); } } }
@@ -61,11 +63,37 @@ namespace Xavissa.Frontend.Models
         public string Category { get => _category; set { if (_category != value) { _category = value; OnPropertyChanged(nameof(Category)); } } }
         public string Brand { get => _brand; set { if (_brand != value) { _brand = value; OnPropertyChanged(nameof(Brand)); } } }
         public decimal Price { get => _price; set { if (_price != value) { _price = value; OnPropertyChanged(nameof(Price)); } } }
-        public int StockQuantity { get => _stockQuantity; set { if (_stockQuantity != value) { _stockQuantity = value; OnPropertyChanged(nameof(StockQuantity)); } } }
+        public int StockQuantity { get => _stockQuantity; set { if (_stockQuantity != value) { _stockQuantity = value; OnPropertyChanged(nameof(StockQuantity)); OnPropertyChanged(nameof(IsLowStock)); OnPropertyChanged(nameof(LowStockWarningText)); } } }
         public bool IsActive { get => _isActive; set { if (_isActive != value) { _isActive = value; OnPropertyChanged(nameof(IsActive)); } } }
         public int VariantCount { get => _variantCount; set { if (_variantCount != value) { _variantCount = value; OnPropertyChanged(nameof(VariantCount)); } } }
         public DateTime CreatedAt { get => _createdAt; set { if (_createdAt != value) { _createdAt = value; OnPropertyChanged(nameof(CreatedAt)); } } }
         public DateTime UpdatedAt { get => _updatedAt; set { if (_updatedAt != value) { _updatedAt = value; OnPropertyChanged(nameof(UpdatedAt)); } } }
+
+        [NotMapped]
+        public int LowStockThreshold
+        {
+            get => _lowStockThreshold;
+            set
+            {
+                var normalized = Math.Max(0, value);
+                if (_lowStockThreshold == normalized)
+                    return;
+                _lowStockThreshold = normalized;
+                OnPropertyChanged(nameof(LowStockThreshold));
+                OnPropertyChanged(nameof(IsLowStock));
+                OnPropertyChanged(nameof(LowStockWarningText));
+            }
+        }
+
+        [NotMapped]
+        public bool IsLowStock => StockQuantity <= LowStockThreshold;
+
+        [NotMapped]
+        public string LowStockWarningText => StockQuantity <= 0
+            ? "Out of stock"
+            : IsLowStock
+                ? $"Low stock - only {StockQuantity} left"
+                : string.Empty;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

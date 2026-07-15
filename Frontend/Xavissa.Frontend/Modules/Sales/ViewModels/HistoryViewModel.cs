@@ -475,6 +475,8 @@ namespace Xavissa.Frontend.ViewModels
                 IsRefunded = sale.IsRefunded,
                 HasRefundedItems = lines.Any(line => line.RefundedQuantity > 0),
                 RefundReason = sale.RefundReason,
+                HasSyncConflict = sale.SyncFailed && sale.SyncConflictId.HasValue,
+                SyncError = sale.SyncError,
                 Items = new ObservableCollection<HistorySaleLine>(lines),
             };
         }
@@ -775,7 +777,9 @@ namespace Xavissa.Frontend.ViewModels
         {
             foreach (var row in rows)
             {
-                row.StatusLabel = row.IsRefunded
+                row.StatusLabel = row.HasSyncConflict
+                    ? "SYNC CONFLICT - STAFF ACTION REQUIRED"
+                    : row.IsRefunded
                     ? _localization.GetString("Loc.Refunded")
                     : row.HasRefundedItems
                         ? _localization.GetString("Loc.PartiallyRefunded")
@@ -835,6 +839,8 @@ namespace Xavissa.Frontend.ViewModels
         public decimal TotalPaid { get; set; }
         public bool IsRefunded { get; set; }
         public bool HasRefundedItems { get; set; }
+        public bool HasSyncConflict { get; set; }
+        public string? SyncError { get; set; }
         public string? RefundReason { get; set; }
         public ObservableCollection<HistorySaleLine> Items { get; set; } = new();
         public bool CanRefund => !IsRefunded;

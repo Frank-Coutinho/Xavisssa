@@ -66,6 +66,143 @@ public class StockAdjustmentService
     public Task<List<StockAdjustment>> ListAsync() =>
         _db.StockAdjustments.Include(x => x.Items).OrderByDescending(x => x.CreatedAt).ToListAsync();
 
+    public async Task<StockAdjustment> ApplySyncedAsync(StockAdjustmentSyncRequestDto request)
+    {
+        if (request.SyncId == Guid.Empty)
+            throw new ArgumentException("A sync id is required for an offline stock adjustment.");
+        if (request.Items.Count == 0 || request.Items.Any(item => item.VariantId <= 0 || item.NewQuantity < 0))
+            throw new ArgumentException("Adjustment items must contain valid variants and non-negative new quantities.");
+
+        var userId = RequireUser();
+        var store = await RequireManageableStoreAsync(request.StoreId);
+        if (store.TenantId != request.TenantId)
+            throw new UnauthorizedAccessException("The stock adjustment tenant does not match the store.");
+
+        var existing = await _db.StockAdjustments
+            .IgnoreQueryFilters()
+            .Include(adjustment => adjustment.Items)
+            .FirstOrDefaultAsync(adjustment =>
+                adjustment.SyncId == request.SyncId
+                && adjustment.TenantId == request.TenantId
+                && adjustment.StoreId == request.StoreId);
+        if (existing != null)
+            return existing;
+
+        var lines = request.Items
+            .GroupBy(item => item.VariantId)
+            .Select(group => group.Last())
+            .ToList();
+        var variantIds = lines.Select(item => item.VariantId).ToList();
+        var found = await _db.ProductVariants
+            .IgnoreQueryFilters()
+            .CountAsync(variant =>
+                variant.TenantId == request.TenantId
+                && variant.IsActive
+                && variantIds.Contains(variant.Id));
+        if (found != variantIds.Count)
+            throw new ArgumentException("One or more variants are not active in this tenant.");
+
+        var now = DateTime.UtcNow;
+        await using var transaction = await _db.Database.BeginTransactionAsync();
+        var currentLevels = await _db.StockLevels
+            .IgnoreQueryFilters()
+            .Where(level =>
+                level.TenantId == request.TenantId
+                && level.StoreId == request.StoreId
+                && variantIds.Contains(level.VariantId))
+            .ToDictionaryAsync(level => level.VariantId);
+
+        var adjustment = new StockAdjustment
+        {
+            SyncId = request.SyncId,
+            SourceDeviceId = request.SourceDeviceId,
+            ClientCreatedAt = request.ClientCreatedAt,
+            ClientUpdatedAt = request.ClientUpdatedAt,
+            LastSyncedAt = now,
+            TenantId = request.TenantId,
+            StoreId = request.StoreId,
+            AdjustmentNumber = $"ADJ-{now:yyyyMMddHHmmss}-{Guid.NewGuid().ToString("N")[..5]}",
+            Reason = request.Reason.Trim(),
+            Status = "Applied",
+            CreatedBy = userId,
+            UpdatedBy = userId,
+            AppliedBy = userId,
+            AppliedAt = now,
+            CreatedAt = now,
+            UpdatedAt = now,
+            Items = lines.Select(line =>
+            {
+                var oldQuantity = currentLevels.TryGetValue(line.VariantId, out var level)
+                    ? level.QuantityOnHand
+                    : 0;
+                var offlineDifference = line.NewQuantity - line.OldQuantity;
+                var mergedQuantity = oldQuantity + offlineDifference;
+                if (mergedQuantity < 0)
+                    throw new InvalidOperationException(
+                        $"Stock adjustment for variant {line.VariantId} conflicts with newer server stock.");
+                return new StockAdjustmentItem
+                {
+                    SyncId = line.SyncId == Guid.Empty ? Guid.NewGuid() : line.SyncId,
+                    SourceDeviceId = request.SourceDeviceId,
+                    ClientCreatedAt = request.ClientCreatedAt,
+                    ClientUpdatedAt = request.ClientUpdatedAt,
+                    LastSyncedAt = now,
+                    VariantId = line.VariantId,
+                    OldQuantity = oldQuantity,
+                    // Offline adjustments merge as movements, not absolute overwrites.
+                    // This preserves sales that another device uploaded meanwhile.
+                    NewQuantity = mergedQuantity,
+                    DifferenceQuantity = offlineDifference,
+                    Reason = line.Reason,
+                    Notes = line.Notes,
+                };
+            }).ToList(),
+        };
+
+        _db.StockAdjustments.Add(adjustment);
+        await _db.SaveChangesAsync();
+
+        foreach (var item in adjustment.Items)
+        {
+            if (currentLevels.TryGetValue(item.VariantId, out var level))
+            {
+                level.QuantityOnHand = item.NewQuantity;
+                level.UpdatedAt = now;
+                level.UpdatedBy = userId;
+            }
+            else
+            {
+                _db.StockLevels.Add(new StockLevel
+                {
+                    TenantId = request.TenantId,
+                    StoreId = request.StoreId,
+                    VariantId = item.VariantId,
+                    QuantityOnHand = item.NewQuantity,
+                    UpdatedAt = now,
+                    UpdatedBy = userId,
+                });
+            }
+
+            _db.StockMovements.Add(new StockMovement
+            {
+                TenantId = request.TenantId,
+                StoreId = request.StoreId,
+                VariantId = item.VariantId,
+                Quantity = item.DifferenceQuantity,
+                MovementType = "Adjustment",
+                ReferenceType = "StockAdjustment",
+                ReferenceId = adjustment.Id,
+                Notes = item.Reason ?? adjustment.Reason,
+                CreatedAt = now,
+                CreatedBy = userId,
+            });
+        }
+
+        await _db.SaveChangesAsync();
+        await transaction.CommitAsync();
+        return adjustment;
+    }
+
     public Task<StockAdjustment?> GetAsync(int id) =>
         _db.StockAdjustments.Include(x => x.Items).FirstOrDefaultAsync(x => x.Id == id);
 

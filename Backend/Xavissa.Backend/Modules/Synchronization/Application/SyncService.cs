@@ -117,6 +117,38 @@ public class SyncService
         };
     }
 
+    public async Task<LiveStockCheckResponseDto> GetLiveStockAsync(LiveStockCheckRequestDto request)
+    {
+        EnsureStoreAccess(request.StoreId);
+        var variantIds = request.VariantIds.Where(id => id > 0).Distinct().ToList();
+        if (variantIds.Count == 0 || variantIds.Count > 100)
+            throw new ArgumentException("A live stock check requires between 1 and 100 product variants.");
+
+        var now = DateTime.UtcNow;
+        var levels = await _db.StockLevels
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(level => level.StoreId == request.StoreId && variantIds.Contains(level.VariantId))
+            .ToDictionaryAsync(level => level.VariantId);
+
+        return new LiveStockCheckResponseDto
+        {
+            ServerUtcNow = now,
+            Items = variantIds.Select(variantId =>
+            {
+                levels.TryGetValue(variantId, out var level);
+                return new StockLevelDeltaItemDto
+                {
+                    VariantId = variantId,
+                    StoreId = request.StoreId,
+                    TenantId = level?.TenantId ?? 0,
+                    QuantityOnHand = level?.QuantityOnHand ?? 0,
+                    UpdatedAt = level?.UpdatedAt ?? now,
+                };
+            }).ToList(),
+        };
+    }
+
     public async Task<CatalogDeltaDto> GetCatalogDeltaAsync(int tenantId, DateTime? updatedAfter)
     {
         EnsureTenantAccess(tenantId);

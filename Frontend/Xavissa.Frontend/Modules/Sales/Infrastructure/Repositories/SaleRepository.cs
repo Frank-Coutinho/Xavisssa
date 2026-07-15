@@ -21,6 +21,7 @@ namespace Xavissa.Frontend.Data.Repositories
         private readonly IProductRepository _products;
         private readonly IAuthService _auth;
         private readonly IHttpClientFactory _httpFactory;
+        private readonly ISyncConflictHandler _conflictHandler;
 
         public event Action? SalesChanged;
 
@@ -31,7 +32,8 @@ namespace Xavissa.Frontend.Data.Repositories
             IApiTokenProvider tokens,
             IProductRepository products,
             IAuthService auth,
-            IHttpClientFactory httpFactory
+            IHttpClientFactory httpFactory,
+            ISyncConflictHandler conflictHandler
         )
         {
             _offline = offline ?? throw new ArgumentNullException(nameof(offline));
@@ -41,6 +43,7 @@ namespace Xavissa.Frontend.Data.Repositories
             _products = products ?? throw new ArgumentNullException(nameof(products));
             _auth = auth ?? throw new ArgumentNullException(nameof(auth));
             _httpFactory = httpFactory ?? throw new ArgumentNullException(nameof(httpFactory));
+            _conflictHandler = conflictHandler ?? throw new ArgumentNullException(nameof(conflictHandler));
         }
 
         private bool CanUseAuthenticatedOnline() =>
@@ -85,26 +88,8 @@ namespace Xavissa.Frontend.Data.Repositories
             if (sale == null)
                 throw new ArgumentNullException(nameof(sale));
 
-            if (CanUseAuthenticatedOnline())
-            {
-                try
-                {
-                    var serverSale = await _online.CreateAsync(sale);
-                    serverSale.Synced = true;
-                    await _offline.UpsertRangeAsync(new[] { serverSale });
-                    SalesChanged?.Invoke();
-                    return serverSale;
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    Console.WriteLine("⚠️ Authenticated online sale creation was denied. Saving sale locally for retry after re-login.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"⚠️ Online sale creation failed. Saving locally for retry: {ex.Message}");
-                }
-            }
-
+            // Checkout always commits to the local SQLite database first. Network
+            // upload is triggered separately after this transaction succeeds.
             sale.Synced = false;
             await _offline.AddAsync(sale);
             SalesChanged?.Invoke();
@@ -139,7 +124,7 @@ namespace Xavissa.Frontend.Data.Repositories
                     catch (Exception ex)
                     {
                         Console.WriteLine($"⚠️ Failed to prepare sale {sale.Id} for sync: {ex.Message}");
-                        await _offline.MarkAsFailedAsync(sale.Id);
+                        await _offline.MarkAsFailedAsync(sale.Id, error: ex.Message);
                     }
                 }
 
@@ -165,7 +150,19 @@ namespace Xavissa.Frontend.Data.Repositories
                         }
                         else
                         {
-                            await _offline.MarkAsFailedAsync(result.ClientSaleId);
+                            await _offline.MarkAsFailedAsync(
+                                result.ClientSaleId,
+                                result.ConflictId,
+                                result.Error);
+                            anyChanges = true;
+
+                            if (result.Status.Equals("Conflict", StringComparison.OrdinalIgnoreCase))
+                            {
+                                _conflictHandler.HandleSaleConflict(new SaleSyncConflictNotice(
+                                    result.ClientSaleId,
+                                    result.ConflictId,
+                                    result.Error));
+                            }
                         }
                     }
                 }

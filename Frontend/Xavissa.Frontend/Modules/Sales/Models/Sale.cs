@@ -36,5 +36,7 @@ namespace Xavissa.Frontend.Models
         public List<SaleItem> Items { get; set; } = new();
         public List<SalePayment> Payments { get; set; } = new();
         public bool SyncFailed { get; set; }
+        public int? SyncConflictId { get; set; }
+        public string? SyncError { get; set; }
     }
 }

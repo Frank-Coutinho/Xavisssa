@@ -396,6 +396,8 @@ namespace Xavissa.Frontend.Data
                 ["DeletedAt"] = "TEXT",
                 ["Synced"] = "INTEGER NOT NULL DEFAULT 0",
                 ["SyncFailed"] = "INTEGER NOT NULL DEFAULT 0",
+                ["SyncConflictId"] = "INTEGER",
+                ["SyncError"] = "TEXT",
             });
             await EnsureSalesDiscountConstraintAsync();
         }
@@ -569,6 +571,11 @@ namespace Xavissa.Frontend.Data
             });
 
             await RunSalesSchemaMigrationAsync();
+            await EnsureColumnsAsync("Sales", new Dictionary<string, string>
+            {
+                ["SyncConflictId"] = "INTEGER",
+                ["SyncError"] = "TEXT",
+            });
             await EnsureOfflineSyncColumnsAsync("Sales");
 
             await EnsureColumnsAsync("SaleItems", new Dictionary<string, string>

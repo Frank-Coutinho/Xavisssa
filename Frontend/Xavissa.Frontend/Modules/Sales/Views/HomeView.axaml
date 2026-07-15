@@ -213,6 +213,14 @@
                                                 <Run Text=": " />
                                                 <Run Text="{Binding StockQuantity}" />
                                             </TextBlock>
+                                            <Border Classes="chip"
+                                                    Background="{DynamicResource WarningBrush}"
+                                                    HorizontalAlignment="Left"
+                                                    IsVisible="{Binding IsLowStock}">
+                                                <TextBlock Text="{Binding LowStockWarningText}"
+                                                           Foreground="White"
+                                                           FontWeight="Bold" />
+                                            </Border>
 
                                             <Button Classes="primary with-icon"
                                                     IsEnabled="{Binding StockQuantity, Converter={StaticResource StockToEnabledConverter}}"
@@ -253,6 +261,10 @@
                                                     <Run Text=": " />
                                                     <Run Text="{Binding StockQuantity}" />
                                                 </TextBlock>
+                                                <TextBlock Text="{Binding LowStockWarningText}"
+                                                           IsVisible="{Binding IsLowStock}"
+                                                           Foreground="{DynamicResource WarningBrush}"
+                                                           FontWeight="Bold" />
                                             </StackPanel>
 
                                             <TextBlock x:Name="ListItemPrice" Grid.Column="1"

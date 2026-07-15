@@ -16,6 +16,7 @@ namespace Xavissa.Frontend.Services
         Task SyncStoreScopedDataAsync(int storeId);
         Task SyncAfterSaleAsync();
         Task SyncAfterSaleAsync(int storeId);
+        Task SyncAfterStockAdjustmentAsync();
         Task UploadPendingSalesAsync();
         Task PullCatalogDeltaAsync(int tenantId);
         Task PullSellableVariantsDeltaAsync(int storeId);

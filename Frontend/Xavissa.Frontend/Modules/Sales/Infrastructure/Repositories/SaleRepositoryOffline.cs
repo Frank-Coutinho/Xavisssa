@@ -90,7 +90,7 @@ namespace Xavissa.Frontend.Data.Repositories
             return await db.Sales
                 .Include(s => s.Items)
                 .Include(s => s.Payments)
-                .Where(s => !s.Synced && s.Items.Count > 0)
+                .Where(s => !s.Synced && !s.SyncFailed && s.Items.Count > 0)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -105,8 +105,93 @@ namespace Xavissa.Frontend.Data.Repositories
 
             await using var db = _factory.CreateDbContext();
             await db.EnsureLocalSchemaAsync();
+            await using var transaction = await db.Database.BeginTransactionAsync();
+
+            sale.Synced = false;
+            sale.SyncFailed = false;
+            sale.SyncConflictId = null;
+            sale.SyncError = null;
+
+            var variantDemand = sale.Items
+                .Where(item => item.VariantId > 0 && item.Quantity > 0)
+                .GroupBy(item => item.VariantId)
+                .ToDictionary(group => group.Key, group => group.Sum(item => item.Quantity));
+            if (variantDemand.Count > 0)
+            {
+                var variantIds = variantDemand.Keys.ToList();
+                var sellableVariants = await db.SellableVariants
+                    .Where(variant => variant.StoreId == sale.StoreId && variantIds.Contains(variant.VariantId))
+                    .ToListAsync();
+                var sellableById = sellableVariants.ToDictionary(variant => variant.VariantId);
+
+                foreach (var demand in variantDemand)
+                {
+                    if (!sellableById.TryGetValue(demand.Key, out var variant))
+                        throw new InvalidOperationException($"Variant {demand.Key} is not available in the local store cache.");
+                    if (!variant.IsSellable || variant.QuantityOnHand < demand.Value)
+                        throw new InvalidOperationException($"Insufficient local stock for '{variant.ProductName}'.");
+
+                    variant.QuantityOnHand -= demand.Value;
+                    variant.UpdatedAt = DateTime.UtcNow;
+                }
+
+                var productVariants = await db.ProductVariants
+                    .Where(variant => variant.StoreId == sale.StoreId && variantIds.Contains(variant.Id))
+                    .ToListAsync();
+                foreach (var variant in productVariants)
+                {
+                    if (variantDemand.TryGetValue(variant.Id, out var quantity))
+                        variant.StockQuantity = Math.Max(0, variant.StockQuantity - quantity);
+                }
+            }
+
+            var productDemand = sale.Items
+                .Where(item => item.ProductId > 0 && item.Quantity > 0)
+                .GroupBy(item => item.ProductId)
+                .ToDictionary(group => group.Key, group => group.Sum(item => item.Quantity));
+            if (productDemand.Count > 0)
+            {
+                var productIds = productDemand.Keys.ToList();
+                var products = await db.Products.Where(product => productIds.Contains(product.Id)).ToListAsync();
+                foreach (var product in products)
+                {
+                    if (productDemand.TryGetValue(product.Id, out var quantity))
+                        product.StockQuantity = Math.Max(0, product.StockQuantity - quantity);
+                }
+            }
 
             db.ChangeTracker.Clear();
+            // Stock cache entities are detached by Clear, so re-apply their changes in
+            // the same transaction using guarded SQL updates before inserting the sale.
+            foreach (var demand in variantDemand)
+            {
+                var updated = await db.Database.ExecuteSqlRawAsync(
+                    @"UPDATE SellableVariants
+                      SET QuantityOnHand = QuantityOnHand - {0}, UpdatedAt = {1}
+                      WHERE VariantId = {2} AND StoreId = {3} AND IsSellable = 1 AND QuantityOnHand >= {0}",
+                    demand.Value,
+                    DateTime.UtcNow,
+                    demand.Key,
+                    sale.StoreId);
+                if (updated != 1)
+                    throw new InvalidOperationException($"Local stock changed while finalizing variant {demand.Key}. Please review the cart.");
+
+                await db.Database.ExecuteSqlRawAsync(
+                    @"UPDATE ProductVariants
+                      SET StockQuantity = MAX(0, StockQuantity - {0})
+                      WHERE Id = {1} AND StoreId = {2}",
+                    demand.Value,
+                    demand.Key,
+                    sale.StoreId);
+            }
+            foreach (var demand in productDemand)
+            {
+                await db.Database.ExecuteSqlRawAsync(
+                    @"UPDATE Products SET StockQuantity = MAX(0, StockQuantity - {0}) WHERE Id = {1}",
+                    demand.Value,
+                    demand.Key);
+            }
+
             db.Entry(sale).State = EntityState.Added;
 
             foreach (var item in sale.Items)
@@ -116,6 +201,25 @@ namespace Xavissa.Frontend.Data.Repositories
                 db.Entry(payment).State = EntityState.Added;
 
             await db.SaveChangesAsync();
+
+            foreach (var item in sale.Items.Where(item => item.VariantId > 0))
+            {
+                db.StockMovements.Add(new StockMovement
+                {
+                    TenantId = sale.TenantId,
+                    StoreId = sale.StoreId,
+                    VariantId = item.VariantId,
+                    Quantity = -item.Quantity,
+                    MovementType = "Sale",
+                    ReferenceType = "Sale",
+                    ReferenceId = sale.Id,
+                    Notes = $"Local-first sale {sale.SyncId}",
+                    CreatedAt = sale.Timestamp,
+                });
+            }
+
+            await db.SaveChangesAsync();
+            await transaction.CommitAsync();
         }
 
         public async Task UpdateLocalSaleIdAsync(int oldId, int newId)
@@ -220,6 +324,8 @@ namespace Xavissa.Frontend.Data.Repositories
                 ClampSaleDiscount(sale);
                 sale.Synced = true;
                 sale.SyncFailed = false;
+                sale.SyncConflictId = null;
+                sale.SyncError = null;
 
                 Sale? localSale = null;
                 if (sale.SyncId != Guid.Empty)
@@ -254,6 +360,8 @@ namespace Xavissa.Frontend.Data.Repositories
                 localSale.DeletedAt = sale.DeletedAt;
                 localSale.Synced = true;
                 localSale.SyncFailed = false;
+                localSale.SyncConflictId = null;
+                localSale.SyncError = null;
 
                 var incomingItems = sale.Items?
                     .GroupBy(item => item.Id)
@@ -355,12 +463,14 @@ namespace Xavissa.Frontend.Data.Repositories
                     sale.SyncId = syncId.Value;
                 sale.Synced = true;
                 sale.SyncFailed = false;
+                sale.SyncConflictId = null;
+                sale.SyncError = null;
                 sale.LastSyncedAt = DateTimeOffset.UtcNow;
                 await db.SaveChangesAsync();
             }
         }
 
-        public async Task MarkAsFailedAsync(int saleId)
+        public async Task MarkAsFailedAsync(int saleId, int? conflictId = null, string? error = null)
         {
             await using var db = _factory.CreateDbContext();
             var sale = await db.Sales.FindAsync(saleId);
@@ -368,6 +478,8 @@ namespace Xavissa.Frontend.Data.Repositories
                 return;
 
             sale.SyncFailed = true;
+            sale.SyncConflictId = conflictId;
+            sale.SyncError = error;
             await db.SaveChangesAsync();
         }
 
