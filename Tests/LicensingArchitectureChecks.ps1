@@ -54,8 +54,8 @@ Assert-FileDoesNotContain "Frontend/Xavissa.Frontend/appsettings.json" "HashSecr
 Assert-FileDoesNotContain "Frontend/Xavissa.Frontend/appsettings.json" "CacheSigningSecret"
 Assert-FileDoesNotContain "Backend/Xavissa.Backend/appsettings.json" "HashSecret"
 Assert-FileDoesNotContain "Backend/Xavissa.Backend/appsettings.json" "CacheSigningSecret"
-Assert-FileDoesNotContain "Backend/Xavissa.Backend/Controllers/SalesController.cs" "No active license"
-Assert-FileDoesNotContain "Backend/Xavissa.Backend/Controllers/StoresController.cs" "CanCreateStoreAsync"
-Assert-FileDoesNotContain "Backend/Xavissa.Backend/Controllers/UserManagementController.cs" "CanCreateTenantUserAsync"
+Assert-FileDoesNotContain "Backend/Xavissa.Backend/Modules/Sales/Endpoints/SalesController.cs" "No active license"
+Assert-FileDoesNotContain "Backend/Xavissa.Backend/Modules/Stores/Endpoints/StoresController.cs" "CanCreateStoreAsync"
+Assert-FileDoesNotContain "Backend/Xavissa.Backend/Modules/Users/Endpoints/UserManagementController.cs" "CanCreateTenantUserAsync"
 
 Write-Host "POS no-licensing architecture checks passed."

@@ -14,11 +14,11 @@
             <ResourceDictionary.MergedDictionaries>
 
                 <!-- Base always -->
-                <ResourceInclude Source="avares://Xavissa.Frontend/Views/Themes/BaseTheme.axaml"/>
+                <ResourceInclude Source="avares://Xavissa.Frontend/SharedUI/Themes/BaseTheme.axaml"/>
 
                 <!-- Default theme -->
-                <ResourceInclude Source="avares://Xavissa.Frontend/Views/Themes/LightTheme.axaml"/>
-                <ResourceInclude Source="avares://Xavissa.Frontend/Views/Localization/Strings.en-US.axaml"/>
+                <ResourceInclude Source="avares://Xavissa.Frontend/SharedUI/Themes/LightTheme.axaml"/>
+                <ResourceInclude Source="avares://Xavissa.Frontend/SharedUI/Localization/Strings.en-US.axaml"/>
 
             </ResourceDictionary.MergedDictionaries>
 
@@ -33,7 +33,7 @@
     <Application.Styles>
         <FluentTheme/>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
-        <StyleInclude Source="avares://Xavissa.Frontend/Views/Themes/MaterialStyles.axaml"/>
+        <StyleInclude Source="avares://Xavissa.Frontend/SharedUI/Themes/MaterialStyles.axaml"/>
     </Application.Styles>
 
 </Application>

@@ -30,19 +30,19 @@ function Assert-FileDoesNotContain {
     }
 }
 
-Assert-FileContains "Frontend/Xavissa.Frontend/Services/Common/IDemoApiClient.cs" "StartDemoSessionAsync"
-Assert-FileContains "Frontend/Xavissa.Frontend/Services/Common/IDemoStateService.cs" "DemoSessionState"
-Assert-FileContains "Frontend/Xavissa.Frontend/Services/DemoCleanupService.cs" "Workspaces.*Demo"
-Assert-FileContains "Frontend/Xavissa.Frontend/Services/DemoWorkspaceSeeder.cs" "Loja Demo Xavissa"
-Assert-FileContains "Frontend/Xavissa.Frontend/Services/DemoWorkspaceSeeder.cs" "Arroz 5kg"
+Assert-FileContains "Frontend/Xavissa.Frontend/Modules/Licensing/Services/IDemoApiClient.cs" "StartDemoSessionAsync"
+Assert-FileContains "Frontend/Xavissa.Frontend/Modules/Licensing/Services/IDemoStateService.cs" "DemoSessionState"
+Assert-FileContains "Frontend/Xavissa.Frontend/Modules/Licensing/Services/DemoCleanupService.cs" "Workspaces.*Demo"
+Assert-FileContains "Frontend/Xavissa.Frontend/Modules/Licensing/Services/DemoWorkspaceSeeder.cs" "Loja Demo Xavissa"
+Assert-FileContains "Frontend/Xavissa.Frontend/Modules/Licensing/Services/DemoWorkspaceSeeder.cs" "Arroz 5kg"
 Assert-FileContains "Frontend/Xavissa.Frontend/appsettings.json" '"DemoEnabled": false'
 Assert-FileContains "Backend/Xavissa.Backend/appsettings.json" '"EnableDemos": false'
-Assert-FileContains "Backend/Xavissa.Backend/Controllers/DemoController.cs" "Demo mode is currently disabled"
-Assert-FileDoesNotContain "Frontend/Xavissa.Frontend/Views/LicenseActivationView.axaml" "Try Demo"
-Assert-FileDoesNotContain "Frontend/Xavissa.Frontend/Views/LoginView.axaml" "TryDemoCommand"
-Assert-FileDoesNotContain "Frontend/Xavissa.Frontend/Views/LoginView.axaml" "ActivateLicenseCommand"
-Assert-FileContains "Frontend/Xavissa.Frontend/Helpers/ReceiptBuilder.cs" "DEMO RECEIPT"
-Assert-FileContains "Backend/Xavissa.Backend/Controllers/DemoController.cs" "HttpPost\(""validate""\)"
-Assert-FileContains "Backend/Xavissa.Backend/Services/DemoService.cs" "AddMinutes\(60\)"
+Assert-FileContains "Backend/Xavissa.Backend/Modules/Demo/Endpoints/DemoController.cs" "Demo mode is currently disabled"
+Assert-FileDoesNotContain "Frontend/Xavissa.Frontend/Modules/Licensing/Views/LicenseActivationView.axaml" "Try Demo"
+Assert-FileDoesNotContain "Frontend/Xavissa.Frontend/Modules/Identity/Views/LoginView.axaml" "TryDemoCommand"
+Assert-FileDoesNotContain "Frontend/Xavissa.Frontend/Modules/Identity/Views/LoginView.axaml" "ActivateLicenseCommand"
+Assert-FileContains "Frontend/Xavissa.Frontend/Infrastructure/Printing/ReceiptBuilder.cs" "DEMO RECEIPT"
+Assert-FileContains "Backend/Xavissa.Backend/Modules/Demo/Endpoints/DemoController.cs" "HttpPost\(""validate""\)"
+Assert-FileContains "Backend/Xavissa.Backend/Modules/Demo/Application/DemoService.cs" "AddMinutes\(60\)"
 
 Write-Host "Dormant demo mode architecture checks passed."
